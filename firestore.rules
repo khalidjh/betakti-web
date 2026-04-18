@@ -1,0 +1,113 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // ---------- users ----------
+    // Self-serve profile. Subscription is server-only (updated via Moyasar callback).
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid)
+        // Block client tampering with subscription.
+        && !(request.resource.data.diff(resource.data).affectedKeys().hasAny(['subscription']));
+      allow delete: if false;
+    }
+
+    // ---------- projects ----------
+    function isProjectMember() {
+      return isSignedIn()
+        && (
+          resource.data.userId == request.auth.uid
+          || (resource.data.collaborators is list
+              && request.auth.uid in resource.data.collaborators)
+        );
+    }
+
+    match /projects/{projectId} {
+      allow read: if isProjectMember();
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      // Owner can transfer, manage collaborators; members can edit content.
+      allow update: if isProjectMember()
+        && (
+          resource.data.userId == request.auth.uid
+          || !(request.resource.data.diff(resource.data).affectedKeys()
+                 .hasAny(['userId', 'collaborators']))
+        );
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+
+      // Presence sub-collection — any project member can write their own presence doc.
+      match /presence/{peerUid} {
+        allow read: if isSignedIn();
+        allow write: if isOwner(peerUid);
+      }
+    }
+
+    // ---------- dynamic_templates (read-only for clients) ----------
+    match /dynamic_templates/{id} {
+      allow read: if resource.data.isActive == true;
+      allow write: if false;
+    }
+
+    // ---------- home_sections (read-only for clients) ----------
+    match /home_sections/{id} {
+      allow read: if resource.data.isActive == true;
+      allow write: if false;
+    }
+
+    // ---------- shared_templates (community) ----------
+    match /shared_templates/{id} {
+      allow read: if resource.data.isActive == true;
+      allow create: if isSignedIn()
+        && request.resource.data.authorId == request.auth.uid
+        && request.resource.data.isActive == true;
+      allow update: if isSignedIn()
+        && resource.data.authorId == request.auth.uid
+        // Only author can soft-update; likes are server-incremented only.
+        && !(request.resource.data.diff(resource.data).affectedKeys().hasAny(['likes']));
+      allow delete: if isSignedIn() && resource.data.authorId == request.auth.uid;
+    }
+
+    // ---------- subscriptions (payment records, server-only) ----------
+    match /subscriptions/{id} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow write: if false;
+    }
+
+    // ---------- moyasar_events (server-only) ----------
+    match /moyasar_events/{id} {
+      allow read, write: if false;
+    }
+
+    // ---------- custom_fonts ----------
+    match /custom_fonts/{id} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow update: if false;
+    }
+
+    // ---------- referrals ----------
+    match /referrals/{uid} {
+      // A user can read/create their own referral code.
+      allow read, create: if isOwner(uid);
+      // Reward counters are server-only.
+      allow update, delete: if false;
+    }
+
+    // ---------- referral_events ----------
+    // Public append for click/signup events. Server aggregates.
+    match /referral_events/{id} {
+      allow read: if false;
+      allow create: if request.resource.data.type in ['click', 'signup'];
+      allow update, delete: if false;
+    }
+  }
+}

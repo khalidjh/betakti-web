@@ -1,0 +1,48 @@
+{
+  "app": {
+    "name": "بطاقتي",
+    "tagline": "محرر تصاميم وبطاقات عربي أولاً"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "templates": "القوالب",
+    "projects": "مشاريعي",
+    "settings": "الإعدادات",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "logout": "تسجيل الخروج"
+  },
+  "home": {
+    "startNewDesign": "ابدأ تصميماً جديداً",
+    "recentDesigns": "تصاميمي الأخيرة",
+    "tools": "الأدوات",
+    "backgroundRemoval": "إزالة الخلفية"
+  },
+  "editor": {
+    "defaultProjectName": "تصميم جديد",
+    "addText": "إضافة نص",
+    "addShape": "إضافة شكل",
+    "addImage": "إضافة صورة",
+    "addSticker": "إضافة ملصق",
+    "background": "الخلفية",
+    "layers": "الطبقات",
+    "export": "تصدير",
+    "undo": "تراجع",
+    "redo": "إعادة"
+  },
+  "auth": {
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "continueWithGoogle": "المتابعة مع جوجل",
+    "continueWithApple": "المتابعة مع آبل",
+    "forgotPassword": "نسيت كلمة المرور؟"
+  },
+  "subscription": {
+    "upgrade": "ترقية إلى برو",
+    "monthly": "شهري",
+    "yearly": "سنوي",
+    "lifetime": "مدى الحياة",
+    "recommended": "موصى به"
+  },
+  "watermark": "صُمم بـ Betakti"
+}

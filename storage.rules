@@ -1,0 +1,47 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+    function underMaxSize(mb) {
+      return request.resource.size < mb * 1024 * 1024;
+    }
+
+    // Project thumbnails: owner-scoped.
+    match /thumbnails/{uid}/{file=**} {
+      allow read: if isSignedIn();
+      allow write: if isOwner(uid) && isImage() && underMaxSize(5);
+    }
+
+    // AI inputs: user's own upload bucket for fal.ai.
+    match /ai_inputs/{uid}/{file=**} {
+      allow read: if isSignedIn();
+      allow write: if isOwner(uid) && isImage() && underMaxSize(15);
+    }
+
+    // Custom fonts: owner only.
+    match /fonts/{uid}/{file=**} {
+      allow read: if isSignedIn();
+      allow write: if isOwner(uid)
+        && request.resource.size < 5 * 1024 * 1024
+        && (
+          request.resource.name.matches('.*\\.(ttf|otf|woff|woff2)$')
+        );
+    }
+
+    // Element uploads (user-imported images inside editor).
+    match /uploads/{uid}/{file=**} {
+      allow read: if isSignedIn();
+      allow write: if isOwner(uid) && isImage() && underMaxSize(15);
+    }
+  }
+}
