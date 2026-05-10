@@ -1,47 +1,28 @@
 rules_version = '2';
 
+// Deploy: firebase deploy --only storage
 service firebase.storage {
   match /b/{bucket}/o {
 
-    function isSignedIn() {
-      return request.auth != null;
-    }
-    function isOwner(uid) {
-      return isSignedIn() && request.auth.uid == uid;
-    }
-    function isImage() {
-      return request.resource.contentType.matches('image/.*');
-    }
-    function underMaxSize(mb) {
-      return request.resource.size < mb * 1024 * 1024;
+    match /template-thumbnails/{file=**} {
+      allow read: if true;
+      allow write: if false;
     }
 
-    // Project thumbnails: owner-scoped.
-    match /thumbnails/{uid}/{file=**} {
-      allow read: if isSignedIn();
-      allow write: if isOwner(uid) && isImage() && underMaxSize(5);
-    }
-
-    // AI inputs: user's own upload bucket for fal.ai.
-    match /ai_inputs/{uid}/{file=**} {
-      allow read: if isSignedIn();
-      allow write: if isOwner(uid) && isImage() && underMaxSize(15);
-    }
-
-    // Custom fonts: owner only.
-    match /fonts/{uid}/{file=**} {
-      allow read: if isSignedIn();
-      allow write: if isOwner(uid)
+    match /thumbnails/{projectId} {
+      allow read: if true;
+      allow write: if request.auth != null
         && request.resource.size < 5 * 1024 * 1024
-        && (
-          request.resource.name.matches('.*\\.(ttf|otf|woff|woff2)$')
-        );
+        && request.resource.contentType.matches('image/.*');
     }
 
-    // Element uploads (user-imported images inside editor).
-    match /uploads/{uid}/{file=**} {
-      allow read: if isSignedIn();
-      allow write: if isOwner(uid) && isImage() && underMaxSize(15);
+    match /assets/{file=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /{path=**} {
+      allow read, write: if false;
     }
   }
 }

@@ -1,124 +1,101 @@
-import {
-  collection,
-  getDoc,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  where,
-  doc,
-} from 'firebase/firestore';
-import { db } from '@/lib/firebase/client';
-import {
-  CANVAS_SIZES,
-  type CanvasSize,
-  type DesignTemplate,
-  type TemplateCategory,
-} from '@/lib/types/canvas';
+import type { CanvasBackground, CanvasElement, CanvasSize } from '$lib/editor/types';
 
-function resolveCanvasSize(id: string | undefined): CanvasSize {
-  return CANVAS_SIZES.find((c) => c.id === id) ?? CANVAS_SIZES[1]; // default: square
+export type TemplateCategory =
+  | 'quotes'
+  | 'announcements'
+  | 'sales'
+  | 'events'
+  | 'social'
+  | 'ramadan'
+  | 'eid'
+  | 'whatsappStatus'
+  | 'graduation'
+  | 'wedding'
+  | 'nationalDay';
+
+export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
+  'quotes',
+  'announcements',
+  'sales',
+  'events',
+  'social',
+  'ramadan',
+  'eid',
+  'whatsappStatus',
+  'graduation',
+  'wedding',
+  'nationalDay'
+];
+
+export interface DynamicTemplate {
+  id: string;
+  nameAr: string;
+  nameEn: string;
+  category: TemplateCategory;
+  canvasSize: CanvasSize;
+  isPremium: boolean;
+  isActive: boolean;
+  sortOrder: number;
+  thumbnailUrl?: string;
+  background: CanvasBackground;
+  elements: CanvasElement[];
 }
 
-function toTemplate(id: string, d: Record<string, unknown>): DesignTemplate {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function normalizeTemplate(id: string, raw: any): DynamicTemplate | null {
+  if (!raw) return null;
+  const category = (raw.category ?? 'social') as TemplateCategory;
+  const canvasSize: CanvasSize =
+    raw.canvasSize && typeof raw.canvasSize === 'object'
+      ? raw.canvasSize
+      : {
+          id: raw.canvasSizeId ?? 'square',
+          nameAr: 'بوست مربع',
+          nameEn: 'Square Post',
+          width: 1080,
+          height: 1080
+        };
   return {
     id,
-    nameAr: (d.nameAr as string) ?? '',
-    nameEn: (d.nameEn as string) ?? '',
-    category: (d.category as TemplateCategory) ?? 'quotes',
-    canvasSize: resolveCanvasSize(d.canvasSizeId as string),
-    isPremium: Boolean(d.isPremium),
-    section: d.section as string | undefined,
-    sectionAr: d.sectionAr as string | undefined,
-    sectionEn: d.sectionEn as string | undefined,
-    sortOrder: (d.sortOrder as number) ?? 0,
-    isActive: d.isActive !== false,
-    project: {
-      background: (d.background as DesignTemplate['project']['background']) ?? {
-        type: 'color',
-        color: '#ffffff',
-      },
-      elements: (d.elements as DesignTemplate['project']['elements']) ?? [],
-    },
+    nameAr: raw.nameAr ?? raw.name ?? 'قالب',
+    nameEn: raw.nameEn ?? raw.name ?? 'Template',
+    category,
+    canvasSize,
+    isPremium: Boolean(raw.isPremium),
+    isActive: raw.isActive !== false,
+    sortOrder: typeof raw.sortOrder === 'number' ? raw.sortOrder : 999,
+    thumbnailUrl: raw.thumbnailUrl ?? raw.thumbnail ?? undefined,
+    background: (raw.background as CanvasBackground) ?? { type: 'color', color: '#ffffff' },
+    elements: Array.isArray(raw.elements) ? (raw.elements as CanvasElement[]) : []
   };
 }
 
-export async function listTemplatesByCategory(
-  category: TemplateCategory,
-  max: number = 30,
-): Promise<DesignTemplate[]> {
-  const q = query(
-    collection(db, 'dynamic_templates'),
-    where('category', '==', category),
-    where('isActive', '==', true),
-    orderBy('sortOrder', 'asc'),
-    limit(max),
-  );
-  const snap = await getDocs(q);
-  return snap.docs.map((d) => toTemplate(d.id, d.data()));
-}
-
-export async function listTemplatesBySection(
-  section: string,
-  max: number = 30,
-): Promise<DesignTemplate[]> {
-  const q = query(
-    collection(db, 'dynamic_templates'),
-    where('section', '==', section),
-    where('isActive', '==', true),
-    orderBy('sortOrder', 'asc'),
-    limit(max),
-  );
-  const snap = await getDocs(q);
-  return snap.docs.map((d) => toTemplate(d.id, d.data()));
-}
-
-export async function listAllActiveTemplates(
-  max: number = 100,
-): Promise<DesignTemplate[]> {
-  const q = query(
-    collection(db, 'dynamic_templates'),
-    where('isActive', '==', true),
-    orderBy('sortOrder', 'asc'),
-    limit(max),
-  );
-  const snap = await getDocs(q);
-  return snap.docs.map((d) => toTemplate(d.id, d.data()));
-}
-
-export async function getTemplate(id: string): Promise<DesignTemplate | null> {
-  const snap = await getDoc(doc(db, 'dynamic_templates', id));
-  if (!snap.exists()) return null;
-  return toTemplate(snap.id, snap.data());
-}
-
-export interface HomeSection {
-  id: string;
-  title: string;
-  titleAr: string;
-  titleEn: string;
-  type: string;
-  sortOrder: number;
-  isActive: boolean;
-}
-
-export async function listHomeSections(): Promise<HomeSection[]> {
-  const q = query(
-    collection(db, 'home_sections'),
-    where('isActive', '==', true),
-    orderBy('sortOrder', 'asc'),
-  );
-  const snap = await getDocs(q);
-  return snap.docs.map((d) => {
-    const data = d.data();
-    return {
-      id: d.id,
-      title: data.title ?? '',
-      titleAr: data.titleAr ?? '',
-      titleEn: data.titleEn ?? '',
-      type: data.type ?? '',
-      sortOrder: data.sortOrder ?? 0,
-      isActive: data.isActive !== false,
-    };
-  });
+export function categoryLabel(cat: TemplateCategory, locale: 'ar' | 'en'): string {
+  const ar: Record<TemplateCategory, string> = {
+    quotes: 'اقتباسات',
+    announcements: 'إعلانات',
+    sales: 'عروض',
+    events: 'مناسبات',
+    social: 'تواصل اجتماعي',
+    ramadan: 'رمضان',
+    eid: 'العيد',
+    whatsappStatus: 'حالات واتساب',
+    graduation: 'تخرج',
+    wedding: 'زفاف',
+    nationalDay: 'اليوم الوطني'
+  };
+  const en: Record<TemplateCategory, string> = {
+    quotes: 'Quotes',
+    announcements: 'Announcements',
+    sales: 'Sales',
+    events: 'Events',
+    social: 'Social',
+    ramadan: 'Ramadan',
+    eid: 'Eid',
+    whatsappStatus: 'WhatsApp Status',
+    graduation: 'Graduation',
+    wedding: 'Wedding',
+    nationalDay: 'National Day'
+  };
+  return locale === 'ar' ? ar[cat] : en[cat];
 }

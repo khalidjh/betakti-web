@@ -1,0 +1,70 @@
+/* Cursive sticker fonts — letter-mapped decorative glyphs.
+   Mirrors the Flutter app's cursive_fonts.css. */
+
+/* Hajj */
+@font-face { font-family: 'hajj1'; src: url('/fonts/cursive/hajj/hajj1.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'hajj2'; src: url('/fonts/cursive/hajj/hajj2.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'hajj3'; src: url('/fonts/cursive/hajj/hajj3.ttf') format('truetype'); font-display: swap; }
+
+/* Eid */
+@font-face { font-family: 'eid1'; src: url('/fonts/cursive/eid/eid1.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'eid2'; src: url('/fonts/cursive/eid/eid2.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'eid3'; src: url('/fonts/cursive/eid/eid3.ttf') format('truetype'); font-display: swap; }
+
+/* Occasions / single-file faces */
+@font-face { font-family: 'monasabat'; src: url('/fonts/cursive/monasabat.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'morning'; src: url('/fonts/cursive/morning.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'jommah'; src: url('/fonts/cursive/jommah.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'zifaf'; src: url('/fonts/cursive/zifaf.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'graduation'; src: url('/fonts/cursive/graduation.ttf') format('truetype'); font-display: swap; }
+
+/* Ramadan */
+@font-face { font-family: 'ramadan1'; src: url('/fonts/cursive/ramadan/ramadan1.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'ramadan2'; src: url('/fonts/cursive/ramadan/ramadan2.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'ramadan3'; src: url('/fonts/cursive/ramadan/ramadan3.ttf') format('truetype'); font-display: swap; }
+
+/* Allah */
+@font-face { font-family: 'Allah1'; src: url('/fonts/cursive/Allah/Allah1.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Allah3'; src: url('/fonts/cursive/Allah/Allah3.ttf') format('truetype'); font-display: swap; }
+
+/* Family */
+@font-face { font-family: 'ommy1'; src: url('/fonts/cursive/ommy/ommy1.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'ommy2'; src: url('/fonts/cursive/ommy/ommy2.ttf') format('truetype'); font-display: swap; }
+
+/* Rasool */
+@font-face { font-family: 'rasool1'; src: url('/fonts/cursive/rasool/rasool1.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'rasool2'; src: url('/fonts/cursive/rasool/rasool2.ttf') format('truetype'); font-display: swap; }
+
+/* Basmalah */
+@font-face { font-family: 'basmalah1'; src: url('/fonts/cursive/basmalah/basmalah1.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'basmalah2'; src: url('/fonts/cursive/basmalah/basmalah2.ttf') format('truetype'); font-display: swap; }
+
+/* Misc */
+@font-face { font-family: 'aqsa'; src: url('/fonts/cursive/aqsa.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'sadaqa'; src: url('/fonts/cursive/sadaqa.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'islamic'; src: url('/fonts/cursive/islamic.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'thikr'; src: url('/fonts/cursive/thikr.ttf') format('truetype'); font-display: swap; }
+
+/* Shapes */
+@font-face { font-family: 'butterfly1'; src: url('/fonts/cursive/shapes/butterfly1.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'flower1'; src: url('/fonts/cursive/shapes/flower1.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'flower2'; src: url('/fonts/cursive/shapes/flower2.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'social1'; src: url('/fonts/cursive/shapes/social1.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'social2'; src: url('/fonts/cursive/shapes/social2.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'masjed'; src: url('/fonts/cursive/shapes/masjed.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'heart1'; src: url('/fonts/cursive/shapes/heart1.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'heart2'; src: url('/fonts/cursive/shapes/heart2.ttf') format('truetype'); font-display: swap; }
+
+/* Harakat */
+@font-face { font-family: 'harakat1'; src: url('/fonts/cursive/harakat/harakat1.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'harakat2'; src: url('/fonts/cursive/harakat/harakat2.ttf') format('truetype'); font-display: swap; }
+
+/* Badges */
+@font-face { font-family: 'badge1'; src: url('/fonts/cursive/badge/badge1.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'badge2'; src: url('/fonts/cursive/badge/badge2.ttf') format('truetype'); font-display: swap; }
+
+/* Decorations */
+@font-face { font-family: 'decoration1'; src: url('/fonts/cursive/decoration/decoration1.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'decoration2'; src: url('/fonts/cursive/decoration/decoration2.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'decoration3'; src: url('/fonts/cursive/decoration/decoration3.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'decoration4'; src: url('/fonts/cursive/decoration/decoration4.ttf') format('truetype'); font-display: swap; }
