@@ -12,7 +12,12 @@ function resolveSiteUrl(): string {
 }
 
 export const SITE_URL = resolveSiteUrl();
-export const DEFAULT_OG_IMAGE = `${SITE_URL}/brand/logo.png`;
+/** Square app/brand logo — used for Organization logo & app-icon schema. */
+export const LOGO_IMAGE = `${SITE_URL}/brand/logo.png`;
+/** 1200×630 social-share card — default og:image / twitter:image. */
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/og.png`;
+export const OG_IMAGE_WIDTH = 1200;
+export const OG_IMAGE_HEIGHT = 630;
 export const TWITTER_HANDLE = '@betakti';
 
 /** App install links. */

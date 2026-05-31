@@ -1,7 +1,13 @@
 <script lang="ts">
   import { getLocale } from '$lib/i18n';
   import { addLocalePrefix, type Locale } from '$lib/locale-path';
-  import { SITE_URL, DEFAULT_OG_IMAGE, TWITTER_HANDLE } from '$lib/seo/config';
+  import {
+    SITE_URL,
+    DEFAULT_OG_IMAGE,
+    OG_IMAGE_WIDTH,
+    OG_IMAGE_HEIGHT,
+    TWITTER_HANDLE
+  } from '$lib/seo/config';
 
   interface Props {
     /** Page <title>. Brand suffix is appended automatically unless includeBrand=false. */
@@ -40,6 +46,9 @@
   const ogLocaleAlt = $derived(locale === 'ar' ? 'en_US' : 'ar_AR');
 
   const ogImage = $derived(image.startsWith('http') ? image : SITE_URL + image);
+  // Only advertise fixed dimensions for the default 1200×630 card (page-specific
+  // images like template thumbnails have their own aspect ratio).
+  const isDefaultOg = $derived(ogImage === DEFAULT_OG_IMAGE);
 
   const blocks = $derived(jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []);
 </script>
@@ -67,6 +76,11 @@
   <meta property="og:description" content={description} />
   <meta property="og:url" content={canonical} />
   <meta property="og:image" content={ogImage} />
+  {#if isDefaultOg}
+    <meta property="og:image:width" content={String(OG_IMAGE_WIDTH)} />
+    <meta property="og:image:height" content={String(OG_IMAGE_HEIGHT)} />
+    <meta property="og:image:alt" content="Betakti — بطاقتي" />
+  {/if}
   <meta property="og:locale" content={ogLocale} />
   <meta property="og:locale:alternate" content={ogLocaleAlt} />
 

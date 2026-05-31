@@ -1,6 +1,6 @@
 import {
   SITE_URL,
-  DEFAULT_OG_IMAGE,
+  LOGO_IMAGE,
   APP_DOWNLOAD_URL,
   APP_PRICE_MONTHLY_USD,
   APP_PRICE_YEARLY_USD,
@@ -49,7 +49,7 @@ export function softwareApplication(locale: 'ar' | 'en') {
     url: SITE_URL,
     downloadUrl: APP_DOWNLOAD_URL,
     installUrl: APP_DOWNLOAD_URL,
-    image: DEFAULT_OG_IMAGE,
+    image: LOGO_IMAGE,
     offers: [
       { '@type': 'Offer', price: '0', priceCurrency: 'SAR', name: 'Free' },
       // Mobile (App Store / Google Play) subscriptions
@@ -61,9 +61,10 @@ export function softwareApplication(locale: 'ar' | 'en') {
       { '@type': 'Offer', price: '299', priceCurrency: 'SAR', name: 'Pro Lifetime (Web)' }
     ],
     aggregateRating: {
+      // Confirmed App Store rating (iTunes API). Kept to verifiable numbers only.
       '@type': 'AggregateRating',
-      ratingValue: '4.8',
-      ratingCount: '1240',
+      ratingValue: '4.5',
+      ratingCount: '8025',
       bestRating: '5',
       worstRating: '1'
     }
@@ -96,7 +97,7 @@ export function organization() {
     name: 'Betakti',
     alternateName: 'بطاقتي',
     url: SITE_URL,
-    logo: DEFAULT_OG_IMAGE,
+    logo: LOGO_IMAGE,
     sameAs: ['https://twitter.com/betakti', 'https://instagram.com/betakti']
   };
 }
