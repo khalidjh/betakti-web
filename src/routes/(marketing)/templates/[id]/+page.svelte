@@ -1,12 +1,17 @@
 <script lang="ts">
-  import { m } from '$lib/i18n';
+  import { m, getLocale, t, localizeHref } from '$lib/i18n';
   import Button from '$lib/components/button.svelte';
   import ProBadge from '$lib/components/pro-badge.svelte';
   import TemplateCard from '$lib/components/template-card.svelte';
+  import Seo from '$lib/components/seo.svelte';
+  import { SITE_URL } from '$lib/seo/config';
+  import { breadcrumbList } from '$lib/seo/schema';
   import type { PageData } from './$types';
 
   const { data }: { data: PageData } = $props();
   const tpl = $derived(data.template);
+  const locale = $derived(getLocale() as 'ar' | 'en');
+  const tplName = $derived(locale === 'en' ? tpl.nameEn : tpl.nameAr);
 
   const aspect = $derived(`${tpl.canvasSize.width} / ${tpl.canvasSize.height}`);
 
@@ -22,36 +27,40 @@
     return 'background: var(--color-surface-2);';
   });
 
-  const useHref = $derived(`/editor/new?templateId=${tpl.id}`);
+  const useHref = $derived(localizeHref(`/editor/new?templateId=${tpl.id}`));
 
-  const jsonLd = $derived({
-    '@context': 'https://schema.org',
-    '@type': 'CreativeWork',
-    name: tpl.nameAr,
-    alternateName: tpl.nameEn,
-    image: tpl.thumbnailUrl ?? 'https://betakti.app/brand/logo.png',
-    inLanguage: 'ar',
-    creator: { '@type': 'Organization', name: 'Betakti' }
-  });
+  const jsonLd = $derived([
+    {
+      '@context': 'https://schema.org',
+      '@type': 'CreativeWork',
+      name: tpl.nameAr,
+      alternateName: tpl.nameEn,
+      image: tpl.thumbnailUrl ?? `${SITE_URL}/brand/logo.png`,
+      inLanguage: locale,
+      creator: { '@type': 'Organization', name: 'Betakti' }
+    },
+    breadcrumbList([
+      { name: t('الرئيسية', 'Home'), url: SITE_URL + localizeHref('/') },
+      { name: m.page_templates_title(), url: SITE_URL + localizeHref('/templates') },
+      { name: tplName, url: SITE_URL + localizeHref(`/templates/${tpl.id}`) }
+    ])
+  ]);
 </script>
 
-<svelte:head>
-  <title>{tpl.nameAr} · Betakti</title>
-  <meta name="description" content="{tpl.nameAr} — {tpl.nameEn}" />
-  <meta property="og:type" content="article" />
-  <meta property="og:title" content="{tpl.nameAr} · Betakti" />
-  <meta property="og:description" content={tpl.nameEn} />
-  <meta property="og:image" content={tpl.thumbnailUrl ?? '/brand/logo.png'} />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content={tpl.thumbnailUrl ?? '/brand/logo.png'} />
-  {@html `<script type="application/ld+json">${JSON.stringify(jsonLd)}<` + `/script>`}
-</svelte:head>
+<Seo
+  title={tplName}
+  description={t(`${tpl.nameAr} — قالب جاهز للتعديل والتصميم بالعربي على Betakti.`, `${tpl.nameEn} — a ready-to-edit Arabic design template on Betakti.`)}
+  path={`/templates/${tpl.id}`}
+  type="article"
+  image={tpl.thumbnailUrl ?? '/brand/logo.png'}
+  {jsonLd}
+/>
 
 <section class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
   <nav class="text-sm text-[var(--color-muted)] mb-6 flex items-center gap-2">
-    <a href="/templates" class="hover:text-[var(--color-ink)]">{m.page_templates_title()}</a>
+    <a href={localizeHref('/templates')} class="hover:text-[var(--color-ink)]">{m.page_templates_title()}</a>
     <span>/</span>
-    <span class="text-[var(--color-ink-2)]">{tpl.nameAr}</span>
+    <span class="text-[var(--color-ink-2)]">{tplName}</span>
   </nav>
 
   <div class="grid grid-cols-1 md:grid-cols-[1.3fr_1fr] gap-8">
@@ -130,7 +139,7 @@
       <h2 class="text-xl font-semibold mb-4">{m.tpl_related()}</h2>
       <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {#each data.related as r (r.id)}
-          <TemplateCard template={r} />
+          <TemplateCard template={r} {locale} />
         {/each}
       </div>
     </section>

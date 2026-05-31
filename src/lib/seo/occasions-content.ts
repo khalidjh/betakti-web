@@ -1,0 +1,511 @@
+import type { Localized } from './landings';
+import type { TemplateCategory } from '$lib/data/templates';
+
+export interface OccasionPage {
+  slug: string;
+  category: TemplateCategory;
+  /** Approximate month for seasonal context (1-12), used for sitemap priority. */
+  month: number;
+  keywords: string;
+  ar: Localized;
+  en: Localized;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Occasion landing pages  →  /occasions/[occasion]
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const OCCASION_PAGES: OccasionPage[] = [
+  {
+    slug: 'ramadan',
+    category: 'ramadan',
+    month: 3,
+    keywords: 'تصميم تهنئة رمضان, بطاقات رمضان, تهاني رمضان كريم, ramadan greeting design arabic, قوالب رمضان',
+    ar: {
+      metaTitle: 'تصميم تهنئة رمضان — بطاقات وقوالب رمضان كريم',
+      metaDesc:
+        'صمم بطاقات تهنئة رمضان كريم بالعربي مجاناً. قوالب رمضانية جاهزة، خطوط إسلامية وزخارف، وتصدير بجودة عالية للنشر على واتساب وانستقرام.',
+      eyebrow: 'مناسبات · رمضان',
+      h1: 'تصميم تهنئة رمضان كريم',
+      intro:
+        'استقبل شهر رمضان المبارك بتصاميم تهنئة مميزة. اختر من قوالب رمضانية أنيقة بالفوانيس والهلال والزخارف الإسلامية، أضف اسمك أو رسالتك بخط عربي جميل، وشارك التهنئة مع عائلتك وأصدقائك ومتابعيك.',
+      bullets: [
+        { title: 'قوالب رمضانية', desc: 'تصاميم بالهلال والفانوس والزخارف الإسلامية جاهزة للتعديل.' },
+        { title: 'خطوط إسلامية', desc: 'خطوط عربية وإسلامية أنيقة تناسب أجواء رمضان.' },
+        { title: 'لكل المنصات', desc: 'مقاسات جاهزة لواتساب وانستقرام وسناب شات.' },
+        { title: 'تصدير عالي الجودة', desc: 'حمّل التهنئة بجودة عالية وشاركها فوراً.' }
+      ],
+      steps: [
+        { title: 'اختر قالب رمضان', desc: 'تصفح قوالب رمضان الجاهزة واختر الأنسب.' },
+        { title: 'أضف رسالتك', desc: 'اكتب التهنئة أو اسمك بخط عربي مميز.' },
+        { title: 'شارك التهنئة', desc: 'صدّر التصميم وشاركه على واتساب وانستقرام.' }
+      ],
+      faq: [
+        { q: 'هل قوالب رمضان مجانية؟', a: 'نعم، هناك قوالب رمضان مجانية كثيرة، مع قوالب احترافية إضافية في اشتراك Pro.' },
+        { q: 'هل يمكن إضافة اسمي أو اسم الشركة؟', a: 'بالتأكيد، يمكنك إضافة اسمك أو شعار شركتك للتهنئة بسهولة.' },
+        { q: 'هل تصلح للنشر التجاري؟', a: 'نعم، يمكنك استخدام التصاميم لتهنئة عملائك ومتابعي حساب عملك.' }
+      ]
+    },
+    en: {
+      metaTitle: 'Ramadan Greeting Maker — Ramadan Kareem Cards',
+      metaDesc:
+        'Design Ramadan Kareem greeting cards in Arabic for free. Ready Ramadan templates, Islamic fonts and ornaments, HD export for WhatsApp and Instagram.',
+      eyebrow: 'Occasions · Ramadan',
+      h1: 'Ramadan Greeting Cards',
+      intro:
+        'Welcome the holy month of Ramadan with standout greeting designs. Choose from elegant Ramadan templates with lanterns, crescents and Islamic ornaments, add your name or message in beautiful Arabic type, and share the greeting with family, friends and followers.',
+      bullets: [
+        { title: 'Ramadan templates', desc: 'Designs with crescents, lanterns and Islamic ornaments, ready to edit.' },
+        { title: 'Islamic fonts', desc: 'Elegant Arabic & Islamic fonts that match the Ramadan mood.' },
+        { title: 'Every platform', desc: 'Ready sizes for WhatsApp, Instagram and Snapchat.' },
+        { title: 'HD export', desc: 'Download the greeting in high quality and share it instantly.' }
+      ],
+      steps: [
+        { title: 'Pick a Ramadan template', desc: 'Browse ready Ramadan templates and choose one.' },
+        { title: 'Add your message', desc: 'Write the greeting or your name in distinctive Arabic type.' },
+        { title: 'Share the greeting', desc: 'Export the design and share to WhatsApp and Instagram.' }
+      ],
+      faq: [
+        { q: 'Are Ramadan templates free?', a: 'Yes, there are many free Ramadan templates, with extra premium ones on Pro.' },
+        { q: 'Can I add my name or company?', a: 'Absolutely — you can easily add your name or company logo to the greeting.' },
+        { q: 'Can I use them commercially?', a: 'Yes, you can use the designs to greet your customers and business followers.' }
+      ]
+    }
+  },
+  {
+    slug: 'eid-al-fitr',
+    category: 'eid',
+    month: 4,
+    keywords: 'تصميم تهنئة عيد الفطر, بطاقات عيد الفطر, تهاني العيد, eid al fitr greeting design, عيد مبارك',
+    ar: {
+      metaTitle: 'تصميم تهنئة عيد الفطر — بطاقات عيد مبارك',
+      metaDesc:
+        'صمم بطاقات تهنئة عيد الفطر بالعربي مجاناً. قوالب عيد جاهزة، خطوط إسلامية وزخارف، وتصدير بجودة عالية لمشاركتها على واتساب وانستقرام.',
+      eyebrow: 'مناسبات · عيد الفطر',
+      h1: 'تصميم تهنئة عيد الفطر',
+      intro:
+        'هنّئ أحبابك بعيد الفطر المبارك بتصاميم أنيقة. اختر من قوالب عيد جاهزة بزخارف عربية وألوان احتفالية، أضف رسالتك بخط جميل، وشارك تهنئة "عيد مبارك" مع كل من تحب.',
+      bullets: [
+        { title: 'قوالب العيد', desc: 'تصاميم احتفالية بزخارف عربية وألوان زاهية.' },
+        { title: 'رسائل جاهزة', desc: 'عبارات تهنئة "عيد مبارك" و"كل عام وأنتم بخير" جاهزة.' },
+        { title: 'خطوط إسلامية', desc: 'خطوط عربية أنيقة تليق بأجواء العيد.' },
+        { title: 'تصدير ومشاركة', desc: 'حمّل التهنئة وشاركها على كل المنصات.' }
+      ],
+      steps: [
+        { title: 'اختر قالب عيد', desc: 'تصفح قوالب عيد الفطر الجاهزة.' },
+        { title: 'أضف التهنئة', desc: 'اكتب رسالتك أو اسمك بخط عربي مميز.' },
+        { title: 'شارك التهنئة', desc: 'صدّر وشارك على واتساب وانستقرام.' }
+      ],
+      faq: [
+        { q: 'هل يمكنني إضافة اسمي للتهنئة؟', a: 'نعم، يمكنك إضافة اسمك أو اسم عائلتك أو شركتك بسهولة.' },
+        { q: 'هل القوالب مجانية؟', a: 'يوجد قوالب عيد مجانية كثيرة، وقوالب إضافية مع اشتراك Pro.' }
+      ]
+    },
+    en: {
+      metaTitle: 'Eid al-Fitr Greeting Maker — Eid Mubarak Cards',
+      metaDesc:
+        'Design Eid al-Fitr greeting cards in Arabic for free. Ready Eid templates, Islamic fonts and ornaments, and HD export for WhatsApp and Instagram.',
+      eyebrow: 'Occasions · Eid al-Fitr',
+      h1: 'Eid al-Fitr Greeting Cards',
+      intro:
+        'Wish your loved ones a blessed Eid al-Fitr with elegant designs. Choose from ready Eid templates with Arabic ornaments and festive colours, add your message in beautiful type, and share an "Eid Mubarak" greeting with everyone you love.',
+      bullets: [
+        { title: 'Eid templates', desc: 'Festive designs with Arabic ornaments and vivid colours.' },
+        { title: 'Ready messages', desc: '"Eid Mubarak" and seasonal greeting phrases ready to use.' },
+        { title: 'Islamic fonts', desc: 'Elegant Arabic fonts befitting the Eid spirit.' },
+        { title: 'Export & share', desc: 'Download the greeting and share it on every platform.' }
+      ],
+      steps: [
+        { title: 'Pick an Eid template', desc: 'Browse ready Eid al-Fitr templates.' },
+        { title: 'Add the greeting', desc: 'Write your message or name in distinctive Arabic type.' },
+        { title: 'Share the greeting', desc: 'Export and share to WhatsApp and Instagram.' }
+      ],
+      faq: [
+        { q: 'Can I add my name to the greeting?', a: 'Yes, you can easily add your name, family name or company.' },
+        { q: 'Are the templates free?', a: 'There are many free Eid templates, plus extra ones with Pro.' }
+      ]
+    }
+  },
+  {
+    slug: 'eid-al-adha',
+    category: 'eid',
+    month: 6,
+    keywords: 'تصميم تهنئة عيد الأضحى, بطاقات عيد الأضحى, تهاني عيد الاضحى, eid al adha greeting design',
+    ar: {
+      metaTitle: 'تصميم تهنئة عيد الأضحى — بطاقات عيد مبارك',
+      metaDesc:
+        'صمم بطاقات تهنئة عيد الأضحى المبارك بالعربي مجاناً. قوالب جاهزة، خطوط إسلامية وزخارف، وتصدير عالي الجودة للمشاركة على كل المنصات.',
+      eyebrow: 'مناسبات · عيد الأضحى',
+      h1: 'تصميم تهنئة عيد الأضحى',
+      intro:
+        'احتفل بعيد الأضحى المبارك وأيام الحج بتصاميم تهنئة راقية. اختر من قوالب جاهزة بزخارف إسلامية، أضف رسالتك بخط عربي أنيق، وشارك التهنئة مع أهلك وأصدقائك.',
+      bullets: [
+        { title: 'قوالب عيد الأضحى', desc: 'تصاميم بأجواء العيد والحج وزخارف إسلامية.' },
+        { title: 'خطوط إسلامية', desc: 'خطوط عربية أنيقة تليق بالمناسبة.' },
+        { title: 'لكل المنصات', desc: 'مقاسات واتساب وانستقرام وسناب جاهزة.' },
+        { title: 'تصدير عالي الجودة', desc: 'حمّل وشارك التهنئة بجودة عالية.' }
+      ],
+      steps: [
+        { title: 'اختر قالباً', desc: 'تصفح قوالب عيد الأضحى الجاهزة.' },
+        { title: 'أضف رسالتك', desc: 'اكتب التهنئة بخط عربي مميز.' },
+        { title: 'شارك التهنئة', desc: 'صدّر وشارك على كل المنصات.' }
+      ],
+      faq: [
+        { q: 'هل توجد قوالب للحج؟', a: 'نعم، هناك قوالب بأجواء الحج وخطوط مخصصة للحج والعمرة.' },
+        { q: 'هل يمكن التعديل بسهولة؟', a: 'نعم، عدّل النص والألوان والصور بنقرات بسيطة.' }
+      ]
+    },
+    en: {
+      metaTitle: 'Eid al-Adha Greeting Maker — Eid Mubarak Cards',
+      metaDesc:
+        'Design Eid al-Adha greeting cards in Arabic for free. Ready templates, Islamic fonts and ornaments, and HD export to share on every platform.',
+      eyebrow: 'Occasions · Eid al-Adha',
+      h1: 'Eid al-Adha Greeting Cards',
+      intro:
+        'Celebrate the blessed Eid al-Adha and the days of Hajj with refined greeting designs. Choose from ready templates with Islamic ornaments, add your message in elegant Arabic type, and share the greeting with family and friends.',
+      bullets: [
+        { title: 'Eid al-Adha templates', desc: 'Designs with Eid and Hajj themes and Islamic ornaments.' },
+        { title: 'Islamic fonts', desc: 'Elegant Arabic fonts that suit the occasion.' },
+        { title: 'Every platform', desc: 'Ready WhatsApp, Instagram and Snapchat sizes.' },
+        { title: 'HD export', desc: 'Download and share the greeting in high quality.' }
+      ],
+      steps: [
+        { title: 'Pick a template', desc: 'Browse ready Eid al-Adha templates.' },
+        { title: 'Add your message', desc: 'Write the greeting in distinctive Arabic type.' },
+        { title: 'Share the greeting', desc: 'Export and share on every platform.' }
+      ],
+      faq: [
+        { q: 'Are there Hajj templates?', a: 'Yes, there are Hajj-themed templates and fonts for Hajj and Umrah.' },
+        { q: 'Is it easy to edit?', a: 'Yes, edit text, colours and images with a few simple clicks.' }
+      ]
+    }
+  },
+  {
+    slug: 'offers',
+    category: 'sales',
+    month: 1,
+    keywords: 'تصميم إعلان عروض, تصميم تخفيضات, بوست عروض وخصومات, sales offer design arabic, تصميم خصومات',
+    ar: {
+      metaTitle: 'تصميم إعلان عروض وتخفيضات — قوالب جاهزة',
+      metaDesc:
+        'صمم إعلانات عروض وتخفيضات احترافية بالعربي مجاناً. قوالب عروض جاهزة لمتجرك، خطوط عربية قوية وتصدير عالي الجودة لكل المنصات.',
+      eyebrow: 'أعمال · عروض وتخفيضات',
+      h1: 'تصميم إعلان عروض وتخفيضات',
+      intro:
+        'اجذب عملاءك بإعلانات عروض لافتة للنظر. اختر من قوالب عروض وخصومات جاهزة، أضف نسبة الخصم وتفاصيل العرض بخط واضح، وصدّر التصميم جاهزاً للنشر على انستقرام وواتساب وسناب شات.',
+      bullets: [
+        { title: 'قوالب عروض جاهزة', desc: 'تصاميم لافتة للخصومات والعروض الموسمية جاهزة للتعديل.' },
+        { title: 'أرقام واضحة', desc: 'أبرز نسبة الخصم والسعر بخطوط عربية قوية.' },
+        { title: 'لكل المنصات', desc: 'مقاسات جاهزة لانستقرام وواتساب وسناب شات.' },
+        { title: 'هوية متجرك', desc: 'أضف شعارك وألوان علامتك التجارية.' }
+      ],
+      steps: [
+        { title: 'اختر قالب عرض', desc: 'تصفح قوالب العروض والتخفيضات الجاهزة.' },
+        { title: 'أضف تفاصيل العرض', desc: 'اكتب نسبة الخصم وتفاصيل المنتج.' },
+        { title: 'انشر الإعلان', desc: 'صدّر وشارك على منصاتك.' }
+      ],
+      faq: [
+        { q: 'هل يمكن إضافة شعار متجري؟', a: 'نعم، يمكنك رفع شعارك وألوان علامتك التجارية وإضافتها للتصميم.' },
+        { q: 'هل توجد قوالب للمواسم التجارية؟', a: 'نعم، قوالب لعروض المواسم والجمعة البيضاء والتخفيضات والافتتاحات.' }
+      ]
+    },
+    en: {
+      metaTitle: 'Sales & Offer Design Maker — Promo Templates',
+      metaDesc:
+        'Design professional sales and offer ads in Arabic for free. Ready discount templates for your store, bold Arabic fonts and HD export for every platform.',
+      eyebrow: 'Business · Offers & Sales',
+      h1: 'Sales & Offer Design Maker',
+      intro:
+        'Pull in customers with eye-catching offer ads. Choose from ready discount and sale templates, add your discount and offer details in a clear font, and export ready to post on Instagram, WhatsApp and Snapchat.',
+      bullets: [
+        { title: 'Ready offer templates', desc: 'Bold designs for discounts and seasonal sales, ready to edit.' },
+        { title: 'Clear numbers', desc: 'Highlight the discount and price in bold Arabic fonts.' },
+        { title: 'Every platform', desc: 'Ready sizes for Instagram, WhatsApp and Snapchat.' },
+        { title: 'Your store identity', desc: 'Add your logo and brand colours.' }
+      ],
+      steps: [
+        { title: 'Pick an offer template', desc: 'Browse ready sale and discount templates.' },
+        { title: 'Add offer details', desc: 'Write the discount and product details.' },
+        { title: 'Publish the ad', desc: 'Export and share on your platforms.' }
+      ],
+      faq: [
+        { q: 'Can I add my store logo?', a: 'Yes, upload your logo and brand colours and add them to the design.' },
+        { q: 'Are there templates for business seasons?', a: 'Yes, templates for seasonal sales, White Friday, discounts and grand openings.' }
+      ]
+    }
+  },
+  {
+    slug: 'announcements',
+    category: 'announcements',
+    month: 1,
+    keywords: 'تصميم إعلان, تصميم بوست إعلان, إعلانات الأعمال, business announcement design arabic, تصميم اعلان منتج',
+    ar: {
+      metaTitle: 'تصميم إعلان للأعمال — قوالب إعلانات جاهزة',
+      metaDesc:
+        'صمم إعلانات احترافية لأعمالك بالعربي مجاناً. قوالب إعلانات جاهزة للمنتجات والخدمات والفعاليات، خطوط عربية وتصدير عالي الجودة.',
+      eyebrow: 'أعمال · إعلانات',
+      h1: 'تصميم إعلان للأعمال',
+      intro:
+        'أعلن عن منتجاتك وخدماتك وفعالياتك بتصاميم احترافية. اختر من قوالب إعلانات جاهزة، أضف رسالتك وشعارك، وصدّر إعلاناً جاهزاً للنشر على كل منصات التواصل.',
+      bullets: [
+        { title: 'قوالب إعلانات', desc: 'تصاميم احترافية للمنتجات والخدمات والفعاليات.' },
+        { title: 'هوية علامتك', desc: 'أضف شعارك وألوانك بسهولة.' },
+        { title: 'خطوط عربية', desc: 'خطوط واضحة لرسالة إعلانية قوية.' },
+        { title: 'لكل المنصات', desc: 'مقاسات جاهزة لكل الشبكات.' }
+      ],
+      steps: [
+        { title: 'اختر قالب إعلان', desc: 'تصفح قوالب الإعلانات الجاهزة.' },
+        { title: 'أضف رسالتك', desc: 'اكتب تفاصيل المنتج أو الخدمة.' },
+        { title: 'انشر الإعلان', desc: 'صدّر وشارك على منصاتك.' }
+      ],
+      faq: [
+        { q: 'هل يمكن استخدامها تجارياً؟', a: 'نعم، يمكنك استخدام التصاميم لإعلانات أعمالك بدون قيود.' },
+        { q: 'هل توجد مقاسات مختلفة؟', a: 'نعم، مقاسات جاهزة لانستقرام وفيسبوك وتويتر ولينكد إن.' }
+      ]
+    },
+    en: {
+      metaTitle: 'Business Announcement Maker — Ad Templates',
+      metaDesc:
+        'Design professional business announcements in Arabic for free. Ready ad templates for products, services and events, Arabic fonts and HD export.',
+      eyebrow: 'Business · Announcements',
+      h1: 'Business Announcement Maker',
+      intro:
+        'Announce your products, services and events with professional designs. Choose from ready announcement templates, add your message and logo, and export an ad ready to post across every social platform.',
+      bullets: [
+        { title: 'Announcement templates', desc: 'Professional designs for products, services and events.' },
+        { title: 'Your brand identity', desc: 'Add your logo and colours easily.' },
+        { title: 'Arabic fonts', desc: 'Clear fonts for a strong ad message.' },
+        { title: 'Every platform', desc: 'Ready sizes for all networks.' }
+      ],
+      steps: [
+        { title: 'Pick an announcement template', desc: 'Browse ready announcement templates.' },
+        { title: 'Add your message', desc: 'Write the product or service details.' },
+        { title: 'Publish the ad', desc: 'Export and share on your platforms.' }
+      ],
+      faq: [
+        { q: 'Can I use them commercially?', a: 'Yes, use the designs for your business ads without restrictions.' },
+        { q: 'Are there different sizes?', a: 'Yes, ready sizes for Instagram, Facebook, Twitter and LinkedIn.' }
+      ]
+    }
+  },
+  {
+    slug: 'graduation',
+    category: 'graduation',
+    month: 6,
+    keywords: 'تصميم بطاقة تخرج, تهنئة تخرج, بطاقات تخرج بالعربي, graduation card design arabic, مبروك التخرج',
+    ar: {
+      metaTitle: 'تصميم بطاقة تخرج — تهنئة مبروك التخرج',
+      metaDesc:
+        'صمم بطاقات تهنئة تخرج بالعربي مجاناً. قوالب تخرج جاهزة، خطوط عربية أنيقة وتصدير عالي الجودة لمشاركتها على واتساب وانستقرام.',
+      eyebrow: 'مناسبات · تخرج',
+      h1: 'تصميم بطاقة تخرج',
+      intro:
+        'احتفل بالنجاح والتخرج بتصاميم تهنئة مميزة. اختر من قوالب تخرج أنيقة بقبعة التخرج والزخارف، أضف اسم الخريج وصورته، وشارك تهنئة "مبروك التخرج" بأسلوب لا يُنسى.',
+      bullets: [
+        { title: 'قوالب تخرج', desc: 'تصاميم بقبعة التخرج وعبارات التهنئة جاهزة.' },
+        { title: 'أضف صورة الخريج', desc: 'ارفع صورة الخريج وأضفها للتصميم.' },
+        { title: 'خطوط عربية', desc: 'خطوط عربية أنيقة تليق بالمناسبة.' },
+        { title: 'تصدير ومشاركة', desc: 'حمّل وشارك التهنئة على كل المنصات.' }
+      ],
+      steps: [
+        { title: 'اختر قالب تخرج', desc: 'تصفح قوالب التخرج الجاهزة.' },
+        { title: 'أضف الاسم والصورة', desc: 'اكتب اسم الخريج وأضف صورته.' },
+        { title: 'شارك التهنئة', desc: 'صدّر وشارك على واتساب وانستقرام.' }
+      ],
+      faq: [
+        { q: 'هل يمكن إضافة صورة الخريج؟', a: 'نعم، يمكنك رفع صورة الخريج وإضافتها بسهولة للتصميم.' },
+        { q: 'هل توجد قوالب للدفعات؟', a: 'نعم، هناك قوالب تناسب تهنئة الدفعات والمجموعات.' }
+      ]
+    },
+    en: {
+      metaTitle: 'Graduation Card Maker — Congratulations Cards',
+      metaDesc:
+        'Design graduation congratulation cards in Arabic for free. Ready graduation templates, elegant Arabic fonts and HD export for WhatsApp and Instagram.',
+      eyebrow: 'Occasions · Graduation',
+      h1: 'Graduation Card Maker',
+      intro:
+        'Celebrate success and graduation with standout greeting designs. Choose from elegant graduation templates with caps and ornaments, add the graduate’s name and photo, and share a memorable "Congratulations" greeting.',
+      bullets: [
+        { title: 'Graduation templates', desc: 'Designs with graduation caps and ready congratulation phrases.' },
+        { title: 'Add the graduate’s photo', desc: 'Upload the graduate’s photo and add it to the design.' },
+        { title: 'Arabic fonts', desc: 'Elegant Arabic fonts that suit the occasion.' },
+        { title: 'Export & share', desc: 'Download and share the greeting on every platform.' }
+      ],
+      steps: [
+        { title: 'Pick a graduation template', desc: 'Browse ready graduation templates.' },
+        { title: 'Add name & photo', desc: 'Write the graduate’s name and add their photo.' },
+        { title: 'Share the greeting', desc: 'Export and share to WhatsApp and Instagram.' }
+      ],
+      faq: [
+        { q: 'Can I add the graduate’s photo?', a: 'Yes, you can easily upload and add the graduate’s photo to the design.' },
+        { q: 'Are there class/group templates?', a: 'Yes, there are templates suited to congratulating classes and groups.' }
+      ]
+    }
+  },
+  {
+    slug: 'wedding',
+    category: 'wedding',
+    month: 1,
+    keywords: 'تصميم دعوة زفاف, بطاقة زواج, دعوة عرس بالعربي, wedding invitation design arabic, كرت زواج',
+    ar: {
+      metaTitle: 'تصميم دعوة زفاف — بطاقات وكروت زواج بالعربي',
+      metaDesc:
+        'صمم دعوات وكروت زفاف بالعربي مجاناً. قوالب دعوات أنيقة، خطوط عربية فاخرة وتصدير عالي الجودة للطباعة أو المشاركة على واتساب.',
+      eyebrow: 'مناسبات · زفاف',
+      h1: 'تصميم دعوة زفاف',
+      intro:
+        'صمم دعوة زفاف أنيقة تليق بيومك المميز. اختر من قوالب دعوات فاخرة بخطوط عربية راقية وزخارف، أضف الأسماء والتاريخ والمكان، وصدّر الدعوة جاهزة للطباعة أو للمشاركة على واتساب.',
+      bullets: [
+        { title: 'قوالب دعوات فاخرة', desc: 'تصاميم أنيقة بزخارف وخطوط عربية راقية.' },
+        { title: 'كل التفاصيل', desc: 'أضف أسماء العروسين والتاريخ والمكان بسهولة.' },
+        { title: 'للطباعة والمشاركة', desc: 'صدّر بجودة عالية للطباعة أو للنشر الرقمي.' },
+        { title: 'خطوط عربية فاخرة', desc: 'خطوط ديواني وعربية فنية تناسب المناسبة.' }
+      ],
+      steps: [
+        { title: 'اختر قالب دعوة', desc: 'تصفح قوالب دعوات الزفاف الجاهزة.' },
+        { title: 'أضف التفاصيل', desc: 'اكتب الأسماء والتاريخ والمكان.' },
+        { title: 'صدّر الدعوة', desc: 'حمّل بجودة عالية للطباعة أو المشاركة.' }
+      ],
+      faq: [
+        { q: 'هل يمكن طباعة الدعوة؟', a: 'نعم، يمكنك التصدير بجودة عالية مناسبة للطباعة.' },
+        { q: 'هل توجد خطوط عربية فاخرة؟', a: 'نعم، تتوفر خطوط ديواني وعربية فنية تناسب دعوات الزفاف.' }
+      ]
+    },
+    en: {
+      metaTitle: 'Wedding Invitation Maker — Arabic Wedding Cards',
+      metaDesc:
+        'Design wedding invitations in Arabic for free. Elegant invitation templates, luxury Arabic fonts and HD export for print or WhatsApp sharing.',
+      eyebrow: 'Occasions · Wedding',
+      h1: 'Wedding Invitation Maker',
+      intro:
+        'Design an elegant wedding invitation worthy of your special day. Choose from luxury invitation templates with refined Arabic fonts and ornaments, add the names, date and venue, and export the invitation ready to print or share on WhatsApp.',
+      bullets: [
+        { title: 'Luxury invitation templates', desc: 'Elegant designs with ornaments and refined Arabic fonts.' },
+        { title: 'All the details', desc: 'Add the couple’s names, date and venue easily.' },
+        { title: 'Print & digital', desc: 'Export in high quality for print or digital sharing.' },
+        { title: 'Luxury Arabic fonts', desc: 'Diwani and artistic Arabic fonts that suit the occasion.' }
+      ],
+      steps: [
+        { title: 'Pick an invitation template', desc: 'Browse ready wedding invitation templates.' },
+        { title: 'Add the details', desc: 'Write the names, date and venue.' },
+        { title: 'Export the invitation', desc: 'Download in high quality for print or sharing.' }
+      ],
+      faq: [
+        { q: 'Can I print the invitation?', a: 'Yes, you can export in a high quality suitable for printing.' },
+        { q: 'Are there luxury Arabic fonts?', a: 'Yes, Diwani and artistic Arabic fonts are available for wedding invitations.' }
+      ]
+    }
+  },
+  {
+    slug: 'newborn',
+    category: 'events',
+    month: 1,
+    keywords: 'تصميم تهنئة مولود جديد, مبروك المولود, بطاقة مولود, newborn baby card arabic, تهنئة مولود',
+    ar: {
+      metaTitle: 'تصميم تهنئة مولود جديد — بطاقات مبروك المولود',
+      metaDesc:
+        'صمم بطاقات تهنئة بالمولود الجديد بالعربي مجاناً. قوالب لطيفة للبيبي، خطوط عربية ناعمة وتصدير عالي الجودة للمشاركة على واتساب وانستقرام.',
+      eyebrow: 'مناسبات · مولود جديد',
+      h1: 'تصميم تهنئة مولود جديد',
+      intro:
+        'شارك فرحة المولود الجديد بتصميم بطاقة تهنئة لطيفة. اختر من قوالب ناعمة بألوان هادئة ورسومات للبيبي، أضف اسم المولود وتاريخ الولادة، وشارك تهنئة "مبروك المولود" مع الأهل والأصدقاء.',
+      bullets: [
+        { title: 'قوالب لطيفة', desc: 'تصاميم ناعمة بألوان هادئة ورسومات للبيبي جاهزة للتعديل.' },
+        { title: 'أضف اسم المولود', desc: 'اكتب اسم المولود وتاريخ الولادة بسهولة.' },
+        { title: 'خطوط عربية', desc: 'خطوط عربية ناعمة تليق بالمناسبة.' },
+        { title: 'تصدير ومشاركة', desc: 'حمّل وشارك التهنئة على كل المنصات.' }
+      ],
+      steps: [
+        { title: 'اختر قالباً', desc: 'تصفح قوالب تهنئة المولود الجاهزة.' },
+        { title: 'أضف الاسم', desc: 'اكتب اسم المولود وتاريخ الولادة.' },
+        { title: 'شارك التهنئة', desc: 'صدّر وشارك على واتساب وانستقرام.' }
+      ],
+      faq: [
+        { q: 'هل يمكن إضافة صورة المولود؟', a: 'نعم، يمكنك رفع صورة المولود وإضافتها للتصميم بسهولة.' },
+        { q: 'هل القوالب مجانية؟', a: 'يوجد قوالب مجانية، وقوالب إضافية مع اشتراك Pro.' }
+      ]
+    },
+    en: {
+      metaTitle: 'Newborn Baby Card Maker — Congratulations Cards',
+      metaDesc:
+        'Design newborn baby congratulation cards in Arabic for free. Cute baby templates, soft Arabic fonts and HD export for WhatsApp and Instagram.',
+      eyebrow: 'Occasions · Newborn',
+      h1: 'Newborn Baby Card Maker',
+      intro:
+        'Share the joy of a new baby with a sweet congratulation card. Choose from soft templates with gentle colours and baby motifs, add the baby’s name and birth date, and share a "Congratulations" greeting with family and friends.',
+      bullets: [
+        { title: 'Cute templates', desc: 'Soft designs with gentle colours and baby motifs, ready to edit.' },
+        { title: 'Add the baby’s name', desc: 'Write the baby’s name and birth date easily.' },
+        { title: 'Arabic fonts', desc: 'Soft Arabic fonts that suit the occasion.' },
+        { title: 'Export & share', desc: 'Download and share the greeting on every platform.' }
+      ],
+      steps: [
+        { title: 'Pick a template', desc: 'Browse ready newborn congratulation templates.' },
+        { title: 'Add the name', desc: 'Write the baby’s name and birth date.' },
+        { title: 'Share the greeting', desc: 'Export and share to WhatsApp and Instagram.' }
+      ],
+      faq: [
+        { q: 'Can I add the baby’s photo?', a: 'Yes, you can easily upload and add the baby’s photo to the design.' },
+        { q: 'Are the templates free?', a: 'There are free templates, plus extra ones with Pro.' }
+      ]
+    }
+  },
+  {
+    slug: 'back-to-school',
+    category: 'events',
+    month: 9,
+    keywords: 'تصميم العودة إلى المدارس, العودة للمدرسة, عروض العودة للمدارس, back to school design arabic, حقيبتي',
+    ar: {
+      metaTitle: 'تصميم العودة إلى المدارس — قوالب وعروض',
+      metaDesc:
+        'صمم تصاميم وعروض العودة إلى المدارس بالعربي مجاناً. قوالب مدرسية جاهزة، خطوط عربية وتصدير عالي الجودة للأفراد والأعمال.',
+      eyebrow: 'مناسبات · العودة للمدارس',
+      h1: 'تصميم العودة إلى المدارس',
+      intro:
+        'استعد لموسم العودة إلى المدارس بتصاميم جذابة. اختر من قوالب مدرسية مرحة، أضف رسالتك أو عرضك التجاري، وشارك التصميم مع طلابك أو عملائك على كل المنصات.',
+      bullets: [
+        { title: 'قوالب مدرسية', desc: 'تصاميم بأدوات مدرسية وألوان مرحة جاهزة للتعديل.' },
+        { title: 'للأفراد والأعمال', desc: 'تهاني للطلاب وعروض للمتاجر في موسم المدارس.' },
+        { title: 'خطوط عربية', desc: 'خطوط عربية واضحة ومرحة تناسب الموسم.' },
+        { title: 'تصدير ومشاركة', desc: 'حمّل وشارك على كل المنصات.' }
+      ],
+      steps: [
+        { title: 'اختر قالباً', desc: 'تصفح قوالب العودة للمدارس الجاهزة.' },
+        { title: 'أضف محتواك', desc: 'ضع رسالتك أو عرضك التجاري.' },
+        { title: 'شارك التصميم', desc: 'صدّر وشارك على المنصات.' }
+      ],
+      faq: [
+        { q: 'هل توجد قوالب لعروض المتاجر؟', a: 'نعم، هناك قوالب عروض وخصومات مناسبة لحملات العودة إلى المدارس للأعمال.' },
+        { q: 'هل القوالب مجانية؟', a: 'يوجد قوالب مجانية، وقوالب إضافية مع اشتراك Pro.' }
+      ]
+    },
+    en: {
+      metaTitle: 'Back to School Design — Templates & Offers',
+      metaDesc:
+        'Design back to school graphics and offers in Arabic for free. Ready school templates, Arabic fonts and HD export for personal and business use.',
+      eyebrow: 'Occasions · Back to School',
+      h1: 'Back to School Design',
+      intro:
+        'Get ready for the back-to-school season with eye-catching designs. Choose from playful school templates, add your message or business offer, and share the design with your students or customers across every platform.',
+      bullets: [
+        { title: 'School templates', desc: 'Designs with school supplies and playful colours, ready to edit.' },
+        { title: 'Personal & business', desc: 'Greetings for students and offers for shops during the school season.' },
+        { title: 'Arabic fonts', desc: 'Clear, playful Arabic fonts that suit the season.' },
+        { title: 'Export & share', desc: 'Download and share on every platform.' }
+      ],
+      steps: [
+        { title: 'Pick a template', desc: 'Browse ready back-to-school templates.' },
+        { title: 'Add your content', desc: 'Add your message or business offer.' },
+        { title: 'Share the design', desc: 'Export and share on platforms.' }
+      ],
+      faq: [
+        { q: 'Are there store-offer templates?', a: 'Yes, there are offer and discount templates for business back-to-school campaigns.' },
+        { q: 'Are the templates free?', a: 'There are free templates, plus extra ones with Pro.' }
+      ]
+    }
+  }
+];
+
+export function occasionBySlug(slug: string): OccasionPage | undefined {
+  return OCCASION_PAGES.find((o) => o.slug === slug);
+}

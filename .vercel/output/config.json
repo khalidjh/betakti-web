@@ -1,0 +1,225 @@
+{
+	"version": 3,
+	"routes": [
+		{
+			"src": "/pricing",
+			"dest": "/pricing/"
+		},
+		{
+			"src": "/pricing/",
+			"status": 308,
+			"headers": {
+				"Location": "/pricing"
+			}
+		},
+		{
+			"src": "/privacy",
+			"dest": "/privacy/"
+		},
+		{
+			"src": "/privacy/",
+			"status": 308,
+			"headers": {
+				"Location": "/privacy"
+			}
+		},
+		{
+			"src": "/terms",
+			"dest": "/terms/"
+		},
+		{
+			"src": "/terms/",
+			"status": 308,
+			"headers": {
+				"Location": "/terms"
+			}
+		},
+		{
+			"src": "/en",
+			"dest": "/en/"
+		},
+		{
+			"src": "/en/",
+			"status": 308,
+			"headers": {
+				"Location": "/en"
+			}
+		},
+		{
+			"src": "/en/pricing",
+			"dest": "/en/pricing/"
+		},
+		{
+			"src": "/en/pricing/",
+			"status": 308,
+			"headers": {
+				"Location": "/en/pricing"
+			}
+		},
+		{
+			"src": "/en/privacy",
+			"dest": "/en/privacy/"
+		},
+		{
+			"src": "/en/privacy/",
+			"status": 308,
+			"headers": {
+				"Location": "/en/privacy"
+			}
+		},
+		{
+			"src": "/en/terms",
+			"dest": "/en/terms/"
+		},
+		{
+			"src": "/en/terms/",
+			"status": 308,
+			"headers": {
+				"Location": "/en/terms"
+			}
+		},
+		{
+			"src": "/_app/immutable/.+",
+			"headers": {
+				"cache-control": "public, immutable, max-age=31536000"
+			}
+		},
+		{
+			"handle": "filesystem"
+		},
+		{
+			"src": "^/about/?(?:/__data.json)?$",
+			"dest": "/(marketing)/about"
+		},
+		{
+			"src": "^/admin/backgrounds/?(?:/__data.json)?$",
+			"dest": "/admin/backgrounds"
+		},
+		{
+			"src": "^/api/auth/firebase-token/?(?:/__data.json)?$",
+			"dest": "/api/auth/firebase-token"
+		},
+		{
+			"src": "^/api/auth/session/?(?:/__data.json)?$",
+			"dest": "/api/auth/session"
+		},
+		{
+			"src": "^/api/auth/signout/?(?:/__data.json)?$",
+			"dest": "/api/auth/signout"
+		},
+		{
+			"src": "^/api/moyasar/callback/?(?:/__data.json)?$",
+			"dest": "/api/moyasar/callback"
+		},
+		{
+			"src": "^/api/moyasar/webhook/?(?:/__data.json)?$",
+			"dest": "/api/moyasar/webhook"
+		},
+		{
+			"src": "^/arabic-fonts/?(?:/__data.json)?$",
+			"dest": "/(marketing)/arabic-fonts"
+		},
+		{
+			"src": "^/auth/forgot-password/?(?:/__data.json)?$",
+			"dest": "/auth/forgot-password"
+		},
+		{
+			"src": "^/auth/login/?(?:/__data.json)?$",
+			"dest": "/auth/login"
+		},
+		{
+			"src": "^/auth/register/?(?:/__data.json)?$",
+			"dest": "/auth/register"
+		},
+		{
+			"src": "^/background-remover/?(?:/__data.json)?$",
+			"dest": "/(marketing)/background-remover"
+		},
+		{
+			"src": "^/contact/?(?:/__data.json)?$",
+			"dest": "/(marketing)/contact"
+		},
+		{
+			"src": "^/create/?(?:/__data.json)?$",
+			"dest": "/(marketing)/create"
+		},
+		{
+			"src": "^/create/([^/]+?)/?(?:/__data.json)?$",
+			"dest": "/(marketing)/create/[type]"
+		},
+		{
+			"src": "^/editor/([^/]+?)/?(?:/__data.json)?$",
+			"dest": "/(app)/editor/[projectId]"
+		},
+		{
+			"src": "^/home/?(?:/__data.json)?$",
+			"dest": "/(app)/home"
+		},
+		{
+			"src": "^/occasions/?(?:/__data.json)?$",
+			"dest": "/(marketing)/occasions"
+		},
+		{
+			"src": "^/occasions/([^/]+?)/?(?:/__data.json)?$",
+			"dest": "/(marketing)/occasions/[occasion]"
+		},
+		{
+			"src": "^/projects/?(?:/__data.json)?$",
+			"dest": "/(app)/projects"
+		},
+		{
+			"src": "^/settings/?(?:/__data.json)?$",
+			"dest": "/(app)/settings"
+		},
+		{
+			"src": "^/sitemap\\.xml/?(?:/__data.json)?$",
+			"dest": "/sitemap.xml"
+		},
+		{
+			"src": "^/subscription/?(?:/__data.json)?$",
+			"dest": "/(app)/subscription"
+		},
+		{
+			"src": "^/templates/?(?:/__data.json)?$",
+			"dest": "/(marketing)/templates"
+		},
+		{
+			"src": "^/templates/([^/]+?)/?(?:/__data.json)?$",
+			"dest": "/(marketing)/templates/[id]"
+		},
+		{
+			"src": "^/tools/bg-remove/?(?:/__data.json)?$",
+			"dest": "/(app)/tools/bg-remove"
+		},
+		{
+			"src": "/.*",
+			"dest": "/![-]/catchall"
+		}
+	],
+	"overrides": {
+		"index.html": {
+			"path": ""
+		},
+		"pricing.html": {
+			"path": "pricing"
+		},
+		"privacy.html": {
+			"path": "privacy"
+		},
+		"terms.html": {
+			"path": "terms"
+		},
+		"en.html": {
+			"path": "en"
+		},
+		"en/pricing.html": {
+			"path": "en/pricing"
+		},
+		"en/privacy.html": {
+			"path": "en/privacy"
+		},
+		"en/terms.html": {
+			"path": "en/terms"
+		}
+	}
+}

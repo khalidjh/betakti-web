@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { DynamicTemplate } from '$lib/data/templates';
   import ProBadge from '$lib/components/pro-badge.svelte';
-  import { m } from '$lib/i18n';
+  import { m, localizeHref } from '$lib/i18n';
 
   interface Props {
     template: DynamicTemplate;
@@ -10,7 +10,7 @@
   }
   const { template, locale = 'ar', href }: Props = $props();
   const name = $derived(locale === 'ar' ? template.nameAr : template.nameEn);
-  const link = $derived(href ?? `/templates/${template.id}`);
+  const link = $derived(localizeHref(href ?? `/templates/${template.id}`));
   const aspect = $derived(`${template.canvasSize.width} / ${template.canvasSize.height}`);
 
   // Fallback preview: build a flat CSS preview from background when no thumbnailUrl.

@@ -1,24 +1,21 @@
 <script lang="ts">
-  import { m } from '$lib/i18n';
+  import { m, getLocale, localizeHref, t } from '$lib/i18n';
   import Button from '$lib/components/button.svelte';
+  import AppStoreButtons from '$lib/components/app-store-buttons.svelte';
   import FeatureCard from '$lib/components/feature-card.svelte';
   import TemplateCard from '$lib/components/template-card.svelte';
+  import Seo from '$lib/components/seo.svelte';
+  import { organization, webSite, softwareApplication } from '$lib/seo/schema';
+  import { APP_PRICE_MONTHLY_USD, APP_PRICE_YEARLY_USD } from '$lib/seo/config';
   import { reveal } from '$lib/actions/reveal';
   import type { PageData } from './$types';
 
   import { page } from '$app/state';
   const { data }: { data: PageData } = $props();
   const isRtl = $derived(page.data.locale === 'ar');
+  const locale = $derived(getLocale() as 'ar' | 'en');
 
-  const orgJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: 'Betakti',
-    alternateName: 'بطاقتي',
-    url: 'https://betakti.app',
-    logo: 'https://betakti.app/brand/logo.png',
-    sameAs: ['https://twitter.com/', 'https://instagram.com/']
-  };
+  const homeJsonLd = $derived([organization(), webSite(locale), softwareApplication(locale)]);
 
   const pricingTiers = [
     {
@@ -48,19 +45,13 @@
   }
 </script>
 
-<svelte:head>
-  <title>Betakti · {m.marketing_hero_headline()}</title>
-  <meta name="description" content={m.marketing_hero_sub()} />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Betakti · {m.marketing_hero_headline()}" />
-  <meta property="og:description" content={m.marketing_hero_sub()} />
-  <meta property="og:image" content="/brand/logo.png" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Betakti · {m.marketing_hero_headline()}" />
-  <meta name="twitter:description" content={m.marketing_hero_sub()} />
-  <meta name="twitter:image" content="/brand/logo.png" />
-  {@html `<script type="application/ld+json">${JSON.stringify(orgJsonLd)}<` + `/script>`}
-</svelte:head>
+<Seo
+  title="Betakti · {m.marketing_hero_headline()}"
+  description={m.marketing_hero_sub()}
+  path="/"
+  includeBrand={false}
+  jsonLd={homeJsonLd}
+/>
 
 <!-- Hero -->
 <section class="relative overflow-hidden isolate">
@@ -101,8 +92,13 @@
       </p>
 
       <div class="flex flex-wrap items-center gap-3">
-        <Button variant="gradient" href="/auth/register">{m.marketing_hero_cta_primary()}</Button>
-        <Button variant="ghost" href="/templates">{m.marketing_hero_cta_secondary()} →</Button>
+        <Button variant="gradient" href={localizeHref('/auth/register')}>{m.marketing_hero_cta_primary()}</Button>
+        <Button variant="ghost" href={localizeHref('/templates')}>{m.marketing_hero_cta_secondary()} →</Button>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <span class="text-xs font-medium text-[var(--color-muted)]">{t('أو حمّل التطبيق مجاناً', 'Or download the free app')}</span>
+        <AppStoreButtons size="sm" />
       </div>
 
       <p class="flex items-center gap-1.5 text-xs text-[var(--color-muted)]">
@@ -391,7 +387,7 @@
       {m.marketing_templates_heading()}
     </h2>
     <a
-      href="/templates"
+      href={localizeHref('/templates')}
       class="text-sm text-[var(--color-accent)] hover:underline font-medium"
     >
       {m.marketing_templates_see_all()} →
@@ -400,7 +396,7 @@
   {#if data.previews.length > 0}
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4" use:reveal>
       {#each data.previews as tpl (tpl.id)}
-        <TemplateCard template={tpl} />
+        <TemplateCard template={tpl} {locale} />
       {/each}
     </div>
   {:else}
@@ -450,12 +446,32 @@
         <span class="text-xs text-[var(--color-muted)]">{tier.period}</span>
         <Button
           variant={tier.highlighted ? 'gradient' : 'secondary'}
-          href="/auth/register?next=/subscription"
+          href={localizeHref('/auth/register?next=/subscription')}
         >
           {m.marketing_pricing_cta()}
         </Button>
       </div>
     {/each}
+  </div>
+
+  <!-- Mobile app pricing -->
+  <div use:reveal class="max-w-4xl mx-auto mt-6 rounded-[14px] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div class="flex flex-col gap-1">
+      <span class="font-semibold text-[var(--color-ink)]">{t('متوفر أيضاً على تطبيق الجوال', 'Also available on the mobile app')}</span>
+      <span class="text-sm text-[var(--color-ink-2)]">
+        {t(
+          `${m.sub_plan_monthly()}: $${APP_PRICE_MONTHLY_USD} · ${m.sub_plan_yearly()}: $${APP_PRICE_YEARLY_USD}`,
+          `${m.sub_plan_monthly()}: $${APP_PRICE_MONTHLY_USD} · ${m.sub_plan_yearly()}: $${APP_PRICE_YEARLY_USD}`
+        )}
+      </span>
+    </div>
+    <AppStoreButtons size="sm" />
+  </div>
+
+  <div use:reveal class="text-center mt-6">
+    <a href={localizeHref('/pricing')} class="text-sm text-[var(--color-accent)] hover:underline font-medium">
+      {t('عرض كل التفاصيل', 'See full pricing')} →
+    </a>
   </div>
 </section>
 
@@ -493,6 +509,7 @@
       {m.marketing_final_cta_title()}
     </h2>
     <p class="max-w-[48ch]">{m.marketing_final_cta_sub()}</p>
-    <Button variant="gradient" href="/auth/register">{m.marketing_final_cta_button()}</Button>
+    <Button variant="gradient" href={localizeHref('/auth/register')}>{m.marketing_final_cta_button()}</Button>
+    <AppStoreButtons class="justify-center mt-2" />
   </div>
 </section>

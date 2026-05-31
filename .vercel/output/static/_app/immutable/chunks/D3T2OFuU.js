@@ -1,0 +1,1 @@
+const e=["/home","/projects","/editor","/settings","/subscription","/tools","/auth","/admin","/api"];function i(t){const n=r(t);return e.some(s=>n===s||n.startsWith(s+"/"))}function r(t){return t==="/en"?"/":t.startsWith("/en/")?t.slice(3):t}function o(t,n){const s=r(t);return n==="en"?s==="/"?"/en":"/en"+s:s}export{o as a,i,r as s};

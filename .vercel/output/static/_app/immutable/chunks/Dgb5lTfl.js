@@ -1,0 +1,1 @@
+import{g as t}from"./DQgWptUM.js";const n=()=>"الخصوصية",a=()=>"Privacy",i=((e={},r={})=>(r.locale??t())==="ar"?n():a()),c=()=>"الشروط",s=()=>"Terms",l=((e={},r={})=>(r.locale??t())==="ar"?c():s());export{i as a,l as m};

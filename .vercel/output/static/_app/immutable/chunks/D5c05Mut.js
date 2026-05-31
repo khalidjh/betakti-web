@@ -1,0 +1,1 @@
+import{g as a}from"./DQgWptUM.js";const n=()=>"آخر تحديث",r=()=>"Last updated",u=((e={},t={})=>(t.locale??a())==="ar"?n():r()),c=()=>"للاستفسارات",o=()=>"Contact",_=((e={},t={})=>(t.locale??a())==="ar"?c():o());export{_ as a,u as l};

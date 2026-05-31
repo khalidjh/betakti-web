@@ -1,10 +1,13 @@
-node_modules
-.DS_Store
+node_modules/
+
+# SvelteKit
+.svelte-kit/
+build/
+
+# Env
 .env
 .env.*
 !.env.example
-.svelte-kit
-build
-.vercel
-.vite
-src/lib/paraglide
+
+# Local tooling
+.claude/

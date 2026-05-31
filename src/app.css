@@ -1,9 +1,9 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-accent: #6b4eff;
-  --color-accent-hover: #5a3ef0;
-  --color-teal: #2de2e6;
+  --color-accent: #5b46f6;
+  --color-accent-hover: #4a37e6;
+  --color-teal: #10b6fb;
   --color-violet: #8b5cf6;
   --color-ink: #0b0d17;
   --color-ink-2: #3a3d4d;
@@ -43,9 +43,9 @@
 
 :root,
 [data-theme='light'] {
-  --color-accent: #6b4eff;
-  --color-accent-hover: #5a3ef0;
-  --color-teal: #2de2e6;
+  --color-accent: #5b46f6;
+  --color-accent-hover: #4a37e6;
+  --color-teal: #10b6fb;
   --color-violet: #8b5cf6;
   --color-ink: #0b0d17;
   --color-ink-2: #3a3d4d;
@@ -59,8 +59,8 @@
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
 
-  --brand-gradient: linear-gradient(160deg, #2de2e6 0%, #5b8def 45%, #8b5cf6 100%);
-  --brand-gradient-soft: linear-gradient(160deg, #d3f7f8 0%, #dee8fb 45%, #e9dffb 100%);
+  --brand-gradient: linear-gradient(160deg, #07befb 0%, #356cf6 50%, #5b28d6 100%);
+  --brand-gradient-soft: linear-gradient(160deg, #d6f1fe 0%, #dde6fe 50%, #e7dcfb 100%);
 
   --shadow-1: 0 1px 2px rgba(11, 13, 23, 0.06), 0 1px 1px rgba(11, 13, 23, 0.04);
   --shadow-2: 0 4px 12px rgba(11, 13, 23, 0.08), 0 2px 4px rgba(11, 13, 23, 0.04);
@@ -70,7 +70,7 @@
 [data-theme='dark'] {
   --color-accent: #8b7bff;
   --color-accent-hover: #9b8bff;
-  --color-teal: #2de2e6;
+  --color-teal: #19b8fc;
   --color-violet: #a78bfa;
   --color-ink: #f5f5f7;
   --color-ink-2: #c7cad6;
@@ -87,9 +87,9 @@
 
   --brand-gradient-soft: linear-gradient(
     160deg,
-    rgba(45, 226, 230, 0.14) 0%,
-    rgba(91, 141, 239, 0.18) 45%,
-    rgba(139, 92, 246, 0.22) 100%
+    rgba(7, 190, 251, 0.14) 0%,
+    rgba(53, 108, 246, 0.18) 50%,
+    rgba(91, 40, 214, 0.24) 100%
   ), #14161f;
 }
 
@@ -153,16 +153,16 @@ button:disabled,
 
 .bg-hero-mesh {
   background:
-    radial-gradient(ellipse 700px 500px at 15% 20%, rgba(192, 179, 255, 0.85), transparent 60%),
-    radial-gradient(ellipse 600px 500px at 85% 30%, rgba(223, 216, 255, 0.75), transparent 60%),
-    radial-gradient(ellipse 500px 400px at 60% 85%, rgba(189, 241, 242, 0.6), transparent 60%),
-    linear-gradient(140deg, #dfd8ff 0%, #fafafb 40%, #c6edef 70%, #e6f9fa 100%);
+    radial-gradient(ellipse 700px 500px at 15% 20%, rgba(179, 196, 255, 0.85), transparent 60%),
+    radial-gradient(ellipse 600px 500px at 85% 30%, rgba(213, 211, 255, 0.78), transparent 60%),
+    radial-gradient(ellipse 500px 400px at 60% 85%, rgba(184, 224, 253, 0.62), transparent 60%),
+    linear-gradient(140deg, #dcd9ff 0%, #fafafb 40%, #cfe6fd 70%, #e3f1fe 100%);
 }
 [data-theme='dark'] .bg-hero-mesh {
   background:
     radial-gradient(ellipse 700px 500px at 15% 20%, rgba(51, 30, 138, 0.55), transparent 60%),
     radial-gradient(ellipse 600px 500px at 85% 30%, rgba(35, 21, 94, 0.5), transparent 60%),
-    radial-gradient(ellipse 500px 400px at 60% 85%, rgba(10, 92, 96, 0.5), transparent 60%),
+    radial-gradient(ellipse 500px 400px at 60% 85%, rgba(12, 74, 140, 0.5), transparent 60%),
     linear-gradient(140deg, #3a3d4d 0%, #0b0d17 40%, #1c1f2a 70%, #0b0d17 100%);
 }
 

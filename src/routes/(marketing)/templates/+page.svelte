@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { m } from '$lib/i18n';
+  import { m, localizeHref, getLocale } from '$lib/i18n';
+  import Seo from '$lib/components/seo.svelte';
   import TemplateCard from '$lib/components/template-card.svelte';
   import CategoryChip from '$lib/components/category-chip.svelte';
   import EmptyState from '$lib/components/empty-state.svelte';
@@ -27,13 +28,11 @@
   const active = $derived(data.category ?? 'all');
 </script>
 
-<svelte:head>
-  <title>{m.page_templates_title()} · Betakti</title>
-  <meta name="description" content={m.marketing_templates_heading()} />
-  <meta property="og:title" content="{m.page_templates_title()} · Betakti" />
-  <meta property="og:description" content={m.marketing_templates_heading()} />
-  <meta property="og:image" content="/brand/logo.png" />
-</svelte:head>
+<Seo
+  title={m.page_templates_title()}
+  description={m.marketing_templates_heading()}
+  path="/templates"
+/>
 
 <section class="relative isolate overflow-hidden">
   <div class="bg-hero-mesh absolute inset-x-0 top-0 h-[420px] -z-10 opacity-90" aria-hidden="true"></div>
@@ -66,11 +65,11 @@
     style="background: color-mix(in srgb, var(--color-paper) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);"
     aria-label="Categories"
   >
-    <CategoryChip label={catLabel('all')} href="/templates" active={active === 'all'} />
+    <CategoryChip label={catLabel('all')} href={localizeHref('/templates')} active={active === 'all'} />
     {#each TEMPLATE_CATEGORIES as cat (cat)}
       <CategoryChip
         label={catLabel(cat)}
-        href="/templates?category={cat}"
+        href={localizeHref(`/templates?category=${cat}`)}
         active={active === cat}
       />
     {/each}
@@ -79,13 +78,13 @@
   {#if data.templates.length > 0}
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {#each data.templates as tpl (tpl.id)}
-        <TemplateCard template={tpl} />
+        <TemplateCard template={tpl} locale={getLocale() as 'ar' | 'en'} />
       {/each}
     </div>
   {:else}
     <EmptyState title={m.tpl_empty_title()} description={m.tpl_empty_desc()}>
       {#snippet action()}
-        <Button variant="gradient" href="/templates">{m.tpl_empty_cta()}</Button>
+        <Button variant="gradient" href={localizeHref('/templates')}>{m.tpl_empty_cta()}</Button>
       {/snippet}
     </EmptyState>
   {/if}

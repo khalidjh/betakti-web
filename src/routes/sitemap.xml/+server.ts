@@ -1,8 +1,25 @@
 import type { RequestHandler } from './$types';
-import { env } from '$env/dynamic/public';
 import { adminDb } from '$lib/firebase/admin';
+import { SITE_URL } from '$lib/seo/config';
+import { PLATFORM_PAGES } from '$lib/seo/landings';
+import { OCCASION_PAGES } from '$lib/seo/occasions-content';
 
-const STATIC_PATHS = ['/', '/pricing', '/templates', '/privacy', '/terms'];
+/** Bilingual marketing paths — each gets an Arabic (root) and English (/en) URL. */
+const BILINGUAL_PATHS = [
+  '/',
+  '/pricing',
+  '/templates',
+  '/occasions',
+  '/create',
+  '/arabic-fonts',
+  '/background-remover',
+  '/about',
+  '/contact',
+  '/privacy',
+  '/terms',
+  ...PLATFORM_PAGES.map((p) => `/create/${p.slug}`),
+  ...OCCASION_PAGES.map((o) => `/occasions/${o.slug}`)
+];
 
 function xmlEscape(s: string): string {
   return s.replace(/[<>&'"]/g, (c) =>
@@ -20,13 +37,32 @@ function toIso(ts: unknown): string | null {
   return null;
 }
 
+/** A pair of <url> entries (ar + en) that advertise both language variants via hreflang. */
+function bilingualEntry(path: string): string {
+  const ar = SITE_URL + path;
+  const en = SITE_URL + (path === '/' ? '/en' : '/en' + path);
+  const alternates =
+    `    <xhtml:link rel="alternate" hreflang="ar" href="${xmlEscape(ar)}"/>\n` +
+    `    <xhtml:link rel="alternate" hreflang="en" href="${xmlEscape(en)}"/>\n` +
+    `    <xhtml:link rel="alternate" hreflang="x-default" href="${xmlEscape(ar)}"/>\n`;
+  return (
+    `  <url>\n    <loc>${xmlEscape(ar)}</loc>\n${alternates}  </url>\n` +
+    `  <url>\n    <loc>${xmlEscape(en)}</loc>\n${alternates}  </url>`
+  );
+}
+
+function singleEntry(loc: string, lastmod?: string): string {
+  return (
+    `  <url>\n    <loc>${xmlEscape(loc)}</loc>\n` +
+    (lastmod ? `    <lastmod>${lastmod}</lastmod>\n` : '') +
+    `  </url>`
+  );
+}
+
 export const GET: RequestHandler = async () => {
-  const base = (env.PUBLIC_APP_URL ?? 'http://localhost:5173').replace(/\/$/, '');
+  const entries: string[] = BILINGUAL_PATHS.map(bilingualEntry);
 
-  const urls: { loc: string; lastmod?: string }[] = STATIC_PATHS.map((p) => ({
-    loc: `${base}${p}`
-  }));
-
+  // Dynamic template detail pages (Arabic / root only).
   try {
     const snap = await adminDb()
       .collection('dynamic_templates')
@@ -35,9 +71,8 @@ export const GET: RequestHandler = async () => {
       .limit(5000)
       .get();
     for (const doc of snap.docs) {
-      const data = doc.data();
-      const lastmod = toIso(data.updatedAt) ?? undefined;
-      urls.push({ loc: `${base}/templates/${doc.id}`, lastmod });
+      const lastmod = toIso(doc.data().updatedAt) ?? undefined;
+      entries.push(singleEntry(`${SITE_URL}/templates/${doc.id}`, lastmod));
     }
   } catch {
     // fall back to static-only sitemap on admin/query failure
@@ -45,15 +80,8 @@ export const GET: RequestHandler = async () => {
 
   const body =
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
-    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-    urls
-      .map(
-        (u) =>
-          `  <url>\n    <loc>${xmlEscape(u.loc)}</loc>\n` +
-          (u.lastmod ? `    <lastmod>${u.lastmod}</lastmod>\n` : '') +
-          `  </url>`
-      )
-      .join('\n') +
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n` +
+    entries.join('\n') +
     `\n</urlset>\n`;
 
   return new Response(body, {

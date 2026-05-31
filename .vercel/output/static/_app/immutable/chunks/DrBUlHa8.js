@@ -1,0 +1,1 @@
+import{g as e}from"./DQgWptUM.js";const r=()=>"شهري",a=()=>"Monthly",i=((l={},n={})=>(n.locale??e())==="ar"?r():a()),o=()=>"سنوي",s=()=>"Yearly",p=((l={},n={})=>(n.locale??e())==="ar"?o():s()),u=()=>"مدى الحياة",_=()=>"Lifetime",y=((l={},n={})=>(n.locale??e())==="ar"?u():_());export{p as a,y as b,i as s};

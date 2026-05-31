@@ -1,0 +1,1 @@
+import{g as n}from"./DQgWptUM.js";const o=()=>"انطلق مع Pro",a=()=>"انطلق مع Pro",c=((r={},e={})=>(e.locale??n())==="ar"?o():a()),s=()=>"Go Pro with Betakti",l=()=>"Go Pro with Betakti",i=((r={},e={})=>(e.locale??n())==="ar"?s():l());export{i as a,c as s};

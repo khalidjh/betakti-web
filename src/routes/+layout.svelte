@@ -2,11 +2,17 @@
   import '../app.css';
   import type { Snippet } from 'svelte';
   import { navigating } from '$app/state';
+  import { initAnalytics } from '$lib/firebase/client';
 
   interface Props {
     children: Snippet;
   }
   const { children }: Props = $props();
+
+  $effect(() => {
+    // Browser-only; safe no-op during SSR or when Analytics is unsupported.
+    initAnalytics();
+  });
 </script>
 
 {#if navigating.to}

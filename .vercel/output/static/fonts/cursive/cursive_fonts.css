@@ -1,0 +1,95 @@
+/* Hajj */
+@font-face { font-family: 'hajj1'; src: url('hajj/hajj1.ttf'); }
+@font-face { font-family: 'hajj2'; src: url('hajj/hajj2.ttf'); }
+@font-face { font-family: 'hajj3'; src: url('hajj/hajj3.ttf'); }
+
+/* Eid */
+@font-face { font-family: 'eid1'; src: url('eid/eid1.ttf'); }
+@font-face { font-family: 'eid2'; src: url('eid/eid2.ttf'); }
+@font-face { font-family: 'eid3'; src: url('eid/eid3.ttf'); }
+
+/* Monasabat */
+@font-face { font-family: 'monasabat'; src: url('monasabat.ttf'); }
+
+/* morning */
+@font-face { font-family: 'morning'; src: url('morning.otf'); }
+
+/* jommah */
+@font-face { font-family: 'jommah'; src: url('jommah.otf'); }
+
+/* zifaf */
+@font-face { font-family: 'zifaf'; src: url('zifaf.otf'); }
+
+/* Graduation */
+@font-face { font-family: 'graduation'; src: url('graduation.ttf'); }
+
+/* Ramadan */
+@font-face { font-family: 'ramadan1'; src: url('ramadan/ramadan1.ttf'); }
+@font-face { font-family: 'ramadan2'; src: url('ramadan/ramadan2.ttf'); }
+@font-face { font-family: 'ramadan3'; src: url('ramadan/ramadan3.ttf'); }
+
+/* Allah */
+@font-face { font-family: 'Allah1'; src: url('Allah/Allah1.ttf'); }
+@font-face { font-family: 'Allah3'; src: url('Allah/Allah3.ttf'); }
+
+/* ommy */
+@font-face { font-family: 'ommy1'; src: url('ommy/ommy1.ttf'); }
+@font-face { font-family: 'ommy2'; src: url('ommy/ommy2.ttf'); }
+
+/* rasool */
+@font-face { font-family: 'rasool1'; src: url('rasool/rasool1.ttf'); }
+@font-face { font-family: 'rasool2'; src: url('rasool/rasool2.ttf'); }
+
+/* basmalah */
+@font-face { font-family: 'basmalah1'; src: url('basmalah/basmalah1.ttf'); }
+@font-face { font-family: 'basmalah2'; src: url('basmalah/basmalah2.ttf'); }
+
+/* aqsa */
+@font-face { font-family: 'aqsa'; src: url('aqsa.ttf'); }
+
+/* sadaqa */
+@font-face { font-family: 'sadaqa'; src: url('sadaqa.ttf'); }
+
+/* islamic */
+@font-face { font-family: 'islamic'; src: url('islamic.ttf'); }
+
+/* thikr */
+@font-face { font-family: 'thikr'; src: url('thikr.ttf'); }
+
+/*
+**********************
+        SHAPES
+**********************
+*/
+
+/* butterfly */
+@font-face { font-family: 'butterfly1'; src: url('shapes/butterfly1.ttf'); }
+
+/* flower */
+@font-face { font-family: 'flower1'; src: url('shapes/flower1.ttf'); }
+@font-face { font-family: 'flower2'; src: url('shapes/flower2.ttf'); }
+
+/* social */
+@font-face { font-family: 'social1'; src: url('shapes/social1.ttf'); }
+@font-face { font-family: 'social2'; src: url('shapes/social2.ttf'); }
+
+/* masjed */
+@font-face { font-family: 'masjed'; src: url('shapes/masjed.ttf'); }
+
+/* heart */
+@font-face { font-family: 'heart1'; src: url('shapes/heart1.ttf'); }
+@font-face { font-family: 'heart2'; src: url('shapes/heart2.ttf'); }
+
+/* harakat */
+@font-face { font-family: 'harakat1'; src: url('harakat/harakat1.ttf'); }
+@font-face { font-family: 'harakat2'; src: url('harakat/harakat2.ttf'); }
+
+/* Badge */
+@font-face { font-family: 'badge1'; src: url('badge/badge1.ttf'); }
+@font-face { font-family: 'badge2'; src: url('badge/badge2.ttf'); }
+
+/* Decoration */
+@font-face { font-family: 'decoration1'; src: url('decoration/decoration1.ttf'); }
+@font-face { font-family: 'decoration2'; src: url('decoration/decoration2.ttf'); }
+@font-face { font-family: 'decoration3'; src: url('decoration/decoration3.ttf'); }
+@font-face { font-family: 'decoration4'; src: url('decoration/decoration4.ttf'); }

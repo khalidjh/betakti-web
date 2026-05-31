@@ -1,13 +1,13 @@
 export const brandGradientStops = [
-  { offset: 0, color: '#2DE2E6' },
-  { offset: 0.45, color: '#5B8DEF' },
-  { offset: 1, color: '#8B5CF6' }
+  { offset: 0, color: '#07BEFB' },
+  { offset: 0.5, color: '#356CF6' },
+  { offset: 1, color: '#5B28D6' }
 ] as const;
 
 export const colors = {
-  accent: '#6B4EFF',
-  accentHover: '#5A3EF0',
-  teal: '#2DE2E6',
+  accent: '#5B46F6',
+  accentHover: '#4A37E6',
+  teal: '#10B6FB',
   violet: '#8B5CF6',
   ink: '#0B0D17',
   ink2: '#3A3D4D',
