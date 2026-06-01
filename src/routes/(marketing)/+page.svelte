@@ -93,7 +93,7 @@
 
       <div class="flex flex-wrap items-center gap-3">
         <Button variant="gradient" href={localizeHref('/auth/register')}>{m.marketing_hero_cta_primary()}</Button>
-        <Button variant="ghost" href={localizeHref('/templates')}>{m.marketing_hero_cta_secondary()} →</Button>
+        <Button variant="ghost" href={localizeHref('/templates')}>{m.marketing_hero_cta_secondary()} {t('←', '→')}</Button>
       </div>
 
       <div class="flex flex-col gap-2">
@@ -390,7 +390,7 @@
       href={localizeHref('/templates')}
       class="text-sm text-[var(--color-accent)] hover:underline font-medium"
     >
-      {m.marketing_templates_see_all()} →
+      {m.marketing_templates_see_all()} {t('←', '→')}
     </a>
   </div>
   {#if data.previews.length > 0}
@@ -470,7 +470,7 @@
 
   <div use:reveal class="text-center mt-6">
     <a href={localizeHref('/pricing')} class="text-sm text-[var(--color-accent)] hover:underline font-medium">
-      {t('عرض كل التفاصيل', 'See full pricing')} →
+      {t('عرض كل التفاصيل ←', 'See full pricing →')}
     </a>
   </div>
 </section>

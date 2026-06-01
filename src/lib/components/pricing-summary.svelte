@@ -78,7 +78,7 @@
 
   <div class="mt-5">
     <a href={localizeHref('/pricing')} class="text-sm text-[var(--color-accent)] hover:underline font-medium">
-      {t('عرض كل التفاصيل والمزايا', 'See full pricing & features')} →
+      {t('عرض كل التفاصيل والمزايا ←', 'See full pricing & features →')}
     </a>
   </div>
 </section>

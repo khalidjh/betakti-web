@@ -90,7 +90,7 @@
 
   <div class="flex flex-wrap gap-3 pt-2">
     <Button variant="gradient" href={localizeHref('/auth/register')}>{t('ابدأ مجاناً', 'Start free')}</Button>
-    <Button variant="ghost" href={localizeHref('/contact')}>{t('تواصل معنا', 'Contact us')} →</Button>
+    <Button variant="ghost" href={localizeHref('/contact')}>{t('تواصل معنا ←', 'Contact us →')}</Button>
   </div>
 
   <div class="flex flex-col gap-2 pt-2">

@@ -66,7 +66,7 @@
         <div class="flex flex-wrap items-center gap-3">
           <Button variant="gradient" href={registerHref}>{t('ابدأ التصميم مجاناً', 'Start designing free')}</Button>
           {#if templatesHref}
-            <Button variant="ghost" href={localizeHref(templatesHref)}>{t('تصفح القوالب', 'Browse templates')} →</Button>
+            <Button variant="ghost" href={localizeHref(templatesHref)}>{t('تصفح القوالب ←', 'Browse templates →')}</Button>
           {/if}
         </div>
 

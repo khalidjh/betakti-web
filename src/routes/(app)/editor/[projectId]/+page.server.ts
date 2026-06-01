@@ -1,4 +1,4 @@
-import { error } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import { adminDb } from '$lib/firebase/admin';
 import type { PageServerLoad } from './$types';
 import type { Project, CanvasElement } from '$lib/editor/types';
@@ -41,7 +41,10 @@ async function loadStockBackgrounds(): Promise<StockBackgroundRow[]> {
 
 export const load: PageServerLoad = async ({ params, locals, url, parent }) => {
   await parent();
-  if (!locals.user) throw error(401, 'Unauthorised');
+  if (!locals.user) {
+    const next = encodeURIComponent(url.pathname + url.search);
+    throw redirect(303, `/auth/login?next=${next}`);
+  }
   const isPro = locals.user.subscription === 'pro';
 
   if (params.projectId === 'new') {
