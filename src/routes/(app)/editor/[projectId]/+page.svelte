@@ -46,6 +46,7 @@
     createStickerElement,
     createImageElement
   } from '$lib/editor/editor.svelte';
+  import { prepareImageFile, uploadAsset, type PreparedImage } from '$lib/editor/assets';
   import { attachShortcuts } from '$lib/editor/shortcuts';
   import { startAutosave, type AutosaveHandle } from '$lib/editor/autosave';
   import { ensureClientSignedIn } from '$lib/auth/client';
@@ -152,7 +153,9 @@
       getExport: () => exporter,
       onFirstCreate: (newId) => {
         replaceState(`/editor/${newId}`, {});
-      }
+      },
+      onPermissionDenied: () => toasts.push('تعذّر الحفظ — سجّل الدخول من جديد', 'error'),
+      onTooLarge: () => toasts.push('تعذّر رفع إحدى الصور — لم يُحفظ التصميم', 'error')
     });
     return () => {
       detach();
@@ -206,31 +209,43 @@
     }
   }
 
-  function onFilePicked(e: Event): void {
+  async function onFilePicked(e: Event): Promise<void> {
     const input = e.currentTarget as HTMLInputElement;
     const file = input.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const dataUrl = reader.result as string;
-      const img = new Image();
-      img.onload = () => {
-        const maxW = 800;
-        const scale = img.width > maxW ? maxW / img.width : 1;
-        const el = editor.addCentered(
-          createImageElement({
-            imageSrc: dataUrl,
-            width: img.width * scale,
-            height: img.height * scale
-          })
-        );
-        editor.selectOnly(el.id);
-        editor.setTool('select');
-      };
-      img.src = dataUrl;
-    };
-    reader.readAsDataURL(file);
     input.value = '';
+    if (!file) return;
+
+    let prepared: PreparedImage;
+    try {
+      prepared = await prepareImageFile(file);
+    } catch {
+      toasts.push('تعذّر قراءة الصورة', 'error');
+      return;
+    }
+
+    // Place it straight away off the prepared copy, so the canvas paints while
+    // the upload is still in flight — and so guests, who can't upload at all,
+    // still get their image.
+    const maxW = 800;
+    const scale = prepared.width > maxW ? maxW / prepared.width : 1;
+    const el = editor.addCentered(
+      createImageElement({
+        imageSrc: prepared.previewSrc,
+        width: prepared.width * scale,
+        height: prepared.height * scale
+      })
+    );
+    editor.selectOnly(el.id);
+    editor.setTool('select');
+
+    if (!auth.currentUser) return; // autosave sweeps it once they sign in
+    try {
+      const src = await uploadAsset(prepared.blob, prepared.ext);
+      // Not a history step: the pixels are identical, only the reference moves.
+      editor.updateElement(el.id, { imageSrc: src } as Partial<CanvasElement>, false);
+    } catch {
+      // Keep the inline copy — uploadInlineImages retries on the next save.
+    }
   }
 
   async function handleDownload(): Promise<void> {

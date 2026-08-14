@@ -1,6 +1,7 @@
 import { doc, setDoc, Timestamp } from 'firebase/firestore';
 import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 import { db, storage, auth } from '$lib/firebase/client';
+import { uploadInlineImages } from './assets';
 import type { Editor } from './editor.svelte';
 import type { Project } from './types';
 
@@ -18,6 +19,11 @@ interface Options {
   onSaved?: (project: Project) => void;
   onFirstCreate?: (newId: string) => void;
   onPermissionDenied?: () => void;
+  /**
+   * The write was rejected as too large — in practice, images that couldn't be
+   * hoisted into Storage and rode along inline instead.
+   */
+  onTooLarge?: () => void;
 }
 
 const INTERVAL_MS = 30_000;
@@ -74,6 +80,10 @@ export function startAutosave(opts: Options): AutosaveHandle {
     // template author's uid, etc.) and Firestore rules reject the write.
     if (project.userId !== uid) project.userId = uid;
     try {
+      // Before anything else: a project carrying inline image bytes is over the
+      // 1 MiB document limit long before it looks big, and the write would fail
+      // wholesale. Hoist them into Storage first.
+      await uploadInlineImages(project);
       const thumb = await generateThumbnail();
       if (thumb) project.thumbnailUrl = thumb;
       const payload = { ...projectToFirestore(project), id: newId, userId: uid };
@@ -91,6 +101,12 @@ export function startAutosave(opts: Options): AutosaveHandle {
       if (code === 'permission-denied') {
         console.error('autosave: permission denied — client Firebase auth not signed in', err);
         opts.onPermissionDenied?.();
+      } else if (code === 'invalid-argument' || /longer than.*bytes|maximum size/i.test(String(err))) {
+        // Firestore caps a document at 1 MiB and rejects the whole write. The
+        // only realistic way to get here now is an image that failed to upload,
+        // so the project still carries its bytes inline.
+        console.error('autosave: document too large — inline images still present', err);
+        opts.onTooLarge?.();
       } else {
         console.error('autosave failed', err);
       }

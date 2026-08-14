@@ -41,6 +41,9 @@
   } from 'lucide-svelte';
   import { getEditor } from './editor.svelte';
   import type { CanvasElement, ImageElement, ShapeElement, StickerElement, TextElement } from './types';
+  import { prepareImageFile, uploadAsset, type PreparedImage } from './assets';
+  import { toasts } from '$lib/components/toast.svelte';
+  import { auth } from '$lib/firebase/client';
   import { FONT_GROUPS } from './fonts';
   import {
     BACKGROUND_PRESETS,
@@ -87,19 +90,32 @@
     }
   }
 
-  function handleBgUpload(e: Event): void {
+  async function handleBgUpload(e: Event): Promise<void> {
     const input = e.currentTarget as HTMLInputElement;
     const file = input.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      const src = reader.result;
-      if (typeof src === 'string') {
-        editor.setBackground({ type: 'image', src, fit: 'cover' });
-      }
-    };
-    reader.readAsDataURL(file);
     input.value = '';
+    if (!file) return;
+
+    let prepared: PreparedImage;
+    try {
+      prepared = await prepareImageFile(file);
+    } catch {
+      toasts.push('تعذّر قراءة الصورة', 'error');
+      return;
+    }
+    editor.setBackground({ type: 'image', src: prepared.previewSrc, fit: 'cover' });
+
+    if (!auth.currentUser) return; // autosave sweeps it once they sign in
+    try {
+      const src = await uploadAsset(prepared.blob, prepared.ext);
+      // Swap the reference underneath rather than through setBackground: the
+      // image is unchanged, so this is neither a history step nor a reason to
+      // clobber a background the user picked while the upload was in flight.
+      const bg = editor.project.background;
+      if (bg.type === 'image' && bg.src === prepared.previewSrc) bg.src = src;
+    } catch {
+      // Keep the inline copy — uploadInlineImages retries on the next save.
+    }
   }
 
   const imageIcons: Record<StockImageCategory, typeof Mountain> = {
