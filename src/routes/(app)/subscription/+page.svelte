@@ -187,7 +187,7 @@
         >
           {#if plan.highlighted}
             <div
-              class="absolute -top-3 start-1/2 -translate-x-1/2 text-[11px] font-bold px-3 py-1 rounded-[999px] text-white shadow-[var(--shadow-1)] whitespace-nowrap"
+              class="absolute -top-3 left-1/2 -translate-x-1/2 text-[11px] font-bold px-3 py-1 rounded-[999px] text-white shadow-[var(--shadow-1)] whitespace-nowrap"
               style="background: var(--brand-gradient);"
             >
               {m.sub_save_badge()}

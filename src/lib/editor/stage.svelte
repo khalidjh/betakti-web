@@ -3,6 +3,7 @@
   import { Copy, Trash2, ArrowUp, ArrowDown, Bold, Italic } from 'lucide-svelte';
   import { getEditor } from './editor.svelte';
   import { shapePath, hasCustomPath } from './shapes';
+  import { computeSnap, type Guide, type SnapBox } from './snapping';
   import type {
     CanvasElement,
     ImageElement,
@@ -44,6 +45,17 @@
   let spacePressed = $state(false);
   let isPanning = $state(false);
   let panStart = { x: 0, y: 0 };
+
+  // How close (in screen pixels, so it feels the same at any zoom) an edge has
+  // to be before it snaps.
+  const SNAP_PX = 6;
+  const GUIDE_COLOR = '#ff2e7e';
+  let guides = $state<Guide[]>([]);
+  // Non-null while the user has stepped inside a group to edit one child.
+  let enteredGroupId = $state<string | null>(null);
+  // Rebuilt once per gesture rather than per pointer-move: nothing but the
+  // dragged object moves during a drag.
+  let snapTargets: SnapBox[] = [];
 
   const contextBar = $derived.by<{ left: number; top: number; el: CanvasElement } | null>(() => {
     if (editor.selectedIds.length !== 1 || isEditingText || isPanning || isInteracting || !canvas) return null;
@@ -332,12 +344,35 @@
     canvas.on('selection:created', onSelectionFromCanvas);
     canvas.on('selection:updated', onSelectionFromCanvas);
     canvas.on('selection:cleared', () => {
+      enteredGroupId = null;
       if (suspendSelectionSync) return;
       editor.clearSelection();
     });
+
+    // Double-click steps into a group and picks the child under the cursor,
+    // matching how every other editor handles nested selection.
+    canvas.on('mouse:dblclick', (opt) => {
+      const t = opt.target as FObject | undefined;
+      if (!t) return;
+      const id = (t.get('data') as { elementId?: string } | undefined)?.elementId;
+      if (!id) return;
+      const root = editor.rootGroupIdOf(id);
+      if (!root || enteredGroupId === root) return;
+      enteredGroupId = root;
+      // On grouped text Fabric would drop straight into editing; the first
+      // double-click belongs to the group, a second one starts editing.
+      const tb = t as import('fabric').Textbox;
+      if (tb.isEditing && typeof tb.exitEditing === 'function') tb.exitEditing();
+      editor.selectOnly(id);
+    });
     // Only live-sync moves; scale/rotate are committed once at gesture-end
     // so we don't fight Fabric's in-flight transform deltas.
-    canvas.on('object:moving', onObjectChanging);
+    canvas.on('object:moving', (e) => {
+      // Snap first, then sync — otherwise the element model would briefly hold
+      // the un-snapped position and the reverse effect would fight the nudge.
+      applySnap(e.target as FObject | undefined, e.e as Event | undefined);
+      onObjectChanging();
+    });
     canvas.on('object:rotating', (e) => {
       const t = e.target as FObject | undefined;
       if (!t) return;
@@ -348,6 +383,7 @@
     });
     canvas.on('object:modified', () => {
       rotatingBadge = null;
+      guides = [];
       onObjectModified();
     });
     canvas.on('mouse:wheel', onWheel);
@@ -367,6 +403,7 @@
     }
     canvas.on('before:transform', () => {
       isInteracting = true;
+      collectSnapTargets();
     });
     canvas.on('mouse:down', (opt) => {
       if (opt.target) isInteracting = true;
@@ -837,6 +874,11 @@
     const ct = (canvas as { _currentTransform?: { target?: FObject } } | null)?._currentTransform;
     if (ct?.target === obj) return;
     if ((obj as { isMoving?: boolean }).isMoving) return;
+    // While an object sits inside an ActiveSelection its left/top/scale are
+    // relative to that selection and owned by the parent transform. Writing
+    // absolute model values onto it here would fight the drag. Fabric restores
+    // absolute coords when the selection is discarded, and this effect re-runs.
+    if ((obj as { group?: unknown }).group) return;
 
     obj.set({
       left: el.x,
@@ -924,22 +966,33 @@
     const el = editor.getElement(id);
     if (!el) return;
 
+    // Read scene-plane values rather than obj.left/top/scale: inside an
+    // ActiveSelection (any multi-select, and every group drag) those are
+    // relative to the selection, and storing them would teleport the element.
+    // With originX/originY at top-left, corner 0 is exactly the element origin.
+    const inSelection = !!(obj as { group?: unknown }).group;
+    const tl = obj.getCoords()[0]!;
+    const totalAngle = obj.getTotalAngle?.() ?? obj.angle ?? 0;
+    const scaling = obj.getObjectScaling?.() ?? { x: obj.scaleX ?? 1, y: obj.scaleY ?? 1 };
+
     const patch: Partial<CanvasElement> = {
-      x: obj.left ?? el.x,
-      y: obj.top ?? el.y,
-      rotation: ((obj.angle ?? 0) * Math.PI) / 180
+      x: tl.x,
+      y: tl.y,
+      rotation: (totalAngle * Math.PI) / 180
     };
 
     // Bake scale into width/height for non-image types so the model stays consistent.
-    const sx = obj.scaleX ?? 1;
-    const sy = obj.scaleY ?? 1;
+    const sx = scaling.x;
+    const sy = scaling.y;
     if (el.type === 'text' || el.type === 'sticker') {
       const newW = (obj.width ?? el.width) * Math.abs(sx);
       const newH = (obj.height ?? el.height) * Math.abs(sy);
       (patch as Partial<TextElement>).width = newW;
       (patch as Partial<TextElement>).height = newH;
-      // Reset object scale so later renders don't double-apply
-      obj.set({ scaleX: 1, scaleY: 1, width: newW, height: newH });
+      // Reset object scale so later renders don't double-apply. Skipped for a
+      // child of an ActiveSelection — its scale belongs to the parent
+      // transform, and it gets rebuilt from the model once that is discarded.
+      if (!inSelection) obj.set({ scaleX: 1, scaleY: 1, width: newW, height: newH });
       if (el.type === 'text') {
         const t = obj as import('fabric').Textbox;
         if (typeof t.text === 'string') (patch as Partial<TextElement>).text = t.text;
@@ -949,7 +1002,13 @@
       const newH = (obj.height ?? el.height) * Math.abs(sy);
       (patch as Partial<ShapeElement>).width = newW;
       (patch as Partial<ShapeElement>).height = newH;
-      if (el.shapeType !== 'diamond' && el.shapeType !== 'heart' && el.shapeType !== 'hexagon' && el.shapeType !== 'crescent') {
+      if (
+        !inSelection &&
+        el.shapeType !== 'diamond' &&
+        el.shapeType !== 'heart' &&
+        el.shapeType !== 'hexagon' &&
+        el.shapeType !== 'crescent'
+      ) {
         obj.set({ scaleX: 1, scaleY: 1, width: newW, height: newH });
       }
     } else if (el.type === 'image') {
@@ -967,6 +1026,63 @@
     suspendElementSync = true;
     editor.updateElement(id, patch, false);
     suspendElementSync = false;
+  }
+
+  /**
+   * Everything the dragged object can align to: the artboard itself (so its
+   * edges and centre snap) plus every other visible element's bounding box.
+   * Objects inside an ActiveSelection are excluded — their coords are relative
+   * to the group, and you can't align something to itself.
+   */
+  function collectSnapTargets(): void {
+    snapTargets = [];
+    if (!canvas) return;
+
+    const excluded = new Set<FObject>();
+    const active = canvas.getActiveObject();
+    if (active) {
+      if (active.type === 'activeselection') {
+        for (const o of (active as import('fabric').ActiveSelection).getObjects()) excluded.add(o);
+      } else {
+        excluded.add(active);
+      }
+    }
+
+    snapTargets.push({
+      left: 0,
+      top: 0,
+      width: editor.project.canvasSize.width,
+      height: editor.project.canvasSize.height
+    });
+    for (const el of editor.project.elements) {
+      if (!el.isVisible) continue;
+      const obj = nodeMap.get(el.id);
+      if (!obj || excluded.has(obj)) continue;
+      const r = obj.getBoundingRect();
+      snapTargets.push({ left: r.left, top: r.top, width: r.width, height: r.height });
+    }
+  }
+
+  function applySnap(target: FObject | undefined, ev: Event | undefined): void {
+    guides = [];
+    if (!target || !editor.ui.snapEnabled) return;
+    // Hold Cmd/Ctrl to place freely, same as Figma.
+    if (ev && 'metaKey' in ev) {
+      const me = ev as MouseEvent;
+      if (me.metaKey || me.ctrlKey) return;
+    }
+
+    const r = target.getBoundingRect();
+    const res = computeSnap(
+      { left: r.left, top: r.top, width: r.width, height: r.height },
+      snapTargets,
+      SNAP_PX / editor.ui.zoom
+    );
+    if (res.dx !== 0 || res.dy !== 0) {
+      target.set({ left: (target.left ?? 0) + res.dx, top: (target.top ?? 0) + res.dy });
+      target.setCoords();
+    }
+    guides = res.guides;
   }
 
   function onObjectChanging(): void {
@@ -1001,7 +1117,20 @@
       const id = (active.get('data') as { elementId?: string } | undefined)?.elementId;
       if (id) ids = [id];
     }
-    editor.selectedIds.splice(0, editor.selectedIds.length, ...ids);
+
+    // Inside an entered group, clicks pick individual children; the moment one
+    // lands outside it, we step back out and select by whole group again.
+    if (enteredGroupId) {
+      const inside = new Set(editor.elementIdsInGroup(enteredGroupId));
+      if (ids.length && ids.every((id) => inside.has(id))) {
+        editor.selectedIds.splice(0, editor.selectedIds.length, ...ids);
+        return;
+      }
+      enteredGroupId = null;
+    }
+
+    const expanded = editor.expandToGroups(ids);
+    editor.selectedIds.splice(0, editor.selectedIds.length, ...expanded);
   }
 
   function applySelectionFromEditor(): void {
@@ -1088,6 +1217,7 @@
     }
     isInteracting = false;
     rotatingBadge = null;
+    guides = [];
   }
 
   function releaseTransform(): void {
@@ -1107,6 +1237,7 @@
       }
     }
     isInteracting = false;
+    guides = [];
     if (isPanning) {
       isPanning = false;
       canvas.selection = true;
@@ -1181,6 +1312,19 @@
     ? 'radial-gradient(color-mix(in srgb, var(--color-ink) 8%, transparent) 1px, transparent 1px) 0 0 / 24px 24px, var(--color-surface-2)'
     : 'var(--color-surface-2)'}
 ></div>
+
+{#each guides as g (g.axis + ':' + g.pos)}
+  {@const a = worldToScreen(g.axis === 'x' ? g.pos : g.start, g.axis === 'x' ? g.start : g.pos)}
+  {@const b = worldToScreen(g.axis === 'x' ? g.pos : g.end, g.axis === 'x' ? g.end : g.pos)}
+  <div
+    class="absolute z-10 pointer-events-none"
+    style:left="{a.x}px"
+    style:top="{a.y}px"
+    style:width={g.axis === 'x' ? '1px' : `${Math.max(1, b.x - a.x)}px`}
+    style:height={g.axis === 'x' ? `${Math.max(1, b.y - a.y)}px` : '1px'}
+    style:background={GUIDE_COLOR}
+  ></div>
+{/each}
 
 {#if rotatingBadge}
   {@const a = Math.round(rotatingBadge.angle)}

@@ -5,13 +5,15 @@
   import TemplateCard from '$lib/components/template-card.svelte';
   import Seo from '$lib/components/seo.svelte';
   import { SITE_URL } from '$lib/seo/config';
-  import { breadcrumbList } from '$lib/seo/schema';
+  import { breadcrumbList, faqPage } from '$lib/seo/schema';
+  import { templateContent } from '$lib/seo/template-content';
   import type { PageData } from './$types';
 
   const { data }: { data: PageData } = $props();
   const tpl = $derived(data.template);
   const locale = $derived(getLocale() as 'ar' | 'en');
   const tplName = $derived(locale === 'en' ? tpl.nameEn : tpl.nameAr);
+  const content = $derived(templateContent(tpl, locale));
 
   const aspect = $derived(`${tpl.canvasSize.width} / ${tpl.canvasSize.height}`);
 
@@ -35,6 +37,7 @@
       '@type': 'CreativeWork',
       name: tpl.nameAr,
       alternateName: tpl.nameEn,
+      description: content.description,
       image: tpl.thumbnailUrl ?? `${SITE_URL}/brand/logo.png`,
       inLanguage: locale,
       creator: { '@type': 'Organization', name: 'Betakti' }
@@ -43,13 +46,14 @@
       { name: t('الرئيسية', 'Home'), url: SITE_URL + localizeHref('/') },
       { name: m.page_templates_title(), url: SITE_URL + localizeHref('/templates') },
       { name: tplName, url: SITE_URL + localizeHref(`/templates/${tpl.id}`) }
-    ])
+    ]),
+    faqPage(content.faq)
   ]);
 </script>
 
 <Seo
   title={tplName}
-  description={t(`${tpl.nameAr} — قالب جاهز للتعديل والتصميم بالعربي على Betakti.`, `${tpl.nameEn} — a ready-to-edit Arabic design template on Betakti.`)}
+  description={content.metaDescription}
   path={`/templates/${tpl.id}`}
   type="article"
   image={tpl.thumbnailUrl ?? '/brand/logo.png'}
@@ -105,6 +109,20 @@
         <p class="text-[var(--color-muted)]">{tpl.nameEn}</p>
       </div>
 
+      <p class="text-[var(--color-ink-2)] leading-relaxed">{content.description}</p>
+
+      <ul class="flex flex-wrap gap-2">
+        {#each content.tags as tag (tag)}
+          <li
+            class="inline-flex items-center px-2.5 py-1 rounded-[999px] text-xs bg-[var(--color-surface-2)] border border-[var(--color-border)] text-[var(--color-ink-2)]"
+          >
+            {tag}
+          </li>
+        {/each}
+      </ul>
+
+      <p class="text-xs text-[var(--color-muted)]">{content.layersLine}</p>
+
       <dl class="flex flex-col gap-2 text-sm">
         <div class="flex items-center justify-between border-t border-[var(--color-border)] pt-2">
           <dt class="text-[var(--color-muted)]">{m.tpl_canvas_size()}</dt>
@@ -133,6 +151,40 @@
       </div>
     </aside>
   </div>
+
+  {#if content.textOnDesign.length > 0}
+    <section class="mt-16">
+      <h2 class="text-xl font-semibold mb-4">{t('النص في هذا التصميم', 'Text on this design')}</h2>
+      <ul class="flex flex-col gap-2">
+        {#each content.textOnDesign as line (line)}
+          <li
+            class="rounded-[12px] border border-[var(--color-border)] bg-[var(--color-surface-2)] px-4 py-2.5 text-[var(--color-ink-2)]"
+          >
+            {line}
+          </li>
+        {/each}
+      </ul>
+    </section>
+  {/if}
+
+  <section class="mt-16">
+    <h2 class="text-xl font-semibold mb-4">{t('أسئلة شائعة', 'Frequently asked questions')}</h2>
+    <div class="flex flex-col gap-3">
+      {#each content.faq as item (item.q)}
+        <details
+          class="group rounded-[14px] border border-[var(--color-border)] bg-[var(--color-surface-2)] px-4 py-3"
+        >
+          <summary
+            class="flex items-center justify-between gap-3 font-medium text-[var(--color-ink)] list-none"
+          >
+            {item.q}
+            <span class="text-[var(--color-muted)] transition-transform group-open:rotate-45">+</span>
+          </summary>
+          <p class="mt-2 text-[var(--color-ink-2)] leading-relaxed">{item.a}</p>
+        </details>
+      {/each}
+    </div>
+  </section>
 
   {#if data.related.length > 0}
     <section class="mt-16">

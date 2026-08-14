@@ -23,7 +23,9 @@
     Sun,
     Moon,
     Layers as LayersIcon,
-    Sliders
+    Sliders,
+    Magnet,
+    Boxes
   } from 'lucide-svelte';
   import Tooltip from '$lib/components/tooltip.svelte';
   import Sheet from '$lib/components/sheet.svelte';
@@ -31,6 +33,7 @@
   import Segmented from '$lib/components/segmented.svelte';
   import ToastHost from '$lib/components/toast-host.svelte';
   import { toasts } from '$lib/components/toast.svelte';
+  import SignInPanel from '$lib/auth/sign-in-panel.svelte';
   import Stage from '$lib/editor/stage.svelte';
   import Inspector from '$lib/editor/inspector.svelte';
   import CursivePicker from '$lib/editor/cursive-picker.svelte';
@@ -55,7 +58,7 @@
     type ExportScale
   } from '$lib/editor/export';
   import type { PageData } from './$types';
-  import type { ToolName } from '$lib/editor/types';
+  import type { CanvasElement, CanvasGroup, ToolName } from '$lib/editor/types';
 
   const { data }: { data: PageData } = $props();
   // Editor created once from initial project; subsequent data changes go through autosave.
@@ -69,8 +72,13 @@
   let exporter: Exporter | null = null;
   let autosave: AutosaveHandle | null = null;
   let isSignedIn = $state(false);
+  // Until the client SDK has reported in we don't know which of the two we
+  // are, and guessing "guest" would flash the sign-in gate at real users.
+  let authResolved = $state(false);
+  const isGuest = $derived(authResolved && !isSignedIn);
 
   let showExport = $state(false);
+  let showSignIn = $state(false);
   let showShortcuts = $state(false);
   let showCursive = $state(false);
   let exportScale = $state<ExportScale>(1);
@@ -107,6 +115,23 @@
     showExport = true;
   }
 
+  async function handleSignedIn(): Promise<void> {
+    showSignIn = false;
+    isSignedIn = true;
+    authResolved = true;
+    // Everything they built as a guest is still in memory — flush it now so the
+    // first thing their new account contains is the design that made them sign
+    // up. This also swaps /editor/new for the real project id.
+    await autosave?.saveNow();
+  }
+
+  function onBeforeUnload(e: BeforeUnloadEvent): void {
+    // A guest's work exists only in this tab; autosave has nowhere to put it.
+    if (!isGuest || !editor.ui.isDirty) return;
+    e.preventDefault();
+    e.returnValue = '';
+  }
+
   onMount(() => {
     const detach = attachShortcuts(editor, {
       onSave: doSave,
@@ -117,6 +142,7 @@
     // autosave fires, otherwise Firestore writes hit "permission-denied".
     void ensureClientSignedIn().then((u) => {
       isSignedIn = !!u;
+      authResolved = true;
     });
     const unsubAuth = onAuthStateChanged(auth, (u) => {
       isSignedIn = !!u;
@@ -208,7 +234,7 @@
   }
 
   async function handleDownload(): Promise<void> {
-    if (!exporter) return;
+    if (!exporter || isGuest) return;
     if (data.lockedPremium && !isPro) {
       toasts.push('قالب Pro — يتطلّب الترقية للتصدير', 'error');
       return;
@@ -220,7 +246,7 @@
   }
 
   async function handleCopy(): Promise<void> {
-    if (!exporter) return;
+    if (!exporter || isGuest) return;
     const ok = await copyPngToClipboard(exporter, {
       scale: exportScale,
       withWatermark: !isPro
@@ -233,6 +259,9 @@
     { keys: 'Ctrl+Shift+Z', ar: 'إعادة', en: 'Redo' },
     { keys: 'Ctrl+C / V', ar: 'نسخ / لصق', en: 'Copy / Paste' },
     { keys: 'Ctrl+D', ar: 'تكرار', en: 'Duplicate' },
+    { keys: 'Ctrl+G', ar: 'تجميع', en: 'Group' },
+    { keys: 'Ctrl+Shift+G', ar: 'فك التجميع', en: 'Ungroup' },
+    { keys: 'Double-click', ar: 'دخول المجموعة', en: 'Enter group' },
     { keys: 'Delete', ar: 'حذف', en: 'Delete' },
     { keys: 'Arrows', ar: 'تحريك 1 بكسل', en: 'Nudge 1px' },
     { keys: 'Shift+Arrows', ar: 'تحريك 10 بكسل', en: 'Nudge 10px' },
@@ -242,9 +271,65 @@
     { keys: 'T / S / I / K / B', ar: 'أدوات', en: 'Tools' },
     { keys: 'F', ar: 'ملاءمة', en: 'Fit' },
     { keys: ']', ar: 'إخفاء اللوحة', en: 'Toggle inspector' },
+    { keys: '\\', ar: 'تفعيل/إلغاء المحاذاة', en: 'Toggle snapping' },
+    { keys: 'Ctrl+Drag', ar: 'تجاهل المحاذاة', en: 'Ignore snapping' },
     { keys: 'Space+Drag', ar: 'تحريك المشهد', en: 'Pan canvas' },
     { keys: '?', ar: 'الاختصارات', en: 'Shortcuts' }
   ];
+
+  type LayerRow =
+    | { kind: 'group'; key: string; depth: number; group: CanvasGroup }
+    | { kind: 'element'; key: string; depth: number; element: CanvasElement };
+
+  /**
+   * Flattens groups + elements into the rows the layers panel renders, topmost
+   * first. Groups sort by their highest member so the list reads in the same
+   * order things stack on the canvas, and a group whose id doesn't resolve
+   * (stale data, a template authored elsewhere) degrades to a top-level row
+   * rather than vanishing.
+   */
+  const layerRows = $derived.by<LayerRow[]>(() => {
+    const rows: LayerRow[] = [];
+    const groups = editor.project.groups;
+    const groupIds = new Set(groups.map((g) => g.id));
+    const elements = editor.project.elements;
+
+    const parentOfElement = (el: CanvasElement): string | undefined =>
+      el.groupId && groupIds.has(el.groupId) ? el.groupId : undefined;
+    const parentOfGroup = (g: CanvasGroup): string | undefined =>
+      g.parentId && groupIds.has(g.parentId) ? g.parentId : undefined;
+
+    function walk(parentId: string | undefined, depth: number): void {
+      const entries: Array<{ z: number; row: LayerRow; group?: CanvasGroup }> = [];
+
+      for (const g of groups) {
+        if (parentOfGroup(g) !== parentId) continue;
+        const memberIds = new Set(editor.elementIdsInGroup(g.id));
+        const zs = elements.filter((e) => memberIds.has(e.id)).map((e) => e.zIndex);
+        entries.push({
+          z: zs.length ? Math.max(...zs) : 0,
+          row: { kind: 'group', key: 'g:' + g.id, depth, group: g },
+          group: g
+        });
+      }
+      for (const el of elements) {
+        if (parentOfElement(el) !== parentId) continue;
+        entries.push({
+          z: el.zIndex,
+          row: { kind: 'element', key: 'e:' + el.id, depth, element: el }
+        });
+      }
+
+      entries.sort((a, b) => b.z - a.z);
+      for (const entry of entries) {
+        rows.push(entry.row);
+        if (entry.group && !entry.group.isCollapsed) walk(entry.group.id, depth + 1);
+      }
+    }
+
+    walk(undefined, 0);
+    return rows;
+  });
 
   const TOOLS: Array<{
     id: ToolName;
@@ -262,8 +347,10 @@
 </script>
 
 <svelte:head>
-  <title>{editor.project.name} · Betakti</title>
+  <title>{editor.project.name} · {m.app_name()}</title>
 </svelte:head>
+
+<svelte:window onbeforeunload={onBeforeUnload} />
 
 <div class="flex flex-col h-dvh w-full bg-[var(--color-paper)] text-[var(--color-ink)]">
   <header
@@ -283,7 +370,7 @@
     <!-- Breadcrumb -->
     <a href="/home" class="hidden lg:flex items-center gap-1.5 px-1 hover:opacity-80 transition-opacity">
       <Logo size={22} />
-      <span class="font-semibold text-[15px] hidden sm:inline" style="font-family: var(--font-display);">Betakti<span class="text-[var(--color-accent)]">.</span></span>
+      <span class="font-semibold text-[15px] hidden sm:inline" style="font-family: var(--font-display);">{m.app_name()}<span class="text-[var(--color-accent)]">.</span></span>
     </a>
     <span class="text-[var(--color-muted)] hidden lg:inline"><ChevronRight size={14} /></span>
     <a href="/projects" class="text-sm text-[var(--color-muted)] hover:text-[var(--color-ink)] transition-colors hidden lg:inline">
@@ -295,16 +382,19 @@
       value={editor.project.name}
       onchange={(e) => editor.setName((e.currentTarget as HTMLInputElement).value)}
     />
-    {#if !isSignedIn}
-      <a
-        href="/auth/login"
+    {#if isGuest}
+      <!-- Opens sign-in in place: navigating to /auth/login would discard the
+           guest's in-memory design. -->
+      <button
+        type="button"
+        onclick={() => (showSignIn = true)}
         class="hidden md:flex items-center gap-1.5 text-[10px] tracking-[0.14em] uppercase font-semibold px-2 py-1 rounded-[999px] hover:opacity-80 transition-opacity"
-        style="font-family: var(--font-mono); background: color-mix(in srgb, var(--color-ink-2) 12%, transparent); color: var(--color-ink-2);"
+        style="font-family: var(--font-mono); background: color-mix(in srgb, var(--color-warning) 18%, transparent); color: var(--color-warning);"
       >
         <span class="inline-block w-1.5 h-1.5 rounded-full bg-current"></span>
-        <span>Login to autosave</span>
-      </a>
-    {:else}
+        <span>Guest — not saved</span>
+      </button>
+    {:else if isSignedIn}
       <div
         class="hidden sm:flex items-center gap-1.5 text-[10px] tracking-[0.14em] uppercase font-semibold px-2 py-1 rounded-[999px] flex-none"
         style="font-family: var(--font-mono); {editor.ui.isSaving
@@ -425,18 +515,60 @@
         <span class="text-[10px] tracking-[0.16em] uppercase text-[var(--color-muted)]" style="font-family: var(--font-mono);">Layers</span>
       </div>
       <div class="flex-1 overflow-y-auto px-2 pb-3 flex flex-col gap-0.5 min-h-0">
-        {#each editor.project.elements as el (el.id)}
-          {@const isSel = editor.selectedIds.includes(el.id)}
-          <button
-            class="flex items-center gap-2 px-2 py-1.5 rounded-[6px] text-xs text-start hover:bg-[var(--color-surface-2)] {isSel
-              ? 'bg-[var(--color-surface-2)] text-[var(--color-accent)]'
-              : 'text-[var(--color-ink-2)]'}"
-            type="button"
-            onclick={() => {
-              editor.selectOnly(el.id);
-              mobileLayersOpen = false;
-            }}
-          >
+        {#each layerRows as row (row.key)}
+          {#if row.kind === 'group'}
+            {@const g = row.group}
+            {@const isSel = editor.selectedIds.length > 0 && editor
+              .elementIdsInGroup(g.id)
+              .every((id) => editor.selectedIds.includes(id))}
+            <div class="flex items-center gap-1" style:padding-inline-start="{row.depth * 12}px">
+              <button
+                class="w-5 h-5 flex-none flex items-center justify-center rounded-[4px] text-[var(--color-muted)] hover:bg-[var(--color-surface-2)]"
+                type="button"
+                aria-label={g.isCollapsed ? 'Expand group' : 'Collapse group'}
+                aria-expanded={!g.isCollapsed}
+                onclick={() => editor.setGroupCollapsed(g.id, !g.isCollapsed)}
+              >
+                <ChevronRight
+                  size={12}
+                  strokeWidth={2.4}
+                  class="transition-transform {g.isCollapsed ? '' : 'rotate-90'}"
+                />
+              </button>
+              <button
+                class="flex items-center gap-2 px-2 py-1.5 rounded-[6px] text-xs text-start flex-1 min-w-0 hover:bg-[var(--color-surface-2)] {isSel
+                  ? 'bg-[var(--color-surface-2)] text-[var(--color-accent)]'
+                  : 'text-[var(--color-ink-2)]'}"
+                type="button"
+                onclick={() => {
+                  editor.selectGroup(g.id);
+                  mobileLayersOpen = false;
+                }}
+              >
+                <span
+                  class="w-5 h-5 rounded-[5px] flex-none flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-surface)] {isSel
+                    ? 'text-[var(--color-accent)]'
+                    : 'text-[var(--color-muted)]'}"
+                >
+                  <Boxes size={12} strokeWidth={2} />
+                </span>
+                <span class="truncate flex-1">{g.name ?? 'Group'}</span>
+              </button>
+            </div>
+          {:else}
+            {@const el = row.element}
+            {@const isSel = editor.selectedIds.includes(el.id)}
+            <button
+              class="flex items-center gap-2 px-2 py-1.5 rounded-[6px] text-xs text-start hover:bg-[var(--color-surface-2)] {isSel
+                ? 'bg-[var(--color-surface-2)] text-[var(--color-accent)]'
+                : 'text-[var(--color-ink-2)]'}"
+              style:margin-inline-start="{row.depth * 12}px"
+              type="button"
+              onclick={() => {
+                editor.selectOnly(el.id);
+                mobileLayersOpen = false;
+              }}
+            >
             <span class="w-5 h-5 rounded-[5px] flex-none flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-surface)] {isSel ? 'text-[var(--color-accent)]' : 'text-[var(--color-muted)]'}">
               {#if el.type === 'text'}
                 <Type size={12} strokeWidth={2} />
@@ -460,8 +592,9 @@
                   : el.type === 'image'
                     ? 'Image'
                     : 'Sticker'}
-            </span>
-          </button>
+              </span>
+            </button>
+          {/if}
         {:else}
           <div class="text-xs text-[var(--color-muted)] px-2 py-2">No layers yet</div>
         {/each}
@@ -483,7 +616,7 @@
            On narrow viewports we let it horizontally scroll instead of
            overflowing the canvas. -->
       <div
-        class="editor-toolbar absolute top-2 sm:top-4 start-1/2 -translate-x-1/2 flex items-center gap-0.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[12px] shadow-[var(--shadow-2)] p-1 z-10 max-w-[calc(100vw-1rem)] overflow-x-auto scroll-rail"
+        class="editor-toolbar absolute top-2 sm:top-4 left-1/2 -translate-x-1/2 flex items-center gap-0.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[12px] shadow-[var(--shadow-2)] p-1 z-10 max-w-[calc(100vw-1rem)] overflow-x-auto scroll-rail"
       >
         {#each TOOLS as tool, idx (tool.id)}
           {#if idx === 1 || idx === 4}
@@ -516,7 +649,7 @@
 
       <!-- Bottom controls: zoom pill + theme pill (theme pill hidden on mobile) -->
       <div
-        class="absolute bottom-3 sm:bottom-4 start-1/2 -translate-x-1/2 flex items-center gap-2"
+        class="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2"
         style="padding-bottom: env(safe-area-inset-bottom);"
       >
         <div
@@ -550,6 +683,18 @@
             title="Fit to screen (F)"
           >
             <Maximize2 size={13} strokeWidth={2} />
+          </button>
+          <button
+            class="w-8 h-8 flex items-center justify-center rounded-[8px] transition-colors {editor.ui
+              .snapEnabled
+              ? 'bg-[var(--color-surface-2)] text-[var(--color-accent)]'
+              : 'text-[var(--color-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-ink)]'}"
+            onclick={() => editor.toggleSnap()}
+            aria-label="Snap to guides"
+            aria-pressed={editor.ui.snapEnabled}
+            title="Snap to guides (\) — hold Ctrl/Cmd while dragging to ignore"
+          >
+            <Magnet size={13} strokeWidth={2} />
           </button>
         </div>
 
@@ -609,6 +754,12 @@
 </div>
 
 <Sheet open={showExport} onClose={() => (showExport = false)} title="Export">
+  {#if isGuest}
+    <SignInPanel
+      reason="Sign in to download your design — it stays right here on the canvas while you do."
+      onSuccess={handleSignedIn}
+    />
+  {:else}
   <div class="flex flex-col gap-4">
     <div>
       <span class="text-xs text-[var(--color-muted)] block mb-2">Resolution</span>
@@ -650,7 +801,15 @@
       Copy to clipboard
     </button>
   </div>
+  {/if}
 </Sheet>
+
+<Dialog open={showSignIn} onClose={() => (showSignIn = false)} title="Save your work">
+  <SignInPanel
+    reason="You're designing as a guest, so nothing is saved yet. Sign in and this design becomes your first project — you won't leave the editor."
+    onSuccess={handleSignedIn}
+  />
+</Dialog>
 
 <Dialog open={showShortcuts} onClose={() => (showShortcuts = false)} title="Shortcuts · اختصارات">
   <div class="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">

@@ -41,17 +41,22 @@ async function loadStockBackgrounds(): Promise<StockBackgroundRow[]> {
 
 export const load: PageServerLoad = async ({ params, locals, url, parent }) => {
   await parent();
-  if (!locals.user) {
+  // Guests get the scratch editor (/editor/new) but nothing else — saved
+  // projects belong to an account. Signing in happens inline in the editor,
+  // so reaching this redirect means they deep-linked to someone's project.
+  if (!locals.user && params.projectId !== 'new') {
     const next = encodeURIComponent(url.pathname + url.search);
     throw redirect(303, `/auth/login?next=${next}`);
   }
-  const isPro = locals.user.subscription === 'pro';
+  const isPro = locals.user?.subscription === 'pro';
 
   if (params.projectId === 'new') {
     const templateId = url.searchParams.get('templateId');
     const sizeId = url.searchParams.get('size');
 
-    const project = createBlankProject(locals.user.uid, 'new');
+    // Guests carry an empty userId; autosave realigns it to the real uid once
+    // they sign in, and refuses to write before that.
+    const project = createBlankProject(locals.user?.uid ?? '', 'new');
     let lockedPremium = false;
     const stockBackgrounds = await loadStockBackgrounds();
 
@@ -89,7 +94,7 @@ export const load: PageServerLoad = async ({ params, locals, url, parent }) => {
     ]);
     if (!snap.exists) throw error(404, 'Project not found');
     const data = snap.data()!;
-    if (data.userId !== locals.user.uid) throw error(403, 'Forbidden');
+    if (data.userId !== locals.user!.uid) throw error(403, 'Forbidden');
     const project: Project = {
       id: snap.id,
       userId: data.userId,
@@ -97,6 +102,9 @@ export const load: PageServerLoad = async ({ params, locals, url, parent }) => {
       canvasSize: data.canvasSize,
       background: data.background,
       elements: data.elements ?? [],
+      // Absent on projects saved before groups existed, and on anything the
+      // Flutter app writes.
+      groups: data.groups ?? [],
       createdAt: data.createdAt?.toMillis?.() ?? Date.now(),
       updatedAt: data.updatedAt?.toMillis?.() ?? Date.now(),
       thumbnailUrl: data.thumbnailUrl ?? undefined

@@ -242,7 +242,7 @@
           class="text-[10px] tracking-[0.16em] uppercase text-[var(--color-muted)]"
           style="font-family: var(--font-mono);"
         >
-          English · Cabinet Grotesk
+          English · Thmanyah Serif Display
         </span>
         <span
           class="text-4xl md:text-5xl leading-[1.05] text-[var(--color-ink)]"

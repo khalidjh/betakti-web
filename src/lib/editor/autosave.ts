@@ -31,6 +31,7 @@ function projectToFirestore(project: Project): Record<string, unknown> {
     canvasSize: project.canvasSize,
     background: project.background,
     elements: project.elements,
+    groups: project.groups ?? [],
     thumbnailUrl: project.thumbnailUrl ?? null,
     createdAt: Timestamp.fromMillis(project.createdAt),
     updatedAt: Timestamp.fromMillis(project.updatedAt)

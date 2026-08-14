@@ -73,6 +73,16 @@ export function attachShortcuts(editor: Editor, opts: ShortcutOptions): () => vo
       editor.duplicateElements(editor.selectedIds);
       return;
     }
+    if (mod && e.shiftKey && e.key.toLowerCase() === 'g') {
+      e.preventDefault();
+      editor.ungroupSelected();
+      return;
+    }
+    if (mod && e.key.toLowerCase() === 'g') {
+      e.preventDefault();
+      editor.groupSelected();
+      return;
+    }
     if (e.key === 'Delete' || e.key === 'Backspace') {
       if (editor.selectedIds.length) {
         e.preventDefault();
@@ -86,6 +96,10 @@ export function attachShortcuts(editor: Editor, opts: ShortcutOptions): () => vo
     }
     if (e.key === ']') {
       editor.toggleInspector();
+      return;
+    }
+    if (e.key === '\\') {
+      editor.toggleSnap();
       return;
     }
     if (e.key === '?') {

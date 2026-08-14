@@ -121,7 +121,6 @@
   "time_days_ago": "days ago",
   "bg_remove_title": "Background removal",
   "bg_remove_coming": "This tool is coming soon.",
-
   "auth_forgot_sub": "We'll email you a link to reset your password.",
   "marketing_hero_eyebrow": "BILINGUAL · ARABIC & ENGLISH",
   "marketing_hero_headline_lead": "Design visually,",
@@ -168,7 +167,6 @@
   "marketing_footer_twitter": "Twitter",
   "marketing_footer_instagram": "Instagram",
   "marketing_footer_rights": "All rights reserved",
-
   "tpl_cat_all": "All",
   "tpl_cat_quotes": "Quotes",
   "tpl_cat_announcements": "Announcements",
@@ -192,7 +190,6 @@
   "tpl_empty_desc": "Try another category or view all.",
   "tpl_empty_cta": "View all",
   "tpl_not_found": "Template not found",
-
   "price_monthly_price": "19",
   "price_yearly_price": "139",
   "price_lifetime_price": "299",
@@ -213,9 +210,11 @@
   "price_faq_5_a": "Yes — cards, Apple Pay, and mada cards, via Moyasar.",
   "price_faq_6_q": "What currency do you charge in?",
   "price_faq_6_a": "Saudi Riyal (SAR) across all plans.",
-
   "legal_updated": "Last updated",
   "legal_contact": "Contact",
   "legal_privacy_body": "We respect your privacy. We keep only the minimum data needed to run the service (email, subscription state, your projects) and we don't sell your data to third parties. Files are stored in Firebase on secure infrastructure. A more detailed policy is on its way.",
-  "legal_terms_body": "By using Betakti you agree to reasonable personal and commercial use of the templates and assets, and not to abuse the service. Default templates and assets belong to Betakti; what you design is yours. A more detailed legal version is on its way."
+  "legal_terms_body": "By using Betakti you agree to reasonable personal and commercial use of the templates and assets, and not to abuse the service. Default templates and assets belong to Betakti; what you design is yours. A more detailed legal version is on its way.",
+  "home_continue": "Continue editing",
+  "home_new_design": "New design",
+  "home_pick_size": "Or start from a size"
 }
