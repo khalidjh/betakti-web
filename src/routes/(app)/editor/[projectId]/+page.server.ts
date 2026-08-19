@@ -64,7 +64,7 @@ export const load: PageServerLoad = async ({ params, locals, url, parent }) => {
       try {
         const snap = await adminDb().collection('dynamic_templates').doc(templateId).get();
         if (snap.exists) {
-          const tpl = normalizeTemplate(snap.id, snap.data());
+          const tpl = normalizeTemplate(snap.id, snap.data(), locals.locale === 'en' ? 'en' : 'ar');
           if (tpl && tpl.isActive) {
             project.canvasSize = tpl.canvasSize;
             project.background = tpl.background;
