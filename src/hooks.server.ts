@@ -1,7 +1,7 @@
-import type { Handle } from '@sveltejs/kit';
+import { redirect, type Handle } from '@sveltejs/kit';
 import { adminAuth } from '$lib/firebase/admin';
 import { isLocale, type Locale } from '$lib/i18n';
-import { isAppPath, localeFromPath } from '$lib/locale-path';
+import { addLocalePrefix, isAppPath, localeFromPath } from '$lib/locale-path';
 import { setLocale } from '$lib/paraglide/runtime.js';
 
 async function loadUser(cookie: string | undefined): Promise<App.Locals['user']> {
@@ -50,6 +50,14 @@ function negotiateLocale(event: Parameters<Handle>[0]['event']): Locale {
 export const handle: Handle = async ({ event, resolve }) => {
   event.locals.user = await loadUser(event.cookies.get('__session'));
   event.locals.locale = negotiateLocale(event);
+
+  // The front door is the designer, not a landing page: `/` (and its English
+  // twin `/en`) drop straight into the guest editor, which needs no account.
+  // The marketing home page it replaced now lives at `/welcome`.
+  const path = event.url.pathname;
+  if (path === '/' || path === '/en') {
+    throw redirect(302, addLocalePrefix('/editor/new', localeFromPath(path)));
+  }
   // Only persist the language cookie from in-app pages, where it stores the
   // user's preference. Marketing pages are locale-by-URL, so writing the cookie
   // there would clobber an app user's choice when they visit a public page.

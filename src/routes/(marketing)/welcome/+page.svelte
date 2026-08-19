@@ -48,7 +48,7 @@
 <Seo
   title="Betakti · {m.marketing_hero_headline()}"
   description={m.marketing_hero_sub()}
-  path="/"
+  path="/welcome"
   includeBrand={false}
   jsonLd={homeJsonLd}
 />

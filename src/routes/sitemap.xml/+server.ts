@@ -6,7 +6,7 @@ import { OCCASION_PAGES } from '$lib/seo/occasions-content';
 
 /** Bilingual marketing paths — each gets an Arabic (root) and English (/en) URL. */
 const BILINGUAL_PATHS = [
-  '/',
+  '/welcome',
   '/pricing',
   '/templates',
   '/occasions',

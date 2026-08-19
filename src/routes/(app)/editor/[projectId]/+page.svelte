@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { replaceState } from '$app/navigation';
+  import { page } from '$app/state';
   import { m } from '$lib/i18n';
   import Logo from '$lib/brand/logo.svelte';
   import IconButton from '$lib/components/icon-button.svelte';
@@ -383,7 +384,12 @@
       <LayersIcon size={18} strokeWidth={1.8} />
     </button>
     <!-- Breadcrumb -->
-    <a href="/home" class="hidden lg:flex items-center gap-1.5 px-1 hover:opacity-80 transition-opacity">
+    <!-- `/` lands guests straight here, so the logo has to lead somewhere they
+         can actually go — /home is behind the login wall. -->
+    <a
+      href={page.data.user ? '/home' : '/welcome'}
+      class="hidden lg:flex items-center gap-1.5 px-1 hover:opacity-80 transition-opacity"
+    >
       <Logo size={22} />
       <span class="font-semibold text-[15px] hidden sm:inline" style="font-family: var(--font-display);">{m.app_name()}<span class="text-[var(--color-accent)]">.</span></span>
     </a>

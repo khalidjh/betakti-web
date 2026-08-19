@@ -43,7 +43,7 @@
       creator: { '@type': 'Organization', name: 'Betakti' }
     },
     breadcrumbList([
-      { name: t('الرئيسية', 'Home'), url: SITE_URL + localizeHref('/') },
+      { name: t('الرئيسية', 'Home'), url: SITE_URL + localizeHref('/welcome') },
       { name: m.page_templates_title(), url: SITE_URL + localizeHref('/templates') },
       { name: tplName, url: SITE_URL + localizeHref(`/templates/${tpl.id}`) }
     ]),
