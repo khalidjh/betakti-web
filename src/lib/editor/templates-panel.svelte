@@ -115,10 +115,10 @@
         {/each}
       </div>
     {:else}
-      <div class="grid grid-cols-2 gap-2.5">
+      <div class="columns-2 gap-2.5 [column-fill:_balance]">
         {#each visible as r (r.id)}
           <button
-            class="group relative rounded-[10px] overflow-hidden border border-[var(--color-border)] bg-[var(--color-surface-2)] text-start hover:border-[var(--color-accent)] transition-colors disabled:opacity-60"
+            class="group relative mb-2.5 w-full break-inside-avoid rounded-[10px] overflow-hidden border border-[var(--color-border)] bg-[var(--color-surface-2)] text-start hover:border-[var(--color-accent)] transition-colors disabled:opacity-60"
             style="aspect-ratio: {r.canvasSize.width} / {r.canvasSize.height};"
             disabled={applyingId !== null}
             onclick={() => apply(r)}

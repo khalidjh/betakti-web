@@ -576,6 +576,16 @@
     artboardBg.set({ width: w, height: h });
     artboardEdge?.set({ width: w, height: h });
     const bg = editor.project.background;
+
+    // Dropping an image background (undoing a template, picking a colour) has
+    // to take the image object with it — it lives on the canvas, not in
+    // artboardBg's fill, so setting a fill would otherwise leave it on top.
+    if (bg.type !== 'image') {
+      for (const o of canvas.getObjects()) {
+        if ((o as { data?: { kind?: string } }).data?.kind === 'background-image') canvas.remove(o);
+      }
+    }
+
     if (bg.type === 'color') {
       artboardBg.set({ fill: bg.color });
     } else if (bg.type === 'gradient') {
