@@ -5,6 +5,7 @@ export interface ShortcutOptions {
   onSave: () => void;
   onExport: () => void;
   onToggleShortcuts: () => void;
+  onToggleTemplates: () => void;
 }
 
 let clipboard: CanvasElement[] = [];
@@ -104,6 +105,11 @@ export function attachShortcuts(editor: Editor, opts: ShortcutOptions): () => vo
     }
     if (e.key === '?') {
       opts.onToggleShortcuts();
+      return;
+    }
+    if (e.shiftKey && (e.key === 'T' || e.key === 't')) {
+      e.preventDefault();
+      opts.onToggleTemplates();
       return;
     }
     if (e.key === 'f' || e.key === 'F') {

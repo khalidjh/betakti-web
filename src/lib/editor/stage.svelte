@@ -29,6 +29,7 @@
   type FObject = import('fabric').FabricObject;
   let canvas: import('fabric').Canvas | null = null;
   let artboardBg: import('fabric').Rect | null = null;
+  let artboardEdge: import('fabric').Rect | null = null;
 
   const nodeMap = new Map<string, FObject>();
   // When we sync object → element, we mutate the project, which fires the
@@ -205,6 +206,23 @@
       excludeFromExport: false
     });
     canvas.add(artboardBg);
+
+    // A white artboard on a near-white page has no edge, so people can't tell
+    // where the design stops. This sits directly under the artboard purely to
+    // cast that edge — never exported, never selectable.
+    artboardEdge = new F.Rect({
+      left: 0,
+      top: 0,
+      width: editor.project.canvasSize.width,
+      height: editor.project.canvasSize.height,
+      fill: '#ffffff',
+      selectable: false,
+      evented: false,
+      hoverCursor: 'default',
+      excludeFromExport: true,
+      shadow: new F.Shadow({ color: 'rgba(15, 23, 42, 0.22)', blur: 24, offsetX: 0, offsetY: 6 })
+    });
+    canvas.add(artboardEdge);
 
     // Selection styling
     F.FabricObject.prototype.set({
@@ -432,13 +450,19 @@
 
     ro = new ResizeObserver(() => {
       if (!canvas || !container) return;
-      canvas.setDimensions({ width: container.clientWidth, height: container.clientHeight });
-      editor.ui.containerSize = { w: container.clientWidth, h: container.clientHeight };
+      const box = { w: container.clientWidth, h: container.clientHeight };
+      canvas.setDimensions({ width: box.w, height: box.h });
+      editor.ui.containerSize = box;
+      // The first observation is usually the one where layout finally has real
+      // numbers — fitting only at init() left every load stuck at 100% zoom
+      // whenever the container measured 0 (which is most of the time on
+      // mobile, where a 1080px artboard then opens cropped).
+      if (box.w && box.h) editor.fitToScreen(box, true);
       applyViewport();
     });
     ro.observe(container);
     editor.ui.containerSize = { w: container.clientWidth, h: container.clientHeight };
-    editor.fitToScreen({ w: container.clientWidth, h: container.clientHeight });
+    editor.fitToScreen({ w: container.clientWidth, h: container.clientHeight }, true);
 
     registerExport?.(exportImage);
 
@@ -550,6 +574,7 @@
     const w = editor.project.canvasSize.width;
     const h = editor.project.canvasSize.height;
     artboardBg.set({ width: w, height: h });
+    artboardEdge?.set({ width: w, height: h });
     const bg = editor.project.background;
     if (bg.type === 'color') {
       artboardBg.set({ fill: bg.color });
@@ -628,6 +653,7 @@
           canvas.add(img);
           canvas.sendObjectToBack(img);
           canvas.sendObjectToBack(artboardBg);
+          if (artboardEdge) canvas.sendObjectToBack(artboardEdge);
           canvas.requestRenderAll();
         })
         .catch(() => {});
@@ -665,6 +691,7 @@
         if (artboardBg) canvas.sendObjectToBack(artboardBg);
       }
     }
+    if (artboardEdge) canvas.sendObjectToBack(artboardEdge);
     for (const el of sorted) {
       const obj = nodeMap.get(el.id);
       if (obj) canvas.bringObjectToFront(obj);

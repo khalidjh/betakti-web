@@ -26,7 +26,8 @@
     Layers as LayersIcon,
     Sliders,
     Magnet,
-    Boxes
+    Boxes,
+    LayoutTemplate
   } from 'lucide-svelte';
   import Tooltip from '$lib/components/tooltip.svelte';
   import Sheet from '$lib/components/sheet.svelte';
@@ -36,6 +37,7 @@
   import { toasts } from '$lib/components/toast.svelte';
   import SignInPanel from '$lib/auth/sign-in-panel.svelte';
   import Stage from '$lib/editor/stage.svelte';
+  import TemplatesPanel from '$lib/editor/templates-panel.svelte';
   import Inspector from '$lib/editor/inspector.svelte';
   import CursivePicker from '$lib/editor/cursive-picker.svelte';
   import { ensureCursiveFontLoaded, type CursiveFont } from '$lib/editor/cursive-fonts';
@@ -68,7 +70,13 @@
   const editor = provideEditor(createEditor(data.project));
   const isPro = $derived(data.isPro);
   let premiumBannerDismissed = $state(false);
-  const showPremiumBanner = $derived(data.lockedPremium && !premiumBannerDismissed);
+  // A premium template picked in-session locks export the same way one opened
+  // from a /templates link does (that one arrives as data.lockedPremium).
+  let appliedPremiumLock = $state(false);
+  const isPremiumLocked = $derived((data.lockedPremium || appliedPremiumLock) && !isPro);
+  const showPremiumBanner = $derived(
+    (data.lockedPremium || appliedPremiumLock) && !premiumBannerDismissed
+  );
 
   type Exporter = (pixelRatio: number, withWatermark: boolean) => Promise<string>;
   let exporter: Exporter | null = null;
@@ -80,6 +88,7 @@
   const isGuest = $derived(authResolved && !isSignedIn);
 
   let showExport = $state(false);
+  let showTemplates = $state(false);
   let showSignIn = $state(false);
   let showShortcuts = $state(false);
   let showCursive = $state(false);
@@ -96,6 +105,18 @@
   onMount(() => {
     const attr = document.documentElement.getAttribute('data-theme');
     currentTheme = attr === 'dark' ? 'dark' : 'light';
+  });
+
+  // `/` lands here, so for most visitors this canvas is the first thing they
+  // see. An untouched blank one opens the template picker rather than leaving
+  // them staring at an empty square; anything carrying a design (a template
+  // link, a saved project) is left alone.
+  onMount(() => {
+    const blank =
+      data.project.id === 'new' &&
+      data.project.elements.length === 0 &&
+      data.project.background.type === 'color';
+    if (blank) showTemplates = true;
   });
 
   function setTheme(next: 'light' | 'dark'): void {
@@ -138,7 +159,8 @@
     const detach = attachShortcuts(editor, {
       onSave: doSave,
       onExport: openExport,
-      onToggleShortcuts: () => (showShortcuts = !showShortcuts)
+      onToggleShortcuts: () => (showShortcuts = !showShortcuts),
+      onToggleTemplates: () => (showTemplates = !showTemplates)
     });
     // Sync the client Firebase SDK with the server session cookie before
     // autosave fires, otherwise Firestore writes hit "permission-denied".
@@ -251,7 +273,7 @@
 
   async function handleDownload(): Promise<void> {
     if (!exporter || isGuest) return;
-    if (data.lockedPremium && !isPro) {
+    if (isPremiumLocked) {
       toasts.push('قالب Pro — يتطلّب الترقية للتصدير', 'error');
       return;
     }
@@ -271,6 +293,7 @@
   }
 
   const SHORTCUTS: Array<{ keys: string; ar: string; en: string }> = [
+    { keys: 'Shift+T', ar: 'القوالب', en: 'Templates' },
     { keys: 'Ctrl+Z', ar: 'تراجع', en: 'Undo' },
     { keys: 'Ctrl+Shift+Z', ar: 'إعادة', en: 'Redo' },
     { keys: 'Ctrl+C / V', ar: 'نسخ / لصق', en: 'Copy / Paste' },
@@ -444,7 +467,7 @@
       <LocaleToggle />
       <span class="w-px h-5 bg-[var(--color-border)] mx-1"></span>
     </div>
-    <div class="hidden md:flex items-center gap-0.5">
+    <div class="flex items-center gap-0.5">
       <Tooltip label="Undo" shortcut="Ctrl+Z">
         <IconButton label="Undo" size="sm" onclick={() => editor.undo()} disabled={!editor.canUndo()}>
           <Undo2 size={15} strokeWidth={1.75} />
@@ -456,7 +479,7 @@
         </IconButton>
       </Tooltip>
     </div>
-    <span class="hidden md:inline w-px h-5 bg-[var(--color-border)] mx-1"></span>
+    <span class="w-px h-5 bg-[var(--color-border)] mx-1"></span>
     <button
       class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-sm font-semibold text-white rounded-[8px] shadow-[var(--shadow-1)] hover:shadow-[var(--shadow-2)] transition-shadow flex-none"
       style="background: var(--brand-gradient)"
@@ -639,6 +662,18 @@
       <div
         class="editor-toolbar absolute top-2 sm:top-4 left-1/2 -translate-x-1/2 flex items-center gap-0.5 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[12px] shadow-[var(--shadow-2)] p-1 z-10 max-w-[calc(100vw-1rem)] overflow-x-auto scroll-rail"
       >
+        <Tooltip label="Templates" shortcut="⇧T">
+          <IconButton
+            label="Templates"
+            size="sm"
+            active={showTemplates}
+            onclick={() => (showTemplates = true)}
+          >
+            <LayoutTemplate size={16} strokeWidth={1.8} />
+          </IconButton>
+        </Tooltip>
+        <span class="w-px h-5 bg-[var(--color-border)] mx-0.5"></span>
+
         {#each TOOLS as tool, idx (tool.id)}
           {#if idx === 1 || idx === 4}
             <span class="w-px h-5 bg-[var(--color-border)] mx-0.5"></span>
@@ -773,6 +808,27 @@
     <Inspector stockBackgrounds={data.stockBackgrounds} />
   </Sheet>
 </div>
+
+<Sheet
+  open={showTemplates}
+  onClose={() => (showTemplates = false)}
+  side="start"
+  title="Templates"
+  bare
+>
+  <TemplatesPanel
+    {isPro}
+    locale={page.data.locale === 'en' ? 'en' : 'ar'}
+    onPremiumApplied={() => {
+      appliedPremiumLock = true;
+      premiumBannerDismissed = false;
+    }}
+    onApplied={() => {
+      showTemplates = false;
+      toasts.push(page.data.locale === 'en' ? 'Template applied' : 'تم تطبيق القالب', 'success');
+    }}
+  />
+</Sheet>
 
 <Sheet open={showExport} onClose={() => (showExport = false)} title="Export">
   {#if isGuest}

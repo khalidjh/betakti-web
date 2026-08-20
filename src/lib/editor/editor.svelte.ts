@@ -4,6 +4,7 @@ import type {
   CanvasBackground,
   CanvasElement,
   CanvasGroup,
+  CanvasSize,
   Project,
   ToolName,
   TextElement,
@@ -75,7 +76,10 @@ export function createEditor(initial: Project) {
     inspectorVisible: true,
     gridVisible: true,
     snapEnabled: true,
-    containerSize: { w: 0, h: 0 }
+    containerSize: { w: 0, h: 0 },
+    // Once someone zooms by hand we stop re-fitting behind their back; until
+    // then the canvas keeps itself framed as the viewport changes.
+    zoomIsManual: false
   });
 
   /**
@@ -528,8 +532,38 @@ export function createEditor(initial: Project) {
     commit();
   }
 
-  function setZoom(z: number): void {
+  /**
+   * Swap the whole design for a template's, as a single undo step. Element ids
+   * are regenerated so two pages built from one template never collide.
+   */
+  function applyTemplate(tpl: {
+    canvasSize: CanvasSize;
+    background: CanvasBackground;
+    elements: CanvasElement[];
+    name?: string;
+  }): void {
+    clearSelection();
+    project.canvasSize = { ...tpl.canvasSize };
+    project.background = structuredClone(tpl.background);
+    project.groups = [];
+    project.elements.splice(
+      0,
+      project.elements.length,
+      ...tpl.elements.map((el, i) => ({
+        ...structuredClone(el),
+        id: crypto.randomUUID(),
+        zIndex: typeof el.zIndex === 'number' ? el.zIndex : i
+      }))
+    );
+    if (tpl.name) project.name = tpl.name;
+    commit();
+    // The template may be a different shape than what was on screen.
+    fitToScreen(undefined, true);
+  }
+
+  function setZoom(z: number, manual = true): void {
     ui.zoom = Math.max(0.1, Math.min(8, z));
+    if (manual) ui.zoomIsManual = true;
   }
 
   function setPan(x: number, y: number): void {
@@ -545,15 +579,26 @@ export function createEditor(initial: Project) {
     commit();
   }
 
-  function fitToScreen(containerSize?: { w: number; h: number }): void {
+  /**
+   * Frame the whole artboard in the viewport.
+   *
+   * `auto` marks the call as one the editor made for itself (first layout,
+   * viewport resize, template applied) rather than one the user asked for, so
+   * it backs off once they've set a zoom by hand.
+   */
+  function fitToScreen(containerSize?: { w: number; h: number }, auto = false): void {
     const box = containerSize ?? ui.containerSize;
     if (!box.w || !box.h) return;
-    const padding = 80;
+    if (auto && ui.zoomIsManual) return;
+    // Breathing room around the artboard, but never more than a third of the
+    // viewport — on a phone an 80px inset would shrink the design pointlessly.
+    const padding = Math.min(80, box.w / 3, box.h / 3);
     const zw = (box.w - padding) / project.canvasSize.width;
     const zh = (box.h - padding) / project.canvasSize.height;
     const z = Math.min(zw, zh, 1);
     ui.zoom = z;
     ui.pan = { x: 0, y: 0 };
+    if (!auto) ui.zoomIsManual = false;
   }
 
   function toggleInspector(): void {
@@ -616,6 +661,7 @@ export function createEditor(initial: Project) {
     bringToFront,
     sendToBack,
     setBackground,
+    applyTemplate,
     setZoom,
     setPan,
     setTool,
