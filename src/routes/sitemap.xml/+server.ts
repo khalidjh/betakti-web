@@ -17,6 +17,7 @@ const BILINGUAL_PATHS = [
   '/contact',
   '/privacy',
   '/terms',
+  '/dmca',
   ...PLATFORM_PAGES.map((p) => `/create/${p.slug}`),
   ...OCCASION_PAGES.map((o) => `/occasions/${o.slug}`)
 ];
