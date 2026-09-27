@@ -31,11 +31,16 @@ rsync -a --delete \
   ./ "$HOST:$REMOTE/"
 
 if [ "$BUILD" = "1" ]; then
+  # Dev dependencies are installed on purpose: the build runs here, and vite,
+  # svelte and @tailwindcss/vite all live in devDependencies. --omit=dev fails
+  # with "Cannot find package '@tailwindcss/vite'" and leaves the old build
+  # serving, which looks like a successful deploy until a new page 404s.
+  #
   # 3584MB because the box has 2GB of RAM and the default heap OOMs partway
   # through the Vite build, leaving build/ half written.
   ssh "$HOST" "cd $REMOTE && \
     cp -r build build.bak-\$(date +%Y%m%d-%H%M%S) 2>/dev/null || true && \
-    npm ci --omit=dev --no-audit --no-fund >/dev/null 2>&1 || npm install --no-audit --no-fund >/dev/null && \
+    npm ci --no-audit --no-fund >/dev/null 2>&1 || npm install --no-audit --no-fund >/dev/null && \
     NODE_OPTIONS=--max-old-space-size=3584 npm run build 2>&1 | tail -3 && \
     systemctl restart betakti && sleep 3 && systemctl is-active betakti"
 fi
