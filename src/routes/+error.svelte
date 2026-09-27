@@ -41,7 +41,7 @@
   {/if}
 
   <a
-    href="/welcome"
+    href="/"
     class="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-[10px] text-white font-semibold text-sm"
     style="background: var(--brand-gradient); box-shadow: 0 6px 20px rgba(91, 141, 239, 0.28);"
   >

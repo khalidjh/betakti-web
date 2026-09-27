@@ -13,9 +13,8 @@ const config = {
       // `*` keeps crawling the Arabic (root) marketing pages. The /en entries
       // force the English variants of the prerendered marketing pages to be
       // generated too, since the prerender crawler won't otherwise discover
-      // them (they live behind the /en reroute). `/` and `/en` are absent on
-      // purpose — they redirect to the guest editor and have no page to render.
-      entries: ['*', '/en/welcome', '/en/pricing', '/en/privacy', '/en/terms'],
+      // them (they live behind the /en reroute).
+      entries: ['*', '/en', '/en/pricing', '/en/privacy', '/en/terms'],
       handleHttpError: 'warn'
     }
   }
