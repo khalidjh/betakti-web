@@ -12,15 +12,20 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://api.fontshare.com" />
-    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <!-- Display face (headings, wordmark). Self-hosted, so no third-party
+         round-trip; the bold cut is preloaded because nearly every heading is
+         semibold or bolder and sits above the fold. -->
+    <link rel="stylesheet" href="%sveltekit.assets%/fonts/thmanyah/thmanyah.css" />
     <link
-      href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800&f[]=general-sans@400,500,600&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="%sveltekit.assets%/fonts/thmanyah/serif-display/thmanyahserifdisplay-Bold.woff2"
+      crossorigin
     />
     <link rel="stylesheet" href="%sveltekit.assets%/fonts/fonts.css" />
     <link rel="stylesheet" href="%sveltekit.assets%/fonts/cursive/cursive.css" />

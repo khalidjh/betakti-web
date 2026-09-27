@@ -37,7 +37,7 @@
     class="sticky top-0 z-30 bg-[color-mix(in_srgb,var(--color-surface)_92%,transparent)] backdrop-blur border-b border-[var(--color-border)]"
   >
     <div class="max-w-6xl mx-auto flex items-center justify-between px-4 sm:px-6 py-3 gap-2">
-      <a href={localizeHref('/')} class="flex items-center gap-2.5">
+      <a href={localizeHref('/welcome')} class="flex items-center gap-2.5">
         <Logo size={30} />
         <span class="font-semibold text-base">{m.app_name()}</span>
       </a>

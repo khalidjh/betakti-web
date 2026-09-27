@@ -26,9 +26,10 @@
   --font-sans:
     'Inter', 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, sans-serif;
+  /* Swap 'Thmanyah Serif Display' for 'Thmanyah Sans' to switch the whole
+     interface to the sans cut — both are declared in fonts/thmanyah.css. */
   --font-display:
-    'Cabinet Grotesk', 'General Sans', 'Readex Pro', 'Inter', 'IBM Plex Sans Arabic', system-ui,
-    sans-serif;
+    'Thmanyah Serif Display', 'Readex Pro', 'Inter', 'IBM Plex Sans Arabic', system-ui, serif;
   --font-mono: 'Geist Mono', 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, monospace;
   --font-arabic: 'IBM Plex Sans Arabic', 'Readex Pro', 'Tajawal', system-ui, sans-serif;
 

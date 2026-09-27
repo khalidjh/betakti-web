@@ -5,6 +5,7 @@ export interface ShortcutOptions {
   onSave: () => void;
   onExport: () => void;
   onToggleShortcuts: () => void;
+  onToggleTemplates: () => void;
 }
 
 let clipboard: CanvasElement[] = [];
@@ -73,6 +74,16 @@ export function attachShortcuts(editor: Editor, opts: ShortcutOptions): () => vo
       editor.duplicateElements(editor.selectedIds);
       return;
     }
+    if (mod && e.shiftKey && e.key.toLowerCase() === 'g') {
+      e.preventDefault();
+      editor.ungroupSelected();
+      return;
+    }
+    if (mod && e.key.toLowerCase() === 'g') {
+      e.preventDefault();
+      editor.groupSelected();
+      return;
+    }
     if (e.key === 'Delete' || e.key === 'Backspace') {
       if (editor.selectedIds.length) {
         e.preventDefault();
@@ -88,8 +99,17 @@ export function attachShortcuts(editor: Editor, opts: ShortcutOptions): () => vo
       editor.toggleInspector();
       return;
     }
+    if (e.key === '\\') {
+      editor.toggleSnap();
+      return;
+    }
     if (e.key === '?') {
       opts.onToggleShortcuts();
+      return;
+    }
+    if (e.shiftKey && (e.key === 'T' || e.key === 't')) {
+      e.preventDefault();
+      opts.onToggleTemplates();
       return;
     }
     if (e.key === 'f' || e.key === 'F') {

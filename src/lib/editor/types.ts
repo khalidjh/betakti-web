@@ -39,6 +39,16 @@ export interface BaseElement {
   zIndex: number;
   animation?: ElementAnimation;
   shadow?: ElementShadow;
+  /**
+   * Membership in a `Project.groups` entry, or absent when ungrouped.
+   *
+   * Grouping is deliberately expressed as a flat tag rather than by nesting
+   * `elements`, because the Flutter app and every stored template read this
+   * same array. Children keep absolute coordinates, so any reader that ignores
+   * `groupId` — mobile, old templates, the export path — renders pixel-identical
+   * output and simply doesn't offer grouping.
+   */
+  groupId?: string;
 }
 
 export interface TextElement extends BaseElement {
@@ -159,12 +169,22 @@ export type CanvasBackground =
       opacity: number;
     };
 
+export interface CanvasGroup {
+  id: string;
+  name?: string;
+  /** Set when this group is nested inside another. */
+  parentId?: string;
+  isCollapsed?: boolean;
+}
+
 export interface Project {
   id: string;
   name: string;
   canvasSize: CanvasSize;
   background: CanvasBackground;
   elements: CanvasElement[];
+  /** Purely additive: readers that don't know about groups ignore it. */
+  groups: CanvasGroup[];
   createdAt: number;
   updatedAt: number;
   thumbnailUrl?: string;
@@ -190,6 +210,7 @@ export function createBlankProject(userId: string, id: string): Project {
     canvasSize: DEFAULT_CANVAS_SIZES[0]!,
     background: { type: 'color', color: '#ffffff' },
     elements: [],
+    groups: [],
     createdAt: Date.now(),
     updatedAt: Date.now(),
     userId

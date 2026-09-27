@@ -11,5 +11,12 @@ export default defineConfig({
       outdir: './src/lib/paraglide'
     }),
     sveltekit()
-  ]
+  ],
+  ssr: {
+    // fast-json-patch has no `exports` map, so SSR resolves its CommonJS `main`
+    // and named imports (`compare`, `applyPatch`) fail at runtime even though
+    // the bundler build is fine. Routing it through Vite picks up the ESM
+    // `module` entry instead.
+    noExternal: ['fast-json-patch']
+  }
 });
