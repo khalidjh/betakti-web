@@ -46,9 +46,12 @@
   const ogLocaleAlt = $derived(locale === 'ar' ? 'en_US' : 'ar_AR');
 
   const ogImage = $derived(image.startsWith('http') ? image : SITE_URL + image);
-  // Only advertise fixed dimensions for the default 1200×630 card (page-specific
-  // images like template thumbnails have their own aspect ratio).
-  const isDefaultOg = $derived(ogImage === DEFAULT_OG_IMAGE);
+  // Advertise fixed dimensions for cards we generate at 1200×630 — the default
+  // one and the per-page cards under /og/, made by scripts/make-og.py. A
+  // template thumbnail has its own aspect ratio and must not claim these.
+  const isWideCard = $derived(
+    ogImage === DEFAULT_OG_IMAGE || ogImage.startsWith(`${SITE_URL}/og/`)
+  );
 
   const blocks = $derived(jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []);
 </script>
@@ -76,7 +79,7 @@
   <meta property="og:description" content={description} />
   <meta property="og:url" content={canonical} />
   <meta property="og:image" content={ogImage} />
-  {#if isDefaultOg}
+  {#if isWideCard}
     <meta property="og:image:width" content={String(OG_IMAGE_WIDTH)} />
     <meta property="og:image:height" content={String(OG_IMAGE_HEIGHT)} />
     <meta property="og:image:alt" content="Betakti — بطاقتي" />

@@ -30,6 +30,7 @@
   {path}
   keywords={page.keywords}
   includeBrand={false}
+  image={`/og/${page.slug}.png`}
   {jsonLd}
 />
 

@@ -15,7 +15,7 @@ const config = {
       // generated too, since the prerender crawler won't otherwise discover
       // them (they live behind the /en reroute). `/` and `/en` are absent on
       // purpose — they redirect to the guest editor and have no page to render.
-      entries: ['*', '/en/welcome', '/en/pricing', '/en/privacy', '/en/terms', '/en/dmca'],
+      entries: ['*', '/en', '/en/pricing', '/en/privacy', '/en/terms', '/en/dmca'],
       handleHttpError: 'warn'
     }
   }

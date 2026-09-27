@@ -51,13 +51,11 @@ export const handle: Handle = async ({ event, resolve }) => {
   event.locals.user = await loadUser(event.cookies.get('__session'));
   event.locals.locale = negotiateLocale(event);
 
-  // The front door is the designer, not a landing page: `/` (and its English
-  // twin `/en`) drop straight into the guest editor, which needs no account.
-  // The marketing home page it replaced now lives at `/welcome`.
-  const path = event.url.pathname;
-  if (path === '/' || path === '/en') {
-    throw redirect(302, addLocalePrefix('/editor/new', localeFromPath(path)));
-  }
+  // `/` is a page again. It used to redirect into the guest editor, which
+  // meant the most-linked URL on the domain — the one people search for by
+  // brand and the one every share points at — was not indexable, and the
+  // landing content sat at `/welcome` where nothing linked to it. The editor
+  // is one tap away from here instead.
   // Only persist the language cookie from in-app pages, where it stores the
   // user's preference. Marketing pages are locale-by-URL, so writing the cookie
   // there would clobber an app user's choice when they visit a public page.
