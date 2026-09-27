@@ -17,6 +17,280 @@ export interface OccasionPage {
 
 export const OCCASION_PAGES: OccasionPage[] = [
   {
+    // Apple's own Saudi autocomplete puts «دعوات الكترونيه» first under
+    // «دعوات», and the apps holding that slot have single-digit rating counts.
+    // The spelling with ه is what people type, so it leads the keyword line.
+    slug: 'e-invitations',
+    category: 'events',
+    month: 1,
+    keywords:
+      'دعوات الكترونيه, دعوة الكترونية, كروت دعوة, تصميم دعوات, دعوة واتساب, electronic invitation arabic',
+    ar: {
+      metaTitle: 'دعوات الكترونيه — صمم دعوتك وأرسلها في واتساب',
+      metaDesc:
+        'صمم دعوة الكترونية بالعربي وأرسلها لكل المدعوين في واتساب. قوالب دعوات جاهزة لكل مناسبة، تعدّل الأسماء والتاريخ وتشاركها بثواني.',
+      eyebrow: 'مناسبات · دعوات',
+      h1: 'دعوات الكترونيه',
+      intro:
+        'الدعوة الورقية تحتاج مطبعة وتوصيل. الدعوة الالكترونية تحتاج دقيقة: اختر القالب، اكتب الأسماء والتاريخ والمكان، وأرسلها لكل المدعوين في واتساب أو سناب.',
+      bullets: [
+        { title: 'قوالب لكل مناسبة', desc: 'زواج، ملكة، تخرج، مولود، وعزيمة عادية.' },
+        { title: 'تعديل بالعربي', desc: 'خطوط عربية تتشكّل صح، وأسماء وتواريخ تكتبها كما تنطقها.' },
+        { title: 'أرسلها في واتساب', desc: 'مقاس جاهز للمشاركة، بدون قص ولا ضغط يخرب الخط.' },
+        { title: 'للطباعة بعد', desc: 'لو تبي نسخة مطبوعة، صدّرها بجودة عالية أو PDF.' }
+      ],
+      steps: [
+        { title: 'اختر قالب الدعوة', desc: 'تصفح الدعوات الجاهزة واختر اللي يناسب المناسبة.' },
+        { title: 'اكتب تفاصيلك', desc: 'الأسماء، التاريخ، المكان، ووقت الحضور.' },
+        { title: 'شاركها', desc: 'أرسلها في واتساب أو احفظها لتطبعها.' }
+      ],
+      faq: [
+        { q: 'أقدر أرسلها لعدد كبير؟', a: 'نعم، الدعوة صورة عادية ترسلها لأي عدد في واتساب أو أي تطبيق.' },
+        { q: 'أقدر أطبعها؟', a: 'نعم، صدّرها بجودة عالية أو PDF وخذها للمطبعة.' }
+      ]
+    },
+    en: {
+      metaTitle: 'Electronic Invitations — Design and Send on WhatsApp',
+      metaDesc:
+        'Design an Arabic electronic invitation and send it to every guest on WhatsApp. Ready invitation templates for any occasion — change the names and date and share in seconds.',
+      eyebrow: 'Occasions · Invitations',
+      h1: 'Electronic Invitations',
+      intro:
+        'A printed invitation needs a press and a courier. An electronic one needs a minute: pick a template, write the names, date and venue, and send it to every guest on WhatsApp.',
+      bullets: [
+        { title: 'A template per occasion', desc: 'Weddings, engagements, graduations, new babies and plain get-togethers.' },
+        { title: 'Edited in Arabic', desc: 'Fonts that join properly, and names and dates you type as you say them.' },
+        { title: 'Send it on WhatsApp', desc: 'Sized to share, with no crop or compression that ruins the type.' },
+        { title: 'Printable too', desc: 'Export in high quality or as a PDF if you want paper.' }
+      ],
+      steps: [
+        { title: 'Pick an invitation template', desc: 'Browse ready invitations and choose one.' },
+        { title: 'Write your details', desc: 'Names, date, venue and time.' },
+        { title: 'Share it', desc: 'Send it on WhatsApp or save it to print.' }
+      ],
+      faq: [
+        { q: 'Can I send it to a large list?', a: 'Yes — it is an ordinary image, so you can send it to any number of people.' },
+        { q: 'Can I print it?', a: 'Yes, export in high quality or as a PDF and take it to a printer.' }
+      ]
+    }
+  },
+  {
+    slug: 'engagement',
+    category: 'wedding',
+    month: 1,
+    keywords: 'دعوة ملكة, عقد قران, دعوة خطوبة, تصميم دعوة ملكة, engagement invitation arabic',
+    ar: {
+      metaTitle: 'دعوة ملكة وعقد قران — بطاقات خطوبة بالعربي',
+      metaDesc:
+        'صمم دعوة ملكة أو عقد قران بالعربي. قوالب هادئة تليق بالمناسبة، تكتب فيها الأسماء والتاريخ وترسلها في واتساب.',
+      eyebrow: 'مناسبات · ملكة وعقد قران',
+      h1: 'دعوة ملكة وعقد قران',
+      intro:
+        'الملكة وعقد القران لهما ذوقهما: دعوة أهدأ من دعوة الزفاف وأقرب للعائلة. اختر قالب، اكتب الأسماء والتاريخ والمكان، وأرسلها.',
+      bullets: [
+        { title: 'قوالب للمناسبة نفسها', desc: 'تصاميم للملكة وعقد القران، مو قوالب زفاف معدّلة.' },
+        { title: 'خطوط عربية راقية', desc: 'ديواني وثلث وخطوط هادئة تناسب الدعوة العائلية.' },
+        { title: 'أسماء العروسين', desc: 'اكتب الاسمين والتاريخ الهجري أو الميلادي.' },
+        { title: 'جاهزة للإرسال', desc: 'مقاس واتساب، وتصدير عالي الجودة لو تبي تطبع.' }
+      ],
+      steps: [
+        { title: 'اختر القالب', desc: 'تصفح قوالب الملكة وعقد القران.' },
+        { title: 'اكتب الأسماء', desc: 'أسماء العروسين والتاريخ والمكان.' },
+        { title: 'أرسل الدعوة', desc: 'شاركها في واتساب أو احفظها للطباعة.' }
+      ],
+      faq: [
+        { q: 'التاريخ هجري ولا ميلادي؟', a: 'اكتب اللي تبيه؛ النص حر وتقدر تكتب التاريخين مع بعض.' },
+        { q: 'أقدر أغيّر الألوان؟', a: 'نعم، كل عنصر في القالب قابل للتعديل.' }
+      ]
+    },
+    en: {
+      metaTitle: 'Engagement & Katb Al-Kitab Invitations in Arabic',
+      metaDesc:
+        'Design an engagement or katb al-kitab invitation in Arabic. Quiet templates that suit the occasion — write the names and date and send it on WhatsApp.',
+      eyebrow: 'Occasions · Engagement',
+      h1: 'Engagement & Katb Al-Kitab Invitations',
+      intro:
+        'An engagement has its own register: quieter than a wedding invitation and closer to family. Pick a template, write the names, date and venue, and send it.',
+      bullets: [
+        { title: 'Templates for this occasion', desc: 'Made for engagements, not wedding designs with the words swapped.' },
+        { title: 'Refined Arabic fonts', desc: 'Diwani, Thuluth and quieter faces that suit a family invitation.' },
+        { title: 'The couple’s names', desc: 'Write both names and a Hijri or Gregorian date.' },
+        { title: 'Ready to send', desc: 'WhatsApp size, plus a high-quality export for print.' }
+      ],
+      steps: [
+        { title: 'Pick a template', desc: 'Browse engagement invitations.' },
+        { title: 'Write the names', desc: 'The couple, the date and the venue.' },
+        { title: 'Send it', desc: 'Share on WhatsApp or save it to print.' }
+      ],
+      faq: [
+        { q: 'Hijri or Gregorian date?', a: 'Whichever you prefer — the text is free, and you can write both.' },
+        { q: 'Can I change the colours?', a: 'Yes, every element in a template can be edited.' }
+      ]
+    }
+  },
+  {
+    slug: 'condolence',
+    category: 'announcements',
+    month: 1,
+    keywords: 'بطاقة تعزية, عزاء, البقاء لله, رسائل تعزية, condolence card arabic',
+    ar: {
+      metaTitle: 'بطاقة تعزية — تصميم عزاء بالعربي',
+      metaDesc:
+        'بطاقات تعزية هادئة بالعربي. كلمات مواساة وخط واضح بدون زخرفة زائدة، جاهزة للإرسال في واتساب.',
+      eyebrow: 'مناسبات · تعزية',
+      h1: 'بطاقة تعزية',
+      intro:
+        'في العزاء الكلمة القليلة أبلغ. قوالب هادئة بألوان خافتة وخط واضح، تكتب فيها اسم الفقيد أو دعاء قصير وترسلها بدون ما تبحث عن صورة من الإنترنت.',
+      bullets: [
+        { title: 'تصاميم هادئة', desc: 'ألوان خافتة بدون زخرفة أو ألوان صارخة.' },
+        { title: 'أدعية جاهزة', desc: 'نصوص مواساة تقدر تستخدمها كما هي أو تعدّلها.' },
+        { title: 'خط واضح', desc: 'خطوط عربية تُقرأ من أول نظرة.' },
+        { title: 'للإرسال مباشرة', desc: 'مقاس واتساب وسناب، بدون علامات أو إعلانات.' }
+      ],
+      steps: [
+        { title: 'اختر التصميم', desc: 'تصفح قوالب التعزية الهادئة.' },
+        { title: 'اكتب الكلمة', desc: 'اسم الفقيد أو دعاء قصير.' },
+        { title: 'أرسلها', desc: 'شاركها مع الأهل مباشرة.' }
+      ],
+      faq: [
+        { q: 'أقدر أكتب اسم الفقيد؟', a: 'نعم، النص كامل قابل للتعديل.' },
+        { q: 'فيه تصاميم بدون صور؟', a: 'نعم، فيه تصاميم بخلفية لون واحد ونص فقط.' }
+      ]
+    },
+    en: {
+      metaTitle: 'Condolence Cards in Arabic',
+      metaDesc:
+        'Quiet Arabic condolence cards. Words of comfort in a clear face, without excess ornament, ready to send on WhatsApp.',
+      eyebrow: 'Occasions · Condolence',
+      h1: 'Condolence Cards',
+      intro:
+        'At a time of loss, fewer words carry more. Quiet templates in muted colours and a clear face — write the name or a short prayer and send it, instead of hunting for an image online.',
+      bullets: [
+        { title: 'Quiet designs', desc: 'Muted colours, no ornament, nothing loud.' },
+        { title: 'Ready wording', desc: 'Words of comfort you can use as they are or change.' },
+        { title: 'A clear face', desc: 'Arabic type that reads at a glance.' },
+        { title: 'Send it as it is', desc: 'WhatsApp and Snap sizes, with no badges or ads.' }
+      ],
+      steps: [
+        { title: 'Choose a design', desc: 'Browse the quiet condolence templates.' },
+        { title: 'Write the words', desc: 'A name or a short prayer.' },
+        { title: 'Send it', desc: 'Share it with the family directly.' }
+      ],
+      faq: [
+        { q: 'Can I add the name?', a: 'Yes, all the text can be edited.' },
+        { q: 'Are there designs without photos?', a: 'Yes, several are a single colour with text only.' }
+      ]
+    }
+  },
+  {
+    slug: 'quran-backgrounds',
+    category: 'quotes',
+    month: 1,
+    keywords: 'خلفيات قرآنية, خلفيات اسلامية, ايات قرآنية, تصميم ايات, quran wallpaper arabic',
+    ar: {
+      metaTitle: 'خلفيات قرآنية — تصميم آيات وأدعية بالعربي',
+      metaDesc:
+        'خلفيات قرآنية وإسلامية جاهزة. اكتب الآية أو الدعاء بخط عربي واضح على خلفية هادئة، وشاركها أو خلّها خلفية جوالك.',
+      eyebrow: 'تصاميم · قرآنية',
+      h1: 'خلفيات قرآنية',
+      intro:
+        'آية أو دعاء على خلفية هادئة. اختر الخلفية، اكتب النص بخط عربي يظهر التشكيل صح، وشاركها في الستوري أو خلّها خلفية جوالك.',
+      bullets: [
+        { title: 'خلفيات جاهزة', desc: 'قرآنية وطبيعية، بدقة عالية.' },
+        { title: 'التشكيل يظهر صح', desc: 'خطوط تعرض الحركات والتشكيل بدون تداخل.' },
+        { title: 'مقاسات الجوال', desc: 'خلفية جوال، ستوري، أو منشور.' },
+        { title: 'بدون علامة', desc: 'صدّر التصميم نظيف مع الاشتراك.' }
+      ],
+      steps: [
+        { title: 'اختر الخلفية', desc: 'تصفح الخلفيات القرآنية والطبيعية.' },
+        { title: 'اكتب الآية', desc: 'اكتب أو الصق النص واختر الخط.' },
+        { title: 'احفظها', desc: 'شاركها أو خلّها خلفية جوالك.' }
+      ],
+      faq: [
+        { q: 'التشكيل يطلع صح؟', a: 'نعم، الخطوط المتوفرة تعرض التشكيل بشكل صحيح.' },
+        { q: 'أقدر أرفع خلفيتي؟', a: 'نعم، تقدر تستخدم صورة من جوالك كخلفية.' }
+      ]
+    },
+    en: {
+      metaTitle: 'Quran Wallpapers — Design Ayat and Duas in Arabic',
+      metaDesc:
+        'Ready Quran and Islamic backgrounds. Set an ayah or dua in clear Arabic type on a calm background, then share it or keep it as your wallpaper.',
+      eyebrow: 'Designs · Quran',
+      h1: 'Quran Wallpapers',
+      intro:
+        'An ayah or a dua on a calm background. Pick the background, set the text in a face that renders the diacritics properly, and share it or keep it as your wallpaper.',
+      bullets: [
+        { title: 'Ready backgrounds', desc: 'Quran and nature, at high resolution.' },
+        { title: 'Diacritics render correctly', desc: 'Faces that show tashkeel without collisions.' },
+        { title: 'Phone sizes', desc: 'Wallpaper, story or post.' },
+        { title: 'No watermark', desc: 'Export clean with a subscription.' }
+      ],
+      steps: [
+        { title: 'Pick a background', desc: 'Browse the Quran and nature backgrounds.' },
+        { title: 'Set the ayah', desc: 'Type or paste the text and choose a face.' },
+        { title: 'Save it', desc: 'Share it or set it as your wallpaper.' }
+      ],
+      faq: [
+        { q: 'Do the diacritics render properly?', a: 'Yes, the available faces render tashkeel correctly.' },
+        { q: 'Can I use my own background?', a: 'Yes, you can use a photo from your phone.' }
+      ]
+    }
+  },
+  {
+    slug: 'quotes',
+    category: 'quotes',
+    month: 1,
+    keywords: 'اقتباسات, تصميم اقتباس, حكم ومقولات, كتابة على الصور, arabic quote design',
+    ar: {
+      metaTitle: 'تصميم اقتباسات — حكم ومقولات بالعربي',
+      metaDesc:
+        'صمم اقتباساً بخط عربي على خلفية هادئة. قوالب جاهزة للحكم والمقولات، بمقاسات الستوري والمنشور.',
+      eyebrow: 'تصاميم · اقتباسات',
+      h1: 'تصميم اقتباسات',
+      intro:
+        'الكلمة الحلوة تستاهل تصميم يليق فيها. اختر قالب، اكتب الاقتباس، وبدّل الخط واللون لين يطلع بالشكل اللي في بالك.',
+      bullets: [
+        { title: 'قوالب اقتباسات', desc: 'تصاميم جاهزة تعدّل نصها بثواني.' },
+        { title: 'أكثر من ٢٠٠ خط', desc: 'خطوط عربية من الحديث للتقليدي.' },
+        { title: 'تطويل الحروف', desc: 'مدّ الحروف يملأ السطر بدل ما تتباعد الكلمات.' },
+        { title: 'مقاسات جاهزة', desc: 'ستوري، منشور، أو خلفية.' }
+      ],
+      steps: [
+        { title: 'اختر القالب', desc: 'تصفح قوالب الاقتباسات.' },
+        { title: 'اكتب الاقتباس', desc: 'الصق النص واختر الخط.' },
+        { title: 'شاركه', desc: 'احفظه وانشره في حسابك.' }
+      ],
+      faq: [
+        { q: 'أقدر أغيّر الخط؟', a: 'نعم، فيه أكثر من ٢٠٠ خط عربي تختار منها.' },
+        { q: 'وش يعني تطويل؟', a: 'مدّ الحروف نفسها لتملأ السطر، وهي طريقة عربية أصلاً بدل تباعد الكلمات.' }
+      ]
+    },
+    en: {
+      metaTitle: 'Quote Design — Arabic Quotes and Sayings',
+      metaDesc:
+        'Design a quote in Arabic type on a calm background. Ready templates for quotes and sayings, in story and post sizes.',
+      eyebrow: 'Designs · Quotes',
+      h1: 'Quote Design',
+      intro:
+        'A good line deserves a design worth it. Pick a template, write the quote, and change the face and colour until it looks the way you heard it.',
+      bullets: [
+        { title: 'Quote templates', desc: 'Ready designs whose text you change in seconds.' },
+        { title: '200+ fonts', desc: 'Arabic faces from modern to traditional.' },
+        { title: 'Kashida', desc: 'Stretch the letters to fill the line instead of spacing the words apart.' },
+        { title: 'Ready sizes', desc: 'Story, post or wallpaper.' }
+      ],
+      steps: [
+        { title: 'Pick a template', desc: 'Browse the quote templates.' },
+        { title: 'Write the quote', desc: 'Paste the text and choose a face.' },
+        { title: 'Share it', desc: 'Save it and post it.' }
+      ],
+      faq: [
+        { q: 'Can I change the font?', a: 'Yes, there are over 200 Arabic faces.' },
+        { q: 'What is kashida?', a: 'Stretching the letters themselves to fill a line — the Arabic way, rather than spacing words apart.' }
+      ]
+    }
+  },
+  {
     slug: 'ramadan',
     category: 'ramadan',
     month: 3,

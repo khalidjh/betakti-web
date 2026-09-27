@@ -1,8 +1,12 @@
 <script lang="ts">
   import '../app.css';
   import type { Snippet } from 'svelte';
-  import { navigating } from '$app/state';
+  import { navigating, page } from '$app/state';
   import { initAnalytics } from '$lib/firebase/client';
+  import {
+    initAnalytics as initPostHog,
+    capturePageview
+  } from '$lib/analytics/posthog';
 
   interface Props {
     children: Snippet;
@@ -12,6 +16,14 @@
   $effect(() => {
     // Browser-only; safe no-op during SSR or when Analytics is unsupported.
     initAnalytics();
+    initPostHog();
+  });
+
+  // SvelteKit navigates on the client, so without this only the first page of
+  // a visit would ever be recorded.
+  $effect(() => {
+    const url = page.url;
+    if (url) capturePageview(url);
   });
 </script>
 

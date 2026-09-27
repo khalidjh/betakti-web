@@ -41,7 +41,11 @@ export const GET: RequestHandler = ({ request, url }) => {
   const medium = url.searchParams.get('utm_medium') ?? '';
   const campaign = url.searchParams.get('utm_campaign') ?? '';
 
-  if (ANDROID.test(ua)) {
+  // An explicit store beats sniffing: someone on a laptop clicking the App
+  // Store badge wants the App Store, not the landing page they came from.
+  const asked = url.searchParams.get('platform');
+
+  if (asked === 'android' || (!asked && ANDROID.test(ua))) {
     // Play wants the referrer as one URL-encoded query string.
     const referrer = new URLSearchParams({
       utm_source: source,
@@ -54,7 +58,7 @@ export const GET: RequestHandler = ({ request, url }) => {
     redirect(302, play.toString());
   }
 
-  if (IOS.test(ua)) {
+  if (asked === 'ios' || IOS.test(ua)) {
     const apple = new URL(APP_STORE_URL);
     const ct = campaignToken([source, campaign]);
     if (ct) apple.searchParams.set('ct', ct);

@@ -1,14 +1,31 @@
 <script lang="ts">
   import { t } from '$lib/i18n';
-  import { APP_STORE_URL, PLAY_STORE_URL } from '$lib/seo/config';
+  import { page } from '$app/state';
 
   interface Props {
     /** "dark" = black badges (for light backgrounds), "light" = white badges (for coloured/gradient backgrounds). */
     variant?: 'dark' | 'light';
+    /** What to report this download as; defaults to the page it sits on. */
+    campaign?: string;
     size?: 'md' | 'sm';
     class?: string;
   }
-  const { variant = 'dark', size = 'md', class: cls = '' }: Props = $props();
+  const {
+    variant = 'dark',
+    size = 'md',
+    class: cls = '',
+    campaign
+  }: Props = $props();
+
+  // Both badges go through /get rather than straight to the stores. /get picks
+  // the store for the device and forwards the campaign — Play as an Install
+  // Referrer the app reads after install, the App Store as `ct`. Linking the
+  // stores directly, as this did, made every install from the website
+  // indistinguishable from every other.
+  const tag = $derived(
+    campaign ?? ((page.url?.pathname ?? '/').replace(/^\/(en\/)?/, '') || 'home')
+  );
+  const href = $derived(`/get?utm_source=web&utm_medium=site&utm_campaign=${encodeURIComponent(tag)}`);
 
   const badge = $derived(
     variant === 'light'
@@ -22,8 +39,7 @@
 <div class="flex flex-wrap items-center gap-3 {cls}">
   <!-- App Store -->
   <a
-    href={APP_STORE_URL}
-    target="_blank"
+    href={`${href}&platform=ios`}
     rel="noopener"
     aria-label={t('حمّل من App Store', 'Download on the App Store')}
     class="inline-flex items-center gap-2.5 rounded-[var(--radius-md)] {pad} {badge} transition-colors"
@@ -39,8 +55,7 @@
 
   <!-- Google Play -->
   <a
-    href={PLAY_STORE_URL}
-    target="_blank"
+    href={`${href}&platform=android`}
     rel="noopener"
     aria-label={t('احصل عليه من Google Play', 'Get it on Google Play')}
     class="inline-flex items-center gap-2.5 rounded-[var(--radius-md)] {pad} {badge} transition-colors"
