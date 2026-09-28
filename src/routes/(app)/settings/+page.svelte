@@ -164,8 +164,8 @@
 
   <Card>
     <h2 class="text-lg font-semibold mb-3">{m.settings_help()}</h2>
-    <a href="mailto:eiddesigner37@gmail.com" class="text-sm text-[var(--color-accent)] hover:underline">
-      eiddesigner37@gmail.com
+    <a href="mailto:support@betakti.com" class="text-sm text-[var(--color-accent)] hover:underline">
+      support@betakti.com
     </a>
   </Card>
 

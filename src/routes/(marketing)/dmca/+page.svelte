@@ -2,7 +2,7 @@
   import { m, t } from '$lib/i18n';
   import Seo from '$lib/components/seo.svelte';
   const updated = '2026-09-27';
-  const contact = 'eiddesigner37@gmail.com';
+  const contact = 'support@betakti.com';
 </script>
 
 <Seo

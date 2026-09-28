@@ -29,8 +29,8 @@
   <p class="text-base md:text-lg text-[var(--color-ink-2)] leading-relaxed">{m.legal_terms_body()}</p>
   <p class="text-sm text-[var(--color-muted)] pt-4 border-t border-[var(--color-border)]">
     {m.legal_contact()}:
-    <a href="mailto:eiddesigner37@gmail.com" class="text-[var(--color-accent)] hover:underline font-medium"
-      >eiddesigner37@gmail.com</a
+    <a href="mailto:support@betakti.com" class="text-[var(--color-accent)] hover:underline font-medium"
+      >support@betakti.com</a
     >
   </p>
 </div>

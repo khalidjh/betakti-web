@@ -18,7 +18,7 @@
     }
   ]);
 
-  const SUPPORT_EMAIL = 'eiddesigner37@gmail.com';
+  const SUPPORT_EMAIL = 'support@betakti.com';
 
   const channels = $derived([
     {
