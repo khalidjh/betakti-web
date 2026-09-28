@@ -11,8 +11,8 @@ import type { RequestHandler } from './$types';
  * on betakti.com replaced it, which meant a tap opened the web editor — the
  * wrong place for someone who has never heard of the app.
  *
- * Desktop has no app to install, so it goes to /welcome, which shows both
- * badges and what the app is.
+ * Desktop has no app to install, so it goes to the landing page, which shows
+ * both badges and what the app is.
  *
  * Campaign tags are forwarded, not dropped:
  *  - **Play** takes `referrer`, which the Install Referrer API hands back to
@@ -67,8 +67,9 @@ export const GET: RequestHandler = ({ request, url }) => {
   }
 
   // Desktop, or a crawler: show the landing page rather than a store it
-  // cannot use. Keep the tags so the visit is still attributable.
-  const welcome = new URL('/welcome', url.origin);
+  // cannot use. Keep the tags so the visit is still attributable. The landing
+  // page is the root now — pointing at /welcome would cost a second hop.
+  const welcome = new URL('/', url.origin);
   for (const [key, value] of url.searchParams) {
     if (key.startsWith('utm_')) welcome.searchParams.set(key, value);
   }
