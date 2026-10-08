@@ -18,10 +18,12 @@ import type { RequestHandler } from './$types';
  *  - **Play** takes `referrer`, which the Install Referrer API hands back to
  *    the app after install. That is the only way an Android install can be
  *    traced to the card that caused it.
- *  - **App Store** takes `ct` (campaign text, max 40 chars) which shows up in
- *    App Analytics under Campaigns. `pt`/`at` need a provider token we don't
- *    have, and `ct` works without one.
+ *  - **App Store** takes `pt` (our provider token) plus `ct` (campaign text,
+ *    max 40 chars). App Analytics → Campaigns only counts a link carrying both.
  */
+
+/** App Store Connect provider id of the team that owns Betakti. */
+const APPLE_PROVIDER_TOKEN = '120059042';
 
 const IOS = /iPhone|iPad|iPod/i;
 const ANDROID = /Android/i;
@@ -61,6 +63,7 @@ export const GET: RequestHandler = ({ request, url }) => {
   if (asked === 'ios' || IOS.test(ua)) {
     const apple = new URL(APP_STORE_URL);
     const ct = campaignToken([source, campaign]);
+    apple.searchParams.set('pt', APPLE_PROVIDER_TOKEN);
     if (ct) apple.searchParams.set('ct', ct);
     apple.searchParams.set('mt', '8');
     redirect(302, apple.toString());
