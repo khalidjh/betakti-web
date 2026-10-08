@@ -99,13 +99,6 @@ const CATEGORY_COPY: Record<TemplateCategory, { blurb: Bi; uses: Bi }> = {
       en: 'a wedding template with an elegant design for invitations and congratulations'
     },
     uses: { ar: 'دعوات وتهاني الأفراح', en: 'wedding invitations and congratulations' }
-  },
-  nationalDay: {
-    blurb: {
-      ar: 'قالب اليوم الوطني بهوية تحتفي بالوطن لمشاركة المتابعين الفرحة',
-      en: 'a National Day template with a patriotic identity to share the celebration with followers'
-    },
-    uses: { ar: 'محتوى اليوم الوطني', en: 'National Day content' }
   }
 };
 

@@ -15,8 +15,7 @@ export type TemplateCategory =
   | 'eid'
   | 'whatsappStatus'
   | 'graduation'
-  | 'wedding'
-  | 'nationalDay';
+  | 'wedding';
 
 export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
   'quotes',
@@ -28,8 +27,7 @@ export const TEMPLATE_CATEGORIES: TemplateCategory[] = [
   'eid',
   'whatsappStatus',
   'graduation',
-  'wedding',
-  'nationalDay'
+  'wedding'
 ];
 
 export interface DynamicTemplate {
@@ -449,8 +447,7 @@ export function categoryLabel(cat: TemplateCategory, locale: 'ar' | 'en'): strin
     eid: 'العيد',
     whatsappStatus: 'حالات واتساب',
     graduation: 'تخرج',
-    wedding: 'زفاف',
-    nationalDay: 'اليوم الوطني'
+    wedding: 'زفاف'
   };
   const en: Record<TemplateCategory, string> = {
     quotes: 'Quotes',
@@ -462,8 +459,7 @@ export function categoryLabel(cat: TemplateCategory, locale: 'ar' | 'en'): strin
     eid: 'Eid',
     whatsappStatus: 'WhatsApp Status',
     graduation: 'Graduation',
-    wedding: 'Wedding',
-    nationalDay: 'National Day'
+    wedding: 'Wedding'
   };
   return locale === 'ar' ? ar[cat] : en[cat];
 }

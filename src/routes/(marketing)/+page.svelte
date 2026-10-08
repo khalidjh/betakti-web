@@ -119,51 +119,42 @@
       </p>
     </div>
 
-    <!-- Right: floating composition (hidden on mobile — overlap at <768px) -->
+    <!-- Three real templates from the catalogue, fanned (hidden on mobile —
+         they overlap below 768px). Placed with physical left/right on
+         purpose: it is a picture, and logical start/end with a centring
+         translate mirrors the wrong way in RTL. -->
     <div use:reveal={{ delay: 120 }} class="hidden md:block relative w-full h-[440px] md:h-[480px]">
-      <!-- Card 1: Eid Mubarak poster -->
-      <div
-        class="absolute top-5 start-0 w-[220px] p-5 rounded-[14px] bg-[var(--color-surface)]"
-        style="transform: rotate(-5deg); box-shadow: 0 20px 50px rgba(11, 13, 23, 0.14), 0 6px 14px rgba(11, 13, 23, 0.08); font-family: var(--font-display);"
-      >
-        <div
-          class="aspect-square rounded-[8px] mb-3.5 flex items-center justify-center text-white text-[32px] leading-none p-2 text-center"
-          style="background: var(--color-accent); font-weight: 600;"
+      {#each data.hero as tpl, i (tpl.id)}
+        {@const pos = [
+          'top-14 right-2 w-[175px] z-10',
+          'top-0 left-1/2 -translate-x-1/2 w-[215px] z-20',
+          'top-14 left-2 w-[175px] z-10'
+        ][i] ?? 'hidden'}
+        {@const tilt = [6, 0, -6][i] ?? 0}
+        <a
+          href={localizeHref(`/templates/${tpl.id}`)}
+          class="absolute {pos} block rounded-[14px] overflow-hidden border border-[var(--color-border)] bg-[var(--color-surface)] transition-transform duration-[var(--duration-standard)] ease-[var(--ease-out)] hover:-translate-y-1"
+          style="rotate: {tilt}deg; box-shadow: var(--shadow-3);"
         >
-          عيد<br />مبارك
-        </div>
-        <div class="text-[15px] leading-tight text-[var(--color-ink)]" style="font-family: var(--font-sans); font-weight: 600;">
-          {m.marketing_hero_card_eid_sub()}
-        </div>
-        <div class="text-[10px] mt-1 text-[var(--color-muted)] tracking-wider" style="font-family: var(--font-mono);">
-          1080 × 1080
-        </div>
-      </div>
+          <img
+            src={tpl.thumbnailUrl}
+            alt={locale === 'ar' ? tpl.nameAr : tpl.nameEn}
+            width={tpl.canvasSize.width}
+            height={tpl.canvasSize.height}
+            class="block w-full h-auto"
+            loading="eager"
+            draggable="false"
+          />
+        </a>
+      {/each}
 
-      <!-- Card 2: AI Styled offer -->
+      <!-- What it takes -->
       <div
-        class="absolute top-20 end-5 w-[180px] p-[18px] rounded-[14px] flex flex-col gap-2.5 text-white"
-        style="transform: rotate(6deg); background: var(--color-violet); box-shadow: 0 20px 50px rgba(11, 13, 23, 0.18), 0 6px 14px rgba(11, 13, 23, 0.1); font-family: var(--font-display);"
-      >
-        <span
-          class="inline-flex items-center gap-1 self-start px-2 py-[3px] rounded-full text-[10px] tracking-wider"
-          style="background: rgba(255, 255, 255, 0.22); font-family: var(--font-sans); font-weight: 500;"
-        >
-          ✦ {m.marketing_hero_card_ai()}
-        </span>
-        <div class="text-[40px] leading-none" style="letter-spacing: -0.02em; font-weight: 600;">30%</div>
-        <div class="text-[11px] leading-snug opacity-95" style="font-family: var(--font-sans); font-weight: 500;">
-          {m.marketing_hero_card_offer_sub()}
-        </div>
-      </div>
-
-      <!-- Card 3: Presence indicator -->
-      <div
-        class="absolute bottom-3 end-0 flex items-center gap-2.5 px-4 py-3 rounded-[14px] bg-[var(--color-surface)]"
-        style="transform: rotate(-4deg); box-shadow: 0 20px 50px rgba(11, 13, 23, 0.14), 0 6px 14px rgba(11, 13, 23, 0.08); font-family: var(--font-sans);"
+        class="absolute bottom-0 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2.5 px-4 py-3 rounded-[14px] bg-[var(--color-surface)] border border-[var(--color-border)] whitespace-nowrap"
+        style="box-shadow: var(--shadow-2); font-family: var(--font-sans);"
       >
         <span class="w-2.5 h-2.5 rounded-full bg-[var(--color-accent)] flex-shrink-0"></span>
-        <span class="text-[12px] leading-tight text-[var(--color-ink)] font-medium">
+        <span class="text-[13px] leading-tight text-[var(--color-ink)] font-medium">
           {m.marketing_hero_presence()}
         </span>
       </div>

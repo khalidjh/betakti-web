@@ -21,8 +21,7 @@
     if (cat === 'eid') return m.tpl_cat_eid();
     if (cat === 'whatsappStatus') return m.tpl_cat_whatsappStatus();
     if (cat === 'graduation') return m.tpl_cat_graduation();
-    if (cat === 'wedding') return m.tpl_cat_wedding();
-    return m.tpl_cat_nationalDay();
+    return m.tpl_cat_wedding();
   }
 
   const active = $derived(data.category ?? 'all');
