@@ -22,7 +22,7 @@
       'bg-[var(--color-surface-2)] text-[var(--color-ink)] hover:bg-[var(--color-border)] border border-[var(--color-border)]',
     ghost:
       'bg-transparent text-[var(--color-ink)] hover:bg-[var(--color-surface-2)]',
-    gradient: 'text-white [background:var(--brand-gradient)] hover:opacity-95'
+    gradient: 'text-white bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)]'
   };
 
   const cls = $derived(`${base} ${variants[variant]}`);

@@ -226,10 +226,10 @@
 
     // Selection styling
     F.FabricObject.prototype.set({
-      borderColor: '#5b46f6',
+      borderColor: '#2d5ff0',
       borderScaleFactor: 1.25,
       cornerColor: '#ffffff',
-      cornerStrokeColor: '#5b46f6',
+      cornerStrokeColor: '#2d5ff0',
       transparentCorners: false,
       cornerSize: 12,
       touchCornerSize: 28,
@@ -240,7 +240,7 @@
 
     // Custom control renderers: rounded-square corners + pill mid-handles, both
     // with a soft shadow so they read well on busy backgrounds.
-    const BRAND = '#5b46f6';
+    const BRAND = '#2d5ff0';
     const drawHandle = (
       ctx: CanvasRenderingContext2D,
       cx: number,
@@ -1371,9 +1371,9 @@
     style:left="{rotatingBadge.left}px"
     style:top="{rotatingBadge.top}px"
     style:transform="translate(-50%, -50%)"
-    style:background={isSnap ? '#5b46f6' : 'var(--color-surface)'}
+    style:background={isSnap ? '#2d5ff0' : 'var(--color-surface)'}
     style:color={isSnap ? '#ffffff' : 'var(--color-ink)'}
-    style:border="1px solid {isSnap ? '#5b46f6' : 'var(--color-border)'}"
+    style:border="1px solid {isSnap ? '#2d5ff0' : 'var(--color-border)'}"
   >
     {a}°
   </div>

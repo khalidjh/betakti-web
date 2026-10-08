@@ -18,7 +18,7 @@
     <div class="flex flex-col items-center text-center gap-5 py-6">
       <div
         class="w-16 h-16 rounded-[14px] flex items-center justify-center text-white"
-        style="background: var(--brand-gradient); box-shadow: 0 8px 24px rgba(91, 141, 239, 0.22);"
+        style="background: var(--color-accent);"
       >
         <Scissors size={26} strokeWidth={1.75} />
       </div>

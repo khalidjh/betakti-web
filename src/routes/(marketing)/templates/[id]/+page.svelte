@@ -139,7 +139,7 @@
       {#if tpl.isPremium}
         <div
           class="on-soft rounded-[12px] px-4 py-3 text-xs"
-          style="background: var(--brand-gradient-soft);"
+          style="background: var(--brand-soft);"
         >
           {m.tpl_pro_only()}
         </div>

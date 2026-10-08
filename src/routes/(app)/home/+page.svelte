@@ -103,7 +103,7 @@
     <section class="flex flex-col items-center text-center gap-5 py-16 sm:py-24">
       <div
         class="w-16 h-16 rounded-[999px] flex items-center justify-center text-white shadow-[var(--shadow-2)]"
-        style="background: var(--brand-gradient);"
+        style="background: var(--color-accent);"
       >
         <Plus size={30} strokeWidth={2.2} />
       </div>

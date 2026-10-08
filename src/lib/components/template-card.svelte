@@ -56,7 +56,7 @@
     >
       <span
         class="px-3 py-1.5 rounded-[999px] text-xs font-semibold text-white shadow-[var(--shadow-1)]"
-        style="background: var(--brand-gradient);"
+        style="background: var(--color-accent);"
       >
         {m.tpl_use()}
       </span>

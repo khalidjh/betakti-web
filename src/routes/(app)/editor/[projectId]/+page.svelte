@@ -482,7 +482,7 @@
     <span class="w-px h-5 bg-[var(--color-border)] mx-1"></span>
     <button
       class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-sm font-semibold text-white rounded-[8px] shadow-[var(--shadow-1)] hover:shadow-[var(--shadow-2)] transition-shadow flex-none"
-      style="background: var(--brand-gradient)"
+      style="background: var(--color-accent)"
       onclick={openExport}
     >
       <Share2 size={14} strokeWidth={2.2} />
@@ -504,13 +504,13 @@
   {#if showPremiumBanner}
     <div
       class="on-soft flex items-center gap-3 px-4 py-2 text-sm border-b border-[var(--color-border)]"
-      style="background: var(--brand-gradient-soft);"
+      style="background: var(--brand-soft);"
     >
       <span class="flex-1">قالب Pro — الترقية مطلوبة للتصدير بدون علامة مائية</span>
       <a
         href="/subscription"
         class="px-3 py-1 rounded-[8px] text-white text-xs font-semibold"
-        style="background: var(--brand-gradient);">ترقية</a
+        style="background: var(--color-violet);">ترقية</a
       >
       <button
         type="button"
@@ -538,7 +538,7 @@
             class="w-10 h-10 rounded-[6px] flex-none shadow-[var(--shadow-1)]"
             style:background={editor.project.background.type === 'color'
               ? editor.project.background.color
-              : 'var(--brand-gradient)'}
+              : 'var(--color-surface-2)'}
           ></div>
           <div class="min-w-0 flex-1">
             <div class="text-[13px] font-medium text-[var(--color-accent)] truncate">{editor.project.name}</div>
@@ -866,7 +866,7 @@
     </div>
     <button
       class="w-full py-2.5 rounded-[10px] text-white font-medium"
-      style="background: var(--brand-gradient)"
+      style="background: var(--color-accent)"
       onclick={handleDownload}
     >
       Download PNG

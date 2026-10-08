@@ -1,24 +1,22 @@
-export const brandGradientStops = [
-  { offset: 0, color: '#07BEFB' },
-  { offset: 0.5, color: '#356CF6' },
-  { offset: 1, color: '#5B28D6' }
-] as const;
-
+// Mirrors the CSS custom properties in app.css (dark, the default theme) and
+// the app's lib/core/theme/colors.dart. There is no brand gradient: electric
+// blue is the brand, violet is for Pro and AI only.
 export const colors = {
-  accent: '#5B46F6',
-  accentHover: '#4A37E6',
-  teal: '#10B6FB',
+  accent: '#2D5FF0',
+  accentHover: '#4673F3',
+  accentSoft: '#6B93FF',
   violet: '#8B5CF6',
-  ink: '#0B0D17',
-  ink2: '#3A3D4D',
-  muted: '#6B7280',
-  paper: '#FAFAFB',
-  surface: '#FFFFFF',
-  surface2: '#F4F4F6',
-  border: '#E8E8EC',
-  borderStrong: '#D1D5DB',
-  success: '#10B981',
-  warning: '#F59E0B',
+  logoField: '#030824',
+  ink: '#FFFFFF',
+  ink2: '#B3B3B3',
+  muted: '#8A8A90',
+  paper: '#0A0A0B',
+  surface: '#141416',
+  surface2: '#1E1E22',
+  border: '#26262B',
+  borderStrong: '#333333',
+  success: '#22C55E',
+  warning: '#FBBF24',
   danger: '#EF4444'
 } as const;
 

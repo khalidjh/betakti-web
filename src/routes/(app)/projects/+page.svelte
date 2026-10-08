@@ -28,13 +28,15 @@
     openMenuId = openMenuId === id ? null : id;
   }
 
+  // Placeholder tiles for projects without a thumbnail: quiet steps of the
+  // brand blue over the surface, not a gradient.
   const fallbackGradients = [
-    'linear-gradient(135deg, #2de2e6, #5b8def)',
-    'linear-gradient(135deg, #6b4eff, #8b5cf6)',
-    'linear-gradient(135deg, #5b8def, #8b5cf6)',
-    'linear-gradient(135deg, #2de2e6, #8b5cf6)',
-    'linear-gradient(135deg, #6b4eff, #2de2e6)',
-    'linear-gradient(135deg, #8b5cf6, #2de2e6)'
+    'color-mix(in srgb, var(--color-accent) 22%, var(--color-surface-2))',
+    'color-mix(in srgb, var(--color-accent) 34%, var(--color-surface-2))',
+    'color-mix(in srgb, var(--color-accent) 46%, var(--color-surface-2))',
+    'color-mix(in srgb, var(--color-accent) 58%, var(--color-surface-2))',
+    'color-mix(in srgb, var(--color-accent) 70%, var(--color-surface-2))',
+    'color-mix(in srgb, var(--color-accent) 82%, var(--color-surface-2))'
   ];
   function gradientFor(id: string): string {
     let h = 0;

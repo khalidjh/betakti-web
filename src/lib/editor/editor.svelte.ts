@@ -725,7 +725,7 @@ export function createShapeElement(partial: Partial<ShapeElement> = {}): ShapeEl
     isVisible: true,
     zIndex: 1,
     shapeType: 'rectangle',
-    fillColor: '#5b46f6',
+    fillColor: '#2d5ff0',
     strokeWidth: 0,
     cornerRadius: 0,
     opacity: 1,

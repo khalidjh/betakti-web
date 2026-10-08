@@ -44,7 +44,7 @@
     background: linear-gradient(
       90deg,
       transparent 0%,
-      var(--color-accent, #6366f1) 50%,
+      var(--color-accent, #2d5ff0) 50%,
       transparent 100%
     );
     background-size: 40% 100%;

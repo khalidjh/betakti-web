@@ -81,7 +81,7 @@
     <div class="flex items-center gap-4 mb-4">
       <div
         class="w-14 h-14 rounded-[999px] flex items-center justify-center text-white text-xl font-bold"
-        style="background: var(--brand-gradient);"
+        style="background: var(--color-accent);"
       >
         {(data.account.displayName ?? data.account.email ?? '?').charAt(0).toUpperCase()}
       </div>
@@ -203,7 +203,7 @@
     type="button"
     onclick={handleSignOut}
     class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-[10px] text-white font-semibold text-sm self-start hover:opacity-95"
-    style="background: linear-gradient(160deg, #ef4444 0%, #b91c1c 100%);"
+    style="background: var(--color-danger);"
   >
     {m.settings_sign_out()}
   </button>

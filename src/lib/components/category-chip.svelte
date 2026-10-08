@@ -12,7 +12,7 @@
   class="inline-flex items-center px-3.5 py-1.5 rounded-[999px] text-sm whitespace-nowrap border transition-colors duration-[var(--duration-standard)] ease-[var(--ease-out)] {active
     ? 'text-white border-transparent'
     : 'bg-[var(--color-surface)] text-[var(--color-ink-2)] border-[var(--color-border)] hover:text-[var(--color-ink)] hover:border-[var(--color-border-strong)]'}"
-  style={active ? 'background: var(--brand-gradient);' : ''}
+  style={active ? 'background: var(--color-accent);' : ''}
   aria-current={active ? 'page' : undefined}
 >
   {label}

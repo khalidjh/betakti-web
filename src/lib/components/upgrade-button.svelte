@@ -11,7 +11,7 @@
 <a
   {href}
   class="inline-flex items-center gap-2 px-4 py-2 rounded-[10px] text-white font-semibold text-sm shadow-[var(--shadow-1)] hover:opacity-95 transition-opacity"
-  style="background: var(--brand-gradient);"
+  style="background: var(--color-violet);"
 >
   <Sparkles size={16} strokeWidth={2.2} />
   {m.subscription_pro()}

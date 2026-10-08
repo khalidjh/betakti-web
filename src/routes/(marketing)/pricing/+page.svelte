@@ -91,13 +91,13 @@
           ? 'border-transparent shadow-[var(--shadow-2)]'
           : 'border border-[var(--color-border)] shadow-[var(--shadow-1)]'}"
         style={tier.highlighted
-          ? 'background-image: linear-gradient(var(--color-surface), var(--color-surface)), var(--brand-gradient); background-origin: border-box; background-clip: padding-box, border-box; border: 2px solid transparent;'
+          ? 'border: 2px solid var(--color-accent);'
           : ''}
       >
         {#if tier.highlighted}
           <div
             class="absolute -top-3 start-5 text-xs font-bold px-2 py-0.5 rounded-[999px] text-white"
-            style="background: var(--brand-gradient);"
+            style="background: var(--color-accent);"
           >
             {m.sub_save_badge()}
           </div>

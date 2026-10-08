@@ -144,7 +144,7 @@
       >
         <div
           class="w-8 h-8 rounded-[999px] flex items-center justify-center text-white text-sm font-semibold flex-none"
-          style="background: var(--brand-gradient);"
+          style="background: var(--color-accent);"
         >
           {initial(data.user.email)}
         </div>

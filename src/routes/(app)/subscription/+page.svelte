@@ -140,7 +140,7 @@
       </span>
       <div
         class="w-16 h-16 rounded-[16px] flex items-center justify-center text-white shadow-[var(--shadow-2)]"
-        style="background: var(--brand-gradient);"
+        style="background: var(--color-violet);"
       >
         <Sparkles size={28} />
       </div>
@@ -162,7 +162,7 @@
           <div class="flex items-start gap-3">
             <div
               class="w-10 h-10 rounded-[10px] flex items-center justify-center text-white flex-none"
-              style="background: var(--brand-gradient);"
+              style="background: var(--color-violet);"
             >
               <b.Icon size={18} />
             </div>
@@ -182,13 +182,13 @@
             ? 'border-transparent shadow-[var(--shadow-3)] sm:scale-[1.03]'
             : 'border-[var(--color-border)] shadow-[var(--shadow-1)] hover:shadow-[var(--shadow-2)]'}"
           style={plan.highlighted
-            ? 'background-image: linear-gradient(var(--color-surface), var(--color-surface)), var(--brand-gradient); background-origin: border-box; background-clip: padding-box, border-box; border: 2px solid transparent;'
+            ? 'border: 2px solid var(--color-accent);'
             : ''}
         >
           {#if plan.highlighted}
             <div
               class="absolute -top-3 left-1/2 -translate-x-1/2 text-[11px] font-bold px-3 py-1 rounded-[999px] text-white shadow-[var(--shadow-1)] whitespace-nowrap"
-              style="background: var(--brand-gradient);"
+              style="background: var(--color-accent);"
             >
               {m.sub_save_badge()}
             </div>

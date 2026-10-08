@@ -81,7 +81,7 @@
         <span
           class="font-semibold inline-block"
           class:italic={!isRtl}
-          style="background: var(--brand-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; {isRtl ? 'margin-top: 0.1em;' : ''}"
+          style="color: var(--color-accent-soft); {isRtl ? 'margin-top: 0.1em;' : ''}"
         >
           {m.marketing_hero_headline_italic()}
         </span>
@@ -103,7 +103,7 @@
 
       <p class="flex items-center gap-1.5 text-xs text-[var(--color-muted)]">
         <svg
-          class="w-3.5 h-3.5 text-[var(--color-teal)]"
+          class="w-3.5 h-3.5 text-[var(--color-accent-soft)]"
           viewBox="0 0 20 20"
           fill="none"
           stroke="currentColor"
@@ -128,7 +128,7 @@
       >
         <div
           class="aspect-square rounded-[8px] mb-3.5 flex items-center justify-center text-white text-[32px] leading-none p-2 text-center"
-          style="background: linear-gradient(135deg, var(--color-accent), var(--color-violet)); font-weight: 600;"
+          style="background: var(--color-accent); font-weight: 600;"
         >
           عيد<br />مبارك
         </div>
@@ -143,7 +143,7 @@
       <!-- Card 2: AI Styled offer -->
       <div
         class="absolute top-20 end-5 w-[180px] p-[18px] rounded-[14px] flex flex-col gap-2.5 text-white"
-        style="transform: rotate(6deg); background: var(--brand-gradient); box-shadow: 0 20px 50px rgba(11, 13, 23, 0.18), 0 6px 14px rgba(11, 13, 23, 0.1); font-family: var(--font-display);"
+        style="transform: rotate(6deg); background: var(--color-violet); box-shadow: 0 20px 50px rgba(11, 13, 23, 0.18), 0 6px 14px rgba(11, 13, 23, 0.1); font-family: var(--font-display);"
       >
         <span
           class="inline-flex items-center gap-1 self-start px-2 py-[3px] rounded-full text-[10px] tracking-wider"
@@ -235,14 +235,14 @@
     <!-- Type-sample visual card -->
     <div
       class="rounded-[20px] p-6 sm:p-10 md:p-12 border border-[var(--color-border)] shadow-[var(--shadow-2)] flex flex-col gap-6 sm:gap-8"
-      style="background: var(--brand-gradient-soft);"
+      style="background: var(--brand-soft);"
     >
       <div class="flex flex-col gap-2">
         <span
           class="text-[10px] tracking-[0.16em] uppercase text-[var(--color-muted)]"
           style="font-family: var(--font-mono);"
         >
-          English · Thmanyah Serif Display
+          English · Dubai
         </span>
         <span
           class="text-4xl md:text-5xl leading-[1.05] text-[var(--color-ink)]"
@@ -257,7 +257,7 @@
           class="text-[10px] tracking-[0.16em] uppercase text-[var(--color-muted)]"
           style="font-family: var(--font-mono);"
         >
-          العربية · IBM Plex Sans Arabic
+          العربية · Dubai
         </span>
         <span
           class="text-4xl md:text-5xl leading-[1.2] text-[var(--color-ink)]"
@@ -277,7 +277,7 @@
     >
       <div
         class="absolute inset-0 opacity-60"
-        style="background: var(--brand-gradient-soft);"
+        style="background: var(--brand-soft);"
         aria-hidden="true"
       ></div>
       <!-- Layered mock cards -->
@@ -290,7 +290,7 @@
         </div>
         <div
           class="relative mx-auto w-full aspect-square rounded-[14px] shadow-[var(--shadow-2)] overflow-hidden flex items-center justify-center text-white"
-          style="background: var(--brand-gradient); font-family: var(--font-display); font-size: 60px; font-weight: 700;"
+          style="background: var(--color-accent); font-family: var(--font-display); font-size: 60px; font-weight: 700;"
         >
           ✦
         </div>
@@ -305,10 +305,10 @@
     </div>
     <div class="order-1 md:order-2 flex flex-col gap-5 text-start">
       <span
-        class="inline-flex items-center gap-2 text-[11px] font-medium tracking-[0.12em] uppercase text-[var(--color-teal)]"
+        class="inline-flex items-center gap-2 text-[11px] font-medium tracking-[0.12em] uppercase text-[var(--color-accent-soft)]"
         style="font-family: var(--font-mono);"
       >
-        <span class="inline-block w-6 h-px bg-[var(--color-teal)]" aria-hidden="true"></span>
+        <span class="inline-block w-6 h-px bg-[var(--color-accent-soft)]" aria-hidden="true"></span>
         {m.marketing_feature_2_eyebrow()}
       </span>
       <h3
@@ -347,11 +347,11 @@
     <!-- Export-size tiles visual -->
     <div class="grid grid-cols-3 gap-3">
       {#each [
-        { label: 'Instagram', ratio: '1:1', bg: 'linear-gradient(135deg, var(--color-accent), var(--color-violet))' },
-        { label: 'Story', ratio: '9:16', bg: 'linear-gradient(135deg, var(--color-teal), var(--color-accent))' },
-        { label: 'Reel cover', ratio: '9:16', bg: 'linear-gradient(135deg, var(--color-violet), var(--color-accent))' },
+        { label: 'Instagram', ratio: '1:1', bg: 'var(--color-accent)' },
+        { label: 'Story', ratio: '9:16', bg: '#030824' },
+        { label: 'Reel cover', ratio: '9:16', bg: 'var(--color-accent-hover)' },
         { label: 'Print A4', ratio: '210×297', bg: 'var(--color-surface-2)', dark: false },
-        { label: 'Twitter', ratio: '16:9', bg: 'linear-gradient(135deg, var(--color-teal), var(--color-violet))' },
+        { label: 'Twitter', ratio: '16:9', bg: '#030824' },
         { label: 'Poster', ratio: '48×72', bg: 'var(--color-surface-2)', dark: false }
       ] as tile, i (tile.label)}
         <div
@@ -405,7 +405,7 @@
       {#each [1, 2, 3, 4, 5, 6, 7, 8] as n (n)}
         <div
           class="aspect-square rounded-[14px] border border-[var(--color-border)] shadow-[var(--shadow-1)]"
-          style="background: linear-gradient({(n * 45) % 360}deg, var(--color-teal), var(--color-violet));"
+          style="background: color-mix(in srgb, var(--color-accent) {20 + (n % 4) * 15}%, var(--color-surface-2));"
         ></div>
       {/each}
     </div>
@@ -427,13 +427,13 @@
           ? 'border-transparent shadow-[var(--shadow-2)]'
           : 'border border-[var(--color-border)] shadow-[var(--shadow-1)]'}"
         style={tier.highlighted
-          ? 'background-image: linear-gradient(var(--color-surface), var(--color-surface)), var(--brand-gradient); background-origin: border-box; background-clip: padding-box, border-box; border: 2px solid transparent;'
+          ? 'border: 2px solid var(--color-accent);'
           : ''}
       >
         {#if tier.highlighted}
           <div
             class="absolute -top-3 start-5 text-xs font-bold px-2 py-0.5 rounded-[999px] text-white"
-            style="background: var(--brand-gradient);"
+            style="background: var(--color-accent);"
           >
             {m.sub_save_badge()}
           </div>
@@ -480,7 +480,7 @@
   <div
     use:reveal
     class="on-soft grid grid-cols-1 sm:grid-cols-3 gap-4 rounded-[20px] p-6 sm:p-8 text-center"
-    style="background: var(--brand-gradient-soft);"
+    style="background: var(--brand-soft);"
   >
     <div>
       <div class="text-2xl md:text-3xl font-bold">{m.marketing_stats_designs()}</div>
@@ -500,7 +500,7 @@
   <div
     use:reveal
     class="on-soft rounded-[20px] p-6 sm:p-10 md:p-14 flex flex-col items-center gap-5 text-center"
-    style="background: var(--brand-gradient-soft);"
+    style="background: var(--brand-soft);"
   >
     <h2
       class="text-3xl md:text-4xl font-bold max-w-[28ch]"

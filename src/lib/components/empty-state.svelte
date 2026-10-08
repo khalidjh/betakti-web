@@ -16,7 +16,7 @@
   {#if icon}
     <div
       class="w-16 h-16 rounded-[999px] flex items-center justify-center text-white"
-      style="background: var(--brand-gradient);"
+      style="background: var(--color-accent);"
     >
       {@render icon()}
     </div>

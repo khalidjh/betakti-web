@@ -2,13 +2,14 @@
 <html lang="%lang%" dir="%dir%">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="%sveltekit.assets%/brand/logo.png" />
-    <link rel="apple-touch-icon" href="%sveltekit.assets%/brand/logo.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="%sveltekit.assets%/brand/favicon-48.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="%sveltekit.assets%/brand/icon-192.png" />
+    <link rel="apple-touch-icon" href="%sveltekit.assets%/brand/apple-touch-icon.png" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
-    <meta name="theme-color" content="#5B46F6" />
+    <meta name="theme-color" content="#0A0A0B" />
 
     <!-- Safari on iOS puts an "Open / Get the app" bar at the top of every
          page from this. It is the cheapest install prompt that exists, and
@@ -40,7 +41,7 @@
           var match = document.cookie.match(/(?:^|; )theme=([^;]+)/);
           var cookie = match ? decodeURIComponent(match[1]) : null;
           var saved = cookie || localStorage.getItem('theme');
-          // Default: light. Users must explicitly opt into dark or system-follow.
+          // Default: dark, like the app. Light is an explicit choice.
           var effective;
           if (saved === 'dark') {
             effective = 'dark';
@@ -49,11 +50,11 @@
           } else if (saved === 'system') {
             effective = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
           } else {
-            effective = 'light';
+            effective = 'dark';
           }
           document.documentElement.setAttribute('data-theme', effective);
         } catch (e) {
-          document.documentElement.setAttribute('data-theme', 'light');
+          document.documentElement.setAttribute('data-theme', 'dark');
         }
       })();
     </script>

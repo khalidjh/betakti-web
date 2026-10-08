@@ -26,7 +26,7 @@
   </div>
 
   <a href="/welcome" class="flex items-center gap-3 mb-8 sm:mb-10">
-    <Logo size={44} />
+    <Logo size={44} variant="tile" />
     <span class="font-semibold text-xl" style="font-family: var(--font-display); letter-spacing: -0.01em;">
       {m.app_name()}
     </span>

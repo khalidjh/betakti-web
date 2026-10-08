@@ -67,7 +67,7 @@
           <a
             href={localizeHref('/home')}
             class="px-3.5 py-1.5 rounded-[10px] text-white font-medium text-sm"
-            style="background: var(--brand-gradient);"
+            style="background: var(--color-accent);"
           >
             {m.cta_open_app()}
           </a>
@@ -75,7 +75,7 @@
             href={localizeHref('/settings')}
             title={data.user.email ?? ''}
             class="w-8 h-8 rounded-[999px] flex items-center justify-center text-white text-sm font-bold ring-1 ring-[var(--color-border)]"
-            style="background: var(--brand-gradient);"
+            style="background: var(--color-accent);"
           >
             {userInitial}
           </a>
@@ -89,7 +89,7 @@
           <a
             href={localizeHref('/auth/register')}
             class="px-3.5 py-1.5 rounded-[10px] text-white font-medium text-sm"
-            style="background: var(--brand-gradient);"
+            style="background: var(--color-accent);"
           >
             {m.cta_start()}
           </a>

@@ -115,7 +115,7 @@
         >
           <div
             class="w-8 h-8 rounded-[999px] flex items-center justify-center text-white text-sm font-bold mb-3"
-            style="background: var(--brand-gradient);"
+            style="background: var(--color-accent);"
           >
             {i + 1}
           </div>
@@ -158,7 +158,7 @@
   <section class="max-w-5xl mx-auto px-4 sm:px-6 pb-16 sm:pb-24">
     <div
       class="rounded-[var(--radius-xl)] p-8 sm:p-12 text-center text-white"
-      style="background: var(--brand-gradient);"
+      style="background: var(--color-accent);"
     >
       <h2 class="text-[clamp(1.5rem,3.5vw,2.5rem)] font-bold mb-3" style="font-family: var(--font-display);">
         {t('جاهز تبدأ التصميم؟', 'Ready to start designing?')}

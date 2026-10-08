@@ -52,7 +52,7 @@
       <a
         href={localizeHref('/auth/register?next=/subscription')}
         class="mt-1 inline-flex items-center justify-center px-4 py-2 rounded-[var(--radius-md)] text-white font-medium text-sm"
-        style="background: var(--brand-gradient);"
+        style="background: var(--color-accent);"
       >
         {m.sub_subscribe()}
       </a>

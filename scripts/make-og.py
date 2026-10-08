@@ -42,14 +42,14 @@ PAGE = """<!doctype html>
   * {{ margin:0; padding:0; box-sizing:border-box; }}
   html, body {{ width:{w}px; height:{h}px; overflow:hidden; }}
   body {{
-    background:#07080f;
-    font-family:'IBM Plex Sans Arabic','Thmanyah',sans-serif;
+    background:#030824;
+    font-family:'dubai-bold','dubai',sans-serif;
     display:flex; flex-direction:column; justify-content:center;
     padding:0 96px; position:relative;
   }}
   .glow {{
     position:absolute; inset:auto -10% -40% auto; width:70%; height:120%;
-    background:radial-gradient(ellipse at center, rgba(91,70,246,.45), transparent 65%);
+    background:radial-gradient(ellipse at center, rgba(45,95,240,.38), transparent 65%);
     filter:blur(30px);
   }}
   .eyebrow {{
@@ -67,13 +67,48 @@ PAGE = """<!doctype html>
     display:flex; align-items:center; gap:14px;
     color:rgba(255,255,255,.72); font-size:26px; font-weight:600;
   }}
-  .dot {{ width:12px; height:12px; border-radius:50%; background:#5B46F6; }}
+  .mark {{ width:52px; height:52px; }}
 </style></head>
 <body>
   <div class="glow"></div>
   {eyebrow_html}
   <h1>{h1}</h1>
-  <div class="brand"><span class="dot"></span> بطاقتي · betakti.com</div>
+  <div class="brand"><img class="mark" src="file://{mark}"> بطاقتي · betakti.com</div>
+</body></html>
+"""
+
+
+# The site-wide card (static/og.png): the mark large, the name, the promise.
+DEFAULT_PAGE = """<!doctype html>
+<html dir="rtl" lang="ar"><head><meta charset="utf-8">
+<link rel="stylesheet" href="file://{fonts_css}">
+<style>
+  * {{ margin:0; padding:0; box-sizing:border-box; }}
+  html, body {{ width:{w}px; height:{h}px; overflow:hidden; }}
+  body {{
+    background:#030824; color:#fff; font-family:'dubai-bold','dubai',sans-serif;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    position:relative; text-align:center;
+  }}
+  .glow {{
+    position:absolute; left:50%; top:38%; width:760px; height:520px;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(ellipse at center, rgba(45,95,240,.32), transparent 65%);
+    filter:blur(30px);
+  }}
+  img {{ position:relative; width:230px; height:230px; margin-bottom:18px; }}
+  h1 {{ position:relative; font-size:92px; line-height:1.05; }}
+  p {{ position:relative; font-family:'dubai-medium','dubai',sans-serif;
+       font-size:34px; color:rgba(255,255,255,.72); margin-top:16px; }}
+  .url {{ position:absolute; bottom:40px; font-size:24px; color:rgba(255,255,255,.5);
+          font-family:'dubai-medium','dubai',sans-serif; letter-spacing:.04em; }}
+</style></head>
+<body>
+  <div class="glow"></div>
+  <img src="file://{mark}">
+  <h1>بطاقتي</h1>
+  <p>أسهل طريقة لتصميم بطاقات عربية جميلة</p>
+  <div class="url">betakti.com</div>
 </body></html>
 """
 
@@ -139,13 +174,16 @@ async def render(entries) -> None:
                     size=size,
                     h1=h1,
                     eyebrow_html=f'<div class="eyebrow">{eyebrow}</div>' if eyebrow else "",
+                    mark=ROOT / "static/brand/mark.png",
+                ) if e["slug"] != "_default" else DEFAULT_PAGE.format(
+                    w=WIDTH, h=HEIGHT, fonts_css=fonts_css, mark=ROOT / "static/brand/mark.png"
                 )
                 tmp = pathlib.Path("/tmp/betakti-og.html")
                 tmp.write_text(html, encoding="utf-8")
                 await send("Page.navigate", {"url": f"file://{tmp}"})
                 await asyncio.sleep(1.2)
                 res = await send("Page.captureScreenshot", {"format": "png"})
-                out = OUT_DIR / f"{e['slug']}.png"
+                out = ROOT / "static/og.png" if e["slug"] == "_default" else OUT_DIR / f"{e['slug']}.png"
                 out.write_bytes(base64.b64decode(res["data"]))
                 print(f"  {out.relative_to(ROOT)}")
     finally:
@@ -161,7 +199,7 @@ def main() -> None:
     if a.refresh or not MANIFEST.exists():
         refresh_manifest()
 
-    entries = json.loads(MANIFEST.read_text())
+    entries = [{"slug": "_default", "h1": ""}] + json.loads(MANIFEST.read_text())
     if a.only:
         entries = [e for e in entries if e["slug"] == a.only]
         if not entries:

@@ -10,7 +10,7 @@
 
 <span
   class="inline-flex items-center justify-center font-bold rounded-[999px] text-white leading-none tracking-wide {sz}"
-  style="background: var(--brand-gradient);"
+  style="background: var(--color-violet);"
 >
   {m.pro_badge()}
 </span>
