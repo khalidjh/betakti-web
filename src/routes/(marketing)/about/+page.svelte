@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { getAppHref } from '$lib/seo/config';
   import { getLocale, t, localizeHref } from '$lib/i18n';
   import Seo from '$lib/components/seo.svelte';
   import Button from '$lib/components/button.svelte';
@@ -89,7 +90,7 @@
   </div>
 
   <div class="flex flex-wrap gap-3 pt-2">
-    <Button variant="gradient" href={localizeHref('/auth/register')}>{t('ابدأ مجاناً', 'Start free')}</Button>
+    <Button variant="gradient" href={getAppHref('about')}>{t('حمّل التطبيق', 'Get the app')}</Button>
     <Button variant="ghost" href={localizeHref('/contact')}>{t('تواصل معنا ←', 'Contact us →')}</Button>
   </div>
 

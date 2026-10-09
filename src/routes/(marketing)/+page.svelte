@@ -6,7 +6,7 @@
   import TemplateCard from '$lib/components/template-card.svelte';
   import Seo from '$lib/components/seo.svelte';
   import { organization, webSite, softwareApplication } from '$lib/seo/schema';
-  import { APP_PRICE_MONTHLY_USD, APP_PRICE_YEARLY_USD } from '$lib/seo/config';
+  import { APP_PRICE_MONTHLY_USD, APP_PRICE_YEARLY_USD, getAppHref } from '$lib/seo/config';
   import { reveal } from '$lib/actions/reveal';
   import type { PageData } from './$types';
 
@@ -92,12 +92,13 @@
       </p>
 
       <div class="flex flex-wrap items-center gap-3">
-        <Button variant="gradient" href={localizeHref('/auth/register')}>{m.marketing_hero_cta_primary()}</Button>
+        <Button variant="gradient" href={getAppHref('hero')}>{m.marketing_hero_cta_primary()}</Button>
         <Button variant="ghost" href={localizeHref('/templates')}>{m.marketing_hero_cta_secondary()} {t('←', '→')}</Button>
       </div>
 
       <div class="flex flex-col gap-2">
         <span class="text-xs font-medium text-[var(--color-muted)]">{t('أو حمّل التطبيق مجاناً', 'Or download the free app')}</span>
+        <div id="download" class="scroll-mt-24"></div>
         <AppStoreButtons size="sm" />
       </div>
 
@@ -410,45 +411,12 @@
       {m.marketing_pricing_heading()}
     </h2>
   </div>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-    {#each pricingTiers as tier (tier.id)}
-      <div
-        use:reveal={{ delay: 60 }}
-        class="relative rounded-[14px] p-5 sm:p-6 bg-[var(--color-surface)] flex flex-col gap-4 {tier.highlighted
-          ? 'border-transparent shadow-[var(--shadow-2)]'
-          : 'border border-[var(--color-border)] shadow-[var(--shadow-1)]'}"
-        style={tier.highlighted
-          ? 'border: 2px solid var(--color-accent);'
-          : ''}
-      >
-        {#if tier.highlighted}
-          <div
-            class="absolute -top-3 start-5 text-xs font-bold px-2 py-0.5 rounded-[999px] text-white"
-            style="background: var(--color-accent);"
-          >
-            {m.sub_save_badge()}
-          </div>
-        {/if}
-        <h3 class="font-semibold">{planLabel(tier.id)}</h3>
-        <div class="flex items-baseline gap-1">
-          <span class="text-4xl font-bold">{tier.price}</span>
-          <span class="text-sm text-[var(--color-muted)]">{m.price_currency()}</span>
-        </div>
-        <span class="text-xs text-[var(--color-muted)]">{tier.period}</span>
-        <Button
-          variant={tier.highlighted ? 'gradient' : 'secondary'}
-          href={localizeHref('/auth/register?next=/subscription')}
-        >
-          {m.marketing_pricing_cta()}
-        </Button>
-      </div>
-    {/each}
-  </div>
-
+  <!-- Web plans are gone until the web editor is ready; the app's are the
+       prices that apply. -->
   <!-- Mobile app pricing -->
   <div use:reveal class="max-w-4xl mx-auto mt-6 rounded-[14px] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div class="flex flex-col gap-1">
-      <span class="font-semibold text-[var(--color-ink)]">{t('متوفر أيضاً على تطبيق الجوال', 'Also available on the mobile app')}</span>
+      <span class="font-semibold text-[var(--color-ink)]">{t('اشتراك برو في التطبيق', 'Pro in the app')}</span>
       <span class="text-sm text-[var(--color-ink-2)]">
         {t(
           `${m.sub_plan_monthly()}: $${APP_PRICE_MONTHLY_USD} · ${m.sub_plan_yearly()}: $${APP_PRICE_YEARLY_USD}`,
@@ -500,7 +468,7 @@
       {m.marketing_final_cta_title()}
     </h2>
     <p class="max-w-[48ch]">{m.marketing_final_cta_sub()}</p>
-    <Button variant="gradient" href={localizeHref('/auth/register')}>{m.marketing_final_cta_button()}</Button>
+    <Button variant="gradient" href={getAppHref('final')}>{m.marketing_final_cta_button()}</Button>
     <AppStoreButtons class="justify-center mt-2" />
   </div>
 </section>

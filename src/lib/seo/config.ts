@@ -26,6 +26,16 @@ export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=io.
 /** Generic "download" link used in schema (defaults to the App Store listing). */
 export const APP_DOWNLOAD_URL = APP_STORE_URL;
 
+/**
+ * Every "start" on the site goes to the app (Khalid, 2026-10-09: the web
+ * editor and web accounts are not ready, so nobody is asked to register
+ * here). `/get` picks the store for the phone in hand — desktop lands on the
+ * store badges — and [campaign] says which button it was, so installs can be
+ * traced back to the page that earned them.
+ */
+export const getAppHref = (campaign: string) =>
+  `/get?utm_source=web&utm_medium=site&utm_campaign=${encodeURIComponent(campaign)}`;
+
 /** Mobile (App Store / Google Play) subscription prices, in USD. */
 export const APP_PRICE_MONTHLY_USD = '4.99';
 export const APP_PRICE_YEARLY_USD = '29.99';

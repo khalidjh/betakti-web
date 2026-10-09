@@ -29,35 +29,13 @@
   </h2>
   <p class="text-[var(--color-ink-2)] mb-8 max-w-[60ch]">
     {t(
-      'ابدأ مجاناً، وارتقِ إلى Pro على الويب أو عبر تطبيق الجوال — اختر ما يناسبك.',
-      'Start free, and go Pro on the web or via the mobile app — whichever suits you.'
+      'التطبيق مجاني، وبرو يفتح كل القوالب والخطوط بدون علامة مائية.',
+      'The app is free; Pro unlocks every template and font, with no watermark.'
     )}
   </p>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <!-- Web -->
-    <div class="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 sm:p-6 flex flex-col gap-4">
-      <div class="flex items-center justify-between gap-2">
-        <h3 class="font-semibold text-[var(--color-ink)]">{t('على الويب', 'On the web')}</h3>
-        <span class="text-[11px] font-medium uppercase tracking-wide text-[var(--color-muted)]" style="font-family: var(--font-mono);">{m.price_currency()}</span>
-      </div>
-      <ul class="flex flex-col gap-2.5">
-        {#each webPlans as plan (plan.label())}
-          <li class="flex items-baseline justify-between border-b border-[var(--color-border)] pb-2 last:border-0 last:pb-0">
-            <span class="text-sm text-[var(--color-ink-2)]">{plan.label()}</span>
-            <span class="font-semibold text-[var(--color-ink)]">{plan.price()} <span class="text-xs text-[var(--color-muted)] font-normal">{m.price_currency()}</span></span>
-          </li>
-        {/each}
-      </ul>
-      <a
-        href={localizeHref('/auth/register?next=/subscription')}
-        class="mt-1 inline-flex items-center justify-center px-4 py-2 rounded-[var(--radius-md)] text-white font-medium text-sm"
-        style="background: var(--color-accent);"
-      >
-        {m.sub_subscribe()}
-      </a>
-    </div>
-
+  <!-- Web plans are hidden until web subscriptions are ready. -->
+  <div class="grid grid-cols-1 gap-4 max-w-xl">
     <!-- App -->
     <div class="rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 sm:p-6 flex flex-col gap-4">
       <div class="flex items-center justify-between gap-2">

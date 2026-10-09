@@ -1,7 +1,8 @@
 import { redirect, type Handle } from '@sveltejs/kit';
 import { adminAuth } from '$lib/firebase/admin';
 import { isLocale, type Locale } from '$lib/i18n';
-import { addLocalePrefix, isAppPath, localeFromPath } from '$lib/locale-path';
+import { addLocalePrefix, isAppPath, localeFromPath, stripLocalePrefix } from '$lib/locale-path';
+import { getAppHref } from '$lib/seo/config';
 import { setLocale } from '$lib/paraglide/runtime.js';
 
 async function loadUser(cookie: string | undefined): Promise<App.Locals['user']> {
@@ -47,7 +48,27 @@ function negotiateLocale(event: Parameters<Handle>[0]['event']): Locale {
   return 'ar';
 }
 
+/**
+ * The web editor and web accounts aren't ready (Khalid, 2026-10-09), so these
+ * pages send people to the app instead — bookmarks, old shares and search
+ * results included. Temporary (302) so they can come back. `/auth/login`,
+ * `/admin` and `/api` stay: the admin tools sign in through them.
+ */
+const WEB_APP_PATHS = [
+  '/home',
+  '/projects',
+  '/editor',
+  '/settings',
+  '/subscription',
+  '/tools',
+  '/auth/register'
+];
+
 export const handle: Handle = async ({ event, resolve }) => {
+  const bare = stripLocalePrefix(event.url.pathname);
+  const webApp = WEB_APP_PATHS.find((p) => bare === p || bare.startsWith(p + '/'));
+  if (webApp) redirect(302, getAppHref(`redirect_${webApp.slice(1).replace('/', '_')}`));
+
   event.locals.user = await loadUser(event.cookies.get('__session'));
   event.locals.locale = negotiateLocale(event);
 

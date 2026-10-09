@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { getAppHref } from '$lib/seo/config';
   import { m, getLocale, t, localizeHref } from '$lib/i18n';
   import Button from '$lib/components/button.svelte';
   import ProBadge from '$lib/components/pro-badge.svelte';
@@ -29,7 +30,8 @@
     return 'background: var(--color-surface-2);';
   });
 
-  const useHref = $derived(localizeHref(`/editor/new?templateId=${tpl.id}`));
+  // Opens the store for the phone in hand; the web editor isn't ready.
+  const useHref = $derived(getAppHref(`template_${tpl.id}`));
 
   const jsonLd = $derived([
     {
@@ -147,7 +149,6 @@
 
       <div class="flex flex-col gap-2">
         <Button variant="gradient" href={useHref}>{m.tpl_use()}</Button>
-        <Button variant="secondary" href={useHref}>{m.tpl_remix()}</Button>
       </div>
     </aside>
   </div>

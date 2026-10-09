@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { getAppHref } from '$lib/seo/config';
   import { t, localizeHref } from '$lib/i18n';
   import Button from '$lib/components/button.svelte';
   import AppStoreButtons from '$lib/components/app-store-buttons.svelte';
@@ -22,7 +23,8 @@
 
   const { content, crumbs, templatesHref, sizeLabel }: Props = $props();
 
-  const registerHref = $derived(localizeHref('/auth/register'));
+  // The app, not a web sign-up: see getAppHref.
+  const registerHref = getAppHref('landing');
 </script>
 
 <article>
@@ -64,7 +66,7 @@
         </p>
 
         <div class="flex flex-wrap items-center gap-3">
-          <Button variant="gradient" href={registerHref}>{t('ابدأ التصميم مجاناً', 'Start designing free')}</Button>
+          <Button variant="gradient" href={registerHref}>{t('حمّل التطبيق مجاناً', 'Get the app free')}</Button>
           {#if templatesHref}
             <Button variant="ghost" href={localizeHref(templatesHref)}>{t('تصفح القوالب ←', 'Browse templates →')}</Button>
           {/if}

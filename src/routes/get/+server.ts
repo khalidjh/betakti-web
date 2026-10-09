@@ -73,6 +73,7 @@ export const GET: RequestHandler = ({ request, url }) => {
   // cannot use. Keep the tags so the visit is still attributable. The landing
   // page is the root now — pointing at /welcome would cost a second hop.
   const welcome = new URL('/', url.origin);
+  welcome.hash = 'download';
   for (const [key, value] of url.searchParams) {
     if (key.startsWith('utm_')) welcome.searchParams.set(key, value);
   }

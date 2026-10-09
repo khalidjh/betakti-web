@@ -78,46 +78,7 @@
     <p class="text-lg text-[var(--color-ink-2)] max-w-[52ch] leading-relaxed">{m.sub_headline_en()}</p>
   </header>
 
-  <div class="flex items-center gap-3 mb-5">
-    <h2 class="text-sm font-semibold tracking-wide uppercase text-[var(--color-ink-2)]">{t('على الويب', 'On the web')}</h2>
-    <span class="flex-1 h-px bg-[var(--color-border)]"></span>
-  </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12 sm:mb-16">
-    {#each tiers as tier (tier.id)}
-      <div
-        use:reveal={{ delay: 60 }}
-        class="relative rounded-[14px] p-5 sm:p-6 bg-[var(--color-surface)] flex flex-col gap-4 {tier.highlighted
-          ? 'border-transparent shadow-[var(--shadow-2)]'
-          : 'border border-[var(--color-border)] shadow-[var(--shadow-1)]'}"
-        style={tier.highlighted
-          ? 'border: 2px solid var(--color-accent);'
-          : ''}
-      >
-        {#if tier.highlighted}
-          <div
-            class="absolute -top-3 start-5 text-xs font-bold px-2 py-0.5 rounded-[999px] text-white"
-            style="background: var(--color-accent);"
-          >
-            {m.sub_save_badge()}
-          </div>
-        {/if}
-        <h3 class="font-semibold text-lg">{planLabel(tier.id)}</h3>
-        <div class="flex items-baseline gap-1">
-          <span class="text-4xl font-bold">{tier.price}</span>
-          <span class="text-sm text-[var(--color-muted)]">{m.price_currency()}</span>
-        </div>
-        <span class="text-xs text-[var(--color-muted)]">{tier.period}</span>
-        <Button
-          variant={tier.highlighted ? 'gradient' : 'secondary'}
-          href={localizeHref('/auth/register?next=/subscription')}
-        >
-          {m.sub_subscribe()}
-        </Button>
-      </div>
-    {/each}
-  </div>
-
+  <!-- The web plans are hidden until web subscriptions are ready. -->
   <!-- Mobile app subscriptions -->
   <div class="flex items-center gap-3 mb-5">
     <h2 class="text-sm font-semibold tracking-wide uppercase text-[var(--color-ink-2)]">{t('على تطبيق الجوال', 'On the mobile app')}</h2>

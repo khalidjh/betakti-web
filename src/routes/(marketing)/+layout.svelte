@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { getAppHref } from '$lib/seo/config';
   import type { Snippet } from 'svelte';
   import Logo from '$lib/brand/logo.svelte';
   import { m, t, localizeHref } from '$lib/i18n';
@@ -63,37 +64,15 @@
         <span class="hidden sm:inline w-px h-5 bg-[var(--color-border)] mx-1"></span>
         <ThemeToggle />
         <LocaleToggle />
-        {#if data.user}
-          <a
-            href={localizeHref('/home')}
-            class="px-3.5 py-1.5 rounded-[10px] text-white font-medium text-sm"
-            style="background: var(--color-accent);"
-          >
-            {m.cta_open_app()}
-          </a>
-          <a
-            href={localizeHref('/settings')}
-            title={data.user.email ?? ''}
-            class="w-8 h-8 rounded-[999px] flex items-center justify-center text-white text-sm font-bold ring-1 ring-[var(--color-border)]"
-            style="background: var(--color-accent);"
-          >
-            {userInitial}
-          </a>
-        {:else}
-          <a
-            href={localizeHref('/auth/login')}
-            class="px-3 py-1.5 rounded-[8px] text-[var(--color-ink-2)] hover:text-[var(--color-ink)]"
-          >
-            {m.cta_sign_in()}
-          </a>
-          <a
-            href={localizeHref('/auth/register')}
-            class="px-3.5 py-1.5 rounded-[10px] text-white font-medium text-sm"
-            style="background: var(--color-accent);"
-          >
-            {m.cta_start()}
-          </a>
-        {/if}
+        <!-- One action: the app. The web editor and web accounts aren't
+             ready, so the site never asks anyone to sign up. -->
+        <a
+          href={getAppHref('nav')}
+          class="px-3.5 py-1.5 rounded-[10px] text-white font-medium text-sm"
+          style="background: var(--color-accent);"
+        >
+          {m.cta_start()}
+        </a>
       </nav>
     </div>
   </header>
