@@ -18,11 +18,14 @@
     breadcrumbList(crumbs.map((cr) => ({ name: cr.name, url: SITE_URL + localizeHref(cr.href) })))
   ]);
 
+  // Real figures, 2026-10-09: 5,301 active users in 28 days (RevenueCat),
+  // 219 fonts in the app, 7,466 designs exported in 30 days (PostHog), and the
+  // App Store SA rating 4.53 from 8,028 ratings.
   const stats = [
-    { value: '40,000+', ar: 'مصمم ومبدع', en: 'creators & studios' },
-    { value: '60+', ar: 'خط عربي', en: 'Arabic fonts' },
-    { value: '10K+', ar: 'تصميم', en: 'designs created' },
-    { value: '4.8★', ar: 'تقييم المستخدمين', en: 'user rating' }
+    { value: '5,000+', ar: 'مستخدم كل شهر', en: 'people every month' },
+    { value: '200+', ar: 'خط عربي', en: 'Arabic fonts' },
+    { value: '7,000+', ar: 'تصميم كل شهر', en: 'designs a month' },
+    { value: '4.5★', ar: 'من +٨٬٠٠٠ تقييم', en: 'from 8,000+ ratings' }
   ];
 </script>
 
