@@ -1,4 +1,5 @@
 import { redirect } from '@sveltejs/kit';
+import { env } from '$env/dynamic/private';
 import { APP_STORE_URL, PLAY_STORE_URL } from '$lib/seo/config';
 import type { RequestHandler } from './$types';
 
@@ -37,8 +38,39 @@ function campaignToken(parts: string[]): string {
     .slice(0, 40);
 }
 
+/**
+ * One `get_link_opened` event per tap, so taps can be counted per post even
+ * when no install follows. Fire-and-forget: the redirect never waits on
+ * PostHog and never fails because of it.
+ */
+function countTap(ua: string, q: URLSearchParams): void {
+  if (!env.POSTHOG_API_KEY) return;
+  const os = IOS.test(ua) ? 'ios' : ANDROID.test(ua) ? 'android' : 'other';
+  fetch('https://us.i.posthog.com/i/v0/e/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      api_key: env.POSTHOG_API_KEY,
+      event: 'get_link_opened',
+      distinct_id: crypto.randomUUID(),
+      properties: {
+        utm_source: q.get('utm_source'),
+        utm_medium: q.get('utm_medium'),
+        utm_campaign: q.get('utm_campaign'),
+        os,
+        $process_person_profile: false
+      }
+    })
+  }).catch(() => {});
+}
+
 export const GET: RequestHandler = ({ request, url }) => {
   const ua = request.headers.get('user-agent') ?? '';
+  try {
+    countTap(ua, url.searchParams);
+  } catch {
+    // Counting must never cost the redirect.
+  }
   const source = url.searchParams.get('utm_source') ?? 'web';
   const medium = url.searchParams.get('utm_medium') ?? '';
   const campaign = url.searchParams.get('utm_campaign') ?? '';
