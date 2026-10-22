@@ -58,6 +58,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .prod s{color:var(--mute);opacity:.7;margin-inline-start:6px}
 .prod .ok{margin-inline-start:auto;color:var(--primary);font-size:20px;visibility:hidden}
 .prod.on .ok{visibility:visible}
+.empty{color:var(--mute);font-size:13px;line-height:1.7;padding:16px 4px;text-align:center}
 .off{font-size:11.5px;font-weight:700;color:var(--danger);margin-inline-start:6px}
 
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -99,13 +100,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 </style></head>
 <body>
 
-<!-- TODO(salla): replace the sample catalogue with the merchant's own. The
-     flow: embedded.auth.getToken() → POST it to our server → the server calls
-     https://api.salla.dev/exchange-authority/v1/introspect (header
-     S-Source: 537359223) to get merchant_id → loads that merchant's
-     access_token from stores.json → GET products, special offers and coupons
-     from the Salla Admin API → render. Then embedded.ready(). -->
-<div class="note" id="note"><i class="hgi hgi-stroke hgi-information-circle"></i>هذه منتجات تجريبية للعرض. بعد ربط متجرك تظهر هنا منتجاتك وأسعارك وكوبوناتك.</div>
+<!-- Inside Salla the picker shows the merchant's own catalogue: the session
+     token from the iframe URL goes to /api/salla/data, which checks it with
+     Salla and reads the store with the merchant's access token. Anywhere else
+     (no SDK, no install yet, an error) the samples below stay, with the note
+     saying so. The designs in the preview are still samples either way. -->
+<div class="note" id="note"><i class="hgi hgi-stroke hgi-information-circle"></i><span id="note-text">هذه منتجات تجريبية للعرض. بعد ربط متجرك تظهر هنا منتجاتك وأسعارك وكوبوناتك.</span></div>
 
 <div class="intro">
   <p><i class="hgi hgi-stroke hgi-tick-02"></i>كل تصميم يتعبّى من بيانات متجرك: الاسم، صورة المنتج، السعر قبل وبعد الخصم، وكود الخصم من «كوبونات الخصم».</p>
@@ -146,11 +146,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
   <section class="panel publish">
     <h2><span class="n">٣</span>جاهز للنشر</h2>
-    <div class="field"><span>اسم المتجر</span><b>دار العود <em class="tag">من المتجر</em></b></div>
+    <div class="field"><span>اسم المتجر</span><b><span id="f-store">دار العود</span> <em class="tag">من المتجر</em></b></div>
     <div class="field"><span>المنتج</span><b><span id="f-name">عود ملكي</span> <em class="tag">من المتجر</em></b></div>
     <div class="field"><span>السعر</span><b><span id="f-price">289 ر.س</span> <em class="tag">من المتجر</em></b></div>
     <div class="field"><span>قبل الخصم</span><b><span id="f-was">349 ر.س</span> <em class="tag">من المتجر</em></b></div>
-    <div class="field"><span>كود الخصم</span><b><span class="coupon">OUD20</span> <em class="tag">من الكوبونات</em></b></div>
+    <div class="field"><span>كود الخصم</span><b><span class="coupon" id="f-coupon">OUD20</span> <em class="tag">من الكوبونات</em></b></div>
     <button class="btn p" id="dl"><i class="hgi hgi-stroke hgi-download-04"></i>حمّل التصميم</button>
     <button class="btn s" id="wa"><i class="hgi hgi-stroke hgi-whatsapp"></i>أرسله لجوالي على واتساب</button>
     <div class="season">
@@ -172,7 +172,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     { name: 'عود دقة ميني ماليزي', short: 'عود دقة', price: 650, img: '/salla/p-oud-mini.webp' }
   ];
   var current = 0;
-  var $ = function (id) { return document.getElementById(id); };
+  var live = false;
+  var $ =function (id) { return document.getElementById(id); };
 
   // The SDK is absent when the page is opened outside Salla (or the CDN is
   // down); everything below still works, it just draws its own toast.
@@ -194,26 +195,35 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     toastTimer = setTimeout(function () { el.classList.remove('show'); }, 2600);
   }
 
-  function sar(n) { return n.toLocaleString('en-US') + ' ر.س'; }
+  function sar(n, cur) {
+    var unit = !cur || cur === 'SAR' ? 'ر.س' : cur;
+    return Number(n).toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' ' + unit;
+  }
   function renderProducts() {
     var q = $('q').value.trim();
     $('prods').innerHTML = '';
+    if (!PRODUCTS.length) {
+      $('prods').innerHTML = '<p class="empty">ما في منتجات معروضة في متجرك للحين. أضف منتج من «المنتجات» في لوحة سلة ويظهر هنا.</p>';
+      return;
+    }
     PRODUCTS.forEach(function (p, i) {
       if (q && p.name.indexOf(q) < 0) return;
       var b = document.createElement('button');
       b.className = 'prod' + (i === current ? ' on' : '');
-      var off = p.was ? '<s>' + p.was + '</s><span class="off">−' + Math.round(100 - p.price * 100 / p.was) + '%</span>' : '';
-      b.innerHTML = '<div class="im" style="background-image:url(' + p.img + ')"></div><div><b></b><small>' + sar(p.price) + ' ' + off + '</small></div><i class="hgi hgi-stroke hgi-tick-02 ok"></i>';
+      var off = p.was ? '<s>' + Number(p.was).toLocaleString('en-US') + '</s><span class="off">−' + Math.round(100 - p.price * 100 / p.was) + '%</span>' : '';
+      b.innerHTML = '<div class="im"></div><div><b></b><small>' + sar(p.price, p.cur) + ' ' + off + '</small></div><i class="hgi hgi-stroke hgi-tick-02 ok"></i>';
       b.querySelector('b').textContent = p.name;
+      if (p.img) b.querySelector('.im').style.backgroundImage = 'url("' + encodeURI(p.img).replace(/[()'"]/g, escape) + '")';
       b.onclick = function () { current = i; renderProducts(); fill(); };
       $('prods').appendChild(b);
     });
   }
   function fill() {
     var p = PRODUCTS[current];
+    if (!p) { $('f-name').textContent = '—'; $('f-price').textContent = '—'; $('f-was').textContent = '—'; return; }
     $('f-name').textContent = p.short;
-    $('f-price').textContent = sar(p.price);
-    $('f-was').textContent = p.was ? sar(p.was) : '—';
+    $('f-price').textContent = sar(p.price, p.cur);
+    $('f-was').textContent = p.was ? sar(p.was, p.cur) : '—';
   }
   $('q').oninput = renderProducts;
   renderProducts();
@@ -232,14 +242,70 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   $('dl').onclick = function () { toast('تم حفظ التصميم في جهازك'); };
   $('wa').onclick = function () { toast('أرسلنا التصميم لجوالك على واتساب'); };
 
+  function showError(msg) {
+    if (embedded && inSalla) { try { embedded.ui.toast.error(msg, 5000); return; } catch (e) {} }
+    console.warn('[salla]', msg);
+  }
+
+  // The catalogue from /api/salla/data, in the shape the picker draws.
+  function useLive(d) {
+    live = true;
+    PRODUCTS = (d.products || []).map(function (p) {
+      var sale = p.sale_price && p.sale_price.amount < p.price.amount ? p.sale_price.amount : null;
+      return {
+        name: p.name,
+        short: p.name.length > 22 ? p.name.slice(0, 21) + '…' : p.name,
+        price: sale != null ? sale : p.price.amount,
+        was: sale != null ? p.price.amount : null,
+        cur: p.price.currency,
+        img: p.image
+      };
+    });
+    current = 0;
+    $('f-store').textContent = (d.store && d.store.name) || '—';
+    var c = (d.coupons || [])[0];
+    $('f-coupon').textContent = c ? c.code : 'لا يوجد';
+    $('note-text').textContent = 'هذه منتجاتك وكوبوناتك من متجرك. التصاميم في المعاينة نماذج حتى نفعّل التوليد من منتجاتك.';
+    renderProducts();
+    fill();
+  }
+
+  function loadStore() {
+    var token = embedded.auth.getToken();
+    if (!token) return Promise.resolve();
+    return fetch('/api/salla/data', { headers: { authorization: 'Bearer ' + token } })
+      .then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (body) {
+          if (res.ok) return useLive(body);
+          if (body.error === 'invalid_session') {
+            // The session token is short-lived; ask Salla for a fresh one, once.
+            var key = 'betakti-salla-refreshed';
+            var tried = false;
+            try { tried = sessionStorage.getItem(key) === '1'; sessionStorage.setItem(key, '1'); } catch (e) {}
+            if (!tried) { embedded.auth.refresh(); return; }
+            return showError('انتهت الجلسة. حدّث الصفحة وحاول مرة ثانية.');
+          }
+          if (body.error === 'not_installed' || body.error === 'reauthorize') {
+            return showError('ما قدرنا نوصل لمتجرك. جرّب تحذف التطبيق وتثبّته من جديد.');
+          }
+          return showError('ما قدرنا نجيب منتجات متجرك الحين. نعرض لك نماذج مؤقتًا.');
+        });
+      })
+      .catch(function () { showError('تعذّر الاتصال. نعرض لك نماذج مؤقتًا.'); });
+  }
+
   if (!embedded || !inSalla) return;
   embedded.init().then(function (r) {
     if (r && r.layout && r.layout.theme) setTheme(r.layout.theme);
     embedded.page.setTitle('تصاميم المتجر');
     embedded.onThemeChange(setTheme);
-    // TODO(salla): call ready() only after the merchant's products load.
-    embedded.ready();
-  }).catch(function (e) { console.warn('[salla] embedded init failed', e); });
+    return loadStore();
+  }).catch(function (e) {
+    console.warn('[salla] embedded init failed', e);
+  }).then(function () {
+    try { if (live) sessionStorage.removeItem('betakti-salla-refreshed'); } catch (e) {}
+    try { embedded.ready(); } catch (e) {}
+  });
 })();
 </script>
 </body></html>
