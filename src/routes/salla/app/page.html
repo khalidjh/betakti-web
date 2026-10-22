@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>تصاميم المتجر — بطاقتي</title>
+<!-- The «بطاقتي - تصاميم متجرك» Salla app, as it renders in the merchant
+     dashboard's iframe. Built to docs.salla.dev/embedded-sdk/design-guidelines:
+     no sidebar, navbar or breadcrumbs (the title comes from
+     embedded.page.setTitle), Salla palette, PingARLT, Hugeicons, light + dark.
+     The designs themselves keep Betakti's own type; only the UI is Salla's.
+     Source: betakti-flutter marketing/outreach/salla/app/mockup.html. -->
+<link rel="stylesheet" href="https://cdn.hugeicons.com/font/hgi-stroke-rounded.css">
+<style>
+@font-face{font-family:PingARLT;src:url("https://cdn.salla.network/fonts/lib/pingarlt/PingARLT-Regular.woff2") format("woff2")}
+@font-face{font-family:PingARLT;font-weight:500;src:url("https://cdn.salla.network/fonts/lib/pingarlt/PingARLT-Medium.woff2") format("woff2")}
+@font-face{font-family:PingARLT;font-weight:700;src:url("https://cdn.salla.network/fonts/lib/pingarlt/PingARLT-Bold.woff2") format("woff2")}
+
+/* Salla tokens (light) */
+:root{
+  --primary:#004d5b; --on-primary:#fff; --secondary:#73fcd7; --on-secondary:#004d5b;
+  --success:#00b259; --danger:#f5434a; --bg:#f8f8f8;
+  --card:#fff; --ink:#1d1e20; --mute:#6b7075; --line:#e9ebed; --soft:#f1f3f4;
+  --active-bg:#e6fff8; --tag-bg:#e5f7ee; --note-bg:#fff7e6; --note-ink:#8a5a00;
+}
+/* Salla tokens (dark) */
+body.dark{
+  --primary:#baefe3; --on-primary:#0f2a2f; --secondary:#baefe3; --on-secondary:#0f2a2f;
+  --bg:#1d1e20; --card:#26282b; --ink:#eef0f1; --mute:#9aa0a6; --line:#34373b; --soft:#2e3034;
+  --active-bg:rgba(186,239,227,.12); --tag-bg:rgba(0,178,89,.16); --note-bg:rgba(255,183,0,.12); --note-ink:#ffcf66;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);font-family:PingARLT,system-ui,sans-serif;color:var(--ink);padding:20px;font-size:14px;min-height:100vh}
+i.hgi{font-size:18px;line-height:1}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+.note{display:flex;align-items:center;gap:8px;background:var(--note-bg);color:var(--note-ink);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:13px}
+.intro{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-bottom:16px}
+.intro p{color:var(--mute);font-size:14px;display:flex;align-items:center;gap:8px}
+.intro p i{color:var(--success)}
+.usage{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mute)}
+.meter{width:140px;height:6px;border-radius:3px;background:var(--soft);overflow:hidden}
+.meter b{display:block;height:100%;width:40%;background:var(--primary)}
+
+.grid{display:grid;grid-template-columns:320px 1fr 360px;gap:16px}
+@media (max-width:1100px){.grid{grid-template-columns:1fr 1fr}.grid .publish{grid-column:1/-1}}
+@media (max-width:720px){.grid{grid-template-columns:1fr}body{padding:12px}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column}
+.panel h2{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.n{width:22px;height:22px;border-radius:50%;background:var(--primary);color:var(--on-primary);font-size:12px;display:grid;place-items:center;font-weight:700}
+
+.search{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:8px;padding:0 12px;color:var(--mute);margin-bottom:12px;background:var(--bg)}
+.search input{flex:1;border:0;background:none;font:inherit;color:var(--ink);padding:9px 0;outline:none}
+.prod{display:flex;gap:12px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;width:100%;text-align:start}
+.prod.on{border-color:var(--primary);background:var(--active-bg)}
+.prod .im{width:52px;height:52px;border-radius:8px;background:var(--soft) center/contain no-repeat;flex:none}
+.prod b{font-size:14px;font-weight:500;display:block;margin-bottom:2px}
+.prod small{color:var(--mute);font-size:13px}
+.prod s{color:var(--mute);opacity:.7;margin-inline-start:6px}
+.prod .ok{margin-inline-start:auto;color:var(--primary);font-size:20px;visibility:hidden}
+.prod.on .ok{visibility:visible}
+.off{font-size:11.5px;font-weight:700;color:var(--danger);margin-inline-start:6px}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);font-size:13px}
+.chip i{font-size:16px;color:var(--mute)}
+.chip.on{background:var(--secondary);border-color:var(--secondary);color:var(--on-secondary);font-weight:700}
+.chip.on i{color:var(--on-secondary)}
+
+.preview{align-items:center;gap:14px}
+.seg{display:flex;background:var(--soft);border-radius:8px;padding:4px;gap:4px;flex-wrap:wrap;justify-content:center}
+.seg button{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:6px;font-size:13px;color:var(--mute)}
+.seg button.on{background:var(--card);color:var(--ink);font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.story{width:min(100%,340px);aspect-ratio:9/16;border-radius:16px;overflow:hidden;box-shadow:0 12px 32px rgba(0,0,0,.18);background:var(--soft)}
+.story.square{aspect-ratio:1}
+.story img{width:100%;height:100%;object-fit:cover;display:block}
+.vars{display:flex;gap:10px;align-items:center}
+.vars button img{width:56px;aspect-ratio:9/16;object-fit:cover;border-radius:6px;border:2px solid transparent;opacity:.7;display:block}
+.vars button.on img{border-color:var(--primary);opacity:1}
+
+.field{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px;gap:8px}
+.field span{color:var(--mute)}
+.field b{font-weight:500;display:flex;align-items:center;gap:6px}
+.tag{font-size:11px;color:var(--success);background:var(--tag-bg);border-radius:4px;padding:2px 6px;font-style:normal;font-weight:500}
+.coupon{font-family:ui-monospace,monospace;font-weight:700;letter-spacing:.5px;border:1px dashed var(--mute);border-radius:4px;padding:1px 6px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:8px;font-weight:700;font-size:14px;margin-top:10px;width:100%}
+.btn.p{background:var(--primary);color:var(--on-primary)}
+.btn.s{background:var(--soft);color:var(--ink)}
+.season{margin-top:16px;border-radius:10px;padding:14px 16px;background:var(--active-bg);border:1px solid var(--line);display:flex;gap:12px;align-items:flex-start}
+.season i{font-size:22px;color:var(--primary)}
+.season small{color:var(--mute);font-size:12px}
+.season b{display:block;font-size:15px;margin:2px 0 4px}
+.season p{font-size:13px;line-height:1.6;color:var(--mute)}
+
+/* Shown only when the page is opened outside Salla, where embedded.ui.toast
+   isn't there to draw it. */
+.toast{position:fixed;top:20px;left:50%;transform:translate(-50%,-140%);transition:transform .25s;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.12);font-weight:500;z-index:10}
+.toast.show{transform:translate(-50%,0)}
+.toast i{color:var(--success);font-size:20px}
+</style></head>
+<body>
+
+<!-- TODO(salla): replace the sample catalogue with the merchant's own. The
+     flow: embedded.auth.getToken() → POST it to our server → the server calls
+     https://api.salla.dev/exchange-authority/v1/introspect (header
+     S-Source: 537359223) to get merchant_id → loads that merchant's
+     access_token from stores.json → GET products, special offers and coupons
+     from the Salla Admin API → render. Then embedded.ready(). -->
+<div class="note" id="note"><i class="hgi hgi-stroke hgi-information-circle"></i>هذه منتجات تجريبية للعرض. بعد ربط متجرك تظهر هنا منتجاتك وأسعارك وكوبوناتك.</div>
+
+<div class="intro">
+  <p><i class="hgi hgi-stroke hgi-tick-02"></i>كل تصميم يتعبّى من بيانات متجرك: الاسم، صورة المنتج، السعر قبل وبعد الخصم، وكود الخصم من «كوبونات الخصم».</p>
+  <div class="usage">٤ من ١٠ تصاميم هذا الشهر <span class="meter"><b></b></span></div>
+</div>
+
+<div class="grid">
+  <section class="panel">
+    <h2><span class="n">١</span>اختر المنتج</h2>
+    <label class="search"><i class="hgi hgi-stroke hgi-search-01"></i><input id="q" placeholder="ابحث في منتجات متجرك"></label>
+    <div id="prods"></div>
+    <h2 style="margin-top:16px"><span class="n">٢</span>المناسبة</h2>
+    <div class="chips" id="chips">
+      <button class="chip on"><i class="hgi hgi-stroke hgi-new-releases"></i>وصل حديثًا</button>
+      <button class="chip"><i class="hgi hgi-stroke hgi-discount-tag-02"></i>تخفيض</button>
+      <button class="chip"><i class="hgi hgi-stroke hgi-ticket-02"></i>كود خصم</button>
+      <button class="chip"><i class="hgi hgi-stroke hgi-shopping-bag-01"></i>الجمعة البيضاء</button>
+      <button class="chip"><i class="hgi hgi-stroke hgi-moon-02"></i>رمضان</button>
+      <button class="chip"><i class="hgi hgi-stroke hgi-gift"></i>عيد مبارك</button>
+      <button class="chip"><i class="hgi hgi-stroke hgi-sparkles"></i>جمعة مباركة</button>
+      <button class="chip"><i class="hgi hgi-stroke hgi-truck-delivery"></i>توصيل مجاني</button>
+    </div>
+  </section>
+
+  <section class="panel preview">
+    <div class="seg" id="seg">
+      <button class="on" data-f="story"><i class="hgi hgi-stroke hgi-smart-phone-01"></i>ستوري</button>
+      <button data-f="square"><i class="hgi hgi-stroke hgi-square"></i>منشور مربع</button>
+      <button data-f="story"><i class="hgi hgi-stroke hgi-whatsapp"></i>حالة واتساب</button>
+    </div>
+    <div class="story" id="story"><img id="big" src="/salla/s-oud.webp" alt="معاينة التصميم"></div>
+    <div class="vars" id="vars">
+      <button class="on"><img src="/salla/s-oud.webp" alt=""></button>
+      <button><img src="/salla/s-oud-wf.webp" alt=""></button>
+      <button><img src="/salla/s-luban.webp" alt=""></button>
+    </div>
+  </section>
+
+  <section class="panel publish">
+    <h2><span class="n">٣</span>جاهز للنشر</h2>
+    <div class="field"><span>اسم المتجر</span><b>دار العود <em class="tag">من المتجر</em></b></div>
+    <div class="field"><span>المنتج</span><b><span id="f-name">عود ملكي</span> <em class="tag">من المتجر</em></b></div>
+    <div class="field"><span>السعر</span><b><span id="f-price">289 ر.س</span> <em class="tag">من المتجر</em></b></div>
+    <div class="field"><span>قبل الخصم</span><b><span id="f-was">349 ر.س</span> <em class="tag">من المتجر</em></b></div>
+    <div class="field"><span>كود الخصم</span><b><span class="coupon">OUD20</span> <em class="tag">من الكوبونات</em></b></div>
+    <button class="btn p" id="dl"><i class="hgi hgi-stroke hgi-download-04"></i>حمّل التصميم</button>
+    <button class="btn s" id="wa"><i class="hgi hgi-stroke hgi-whatsapp"></i>أرسله لجوالي على واتساب</button>
+    <div class="season">
+      <i class="hgi hgi-stroke hgi-calendar-03"></i>
+      <div><small>الموسم الجاي</small><b>الجمعة البيضاء — ٢٧ نوفمبر</b><p>نجهّز لك تصاميم الموسم بمنتجاتك وكود الخصم، تراجعها وتنشرها.</p></div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast"><i class="hgi hgi-stroke hgi-tick-02"></i><span></span></div>
+
+<script src="https://unpkg.com/@salla.sa/embedded-sdk@0.2.6/dist/umd/index.js"></script>
+<script>
+(function () {
+  var PRODUCTS = [
+    { name: 'عود ملكي — ١٠٠ مل', short: 'عود ملكي', price: 289, was: 349, img: '/salla/p-oud-royal.webp' },
+    { name: 'لبان حوجري عماني فاخر', short: 'لبان حوجري', price: 120, was: 140, img: '/salla/p-luban.webp' },
+    { name: 'طقم مبخرة التراث', short: 'طقم مبخرة', price: 1710, img: '/salla/p-mabkhara.webp' },
+    { name: 'عود دقة ميني ماليزي', short: 'عود دقة', price: 650, img: '/salla/p-oud-mini.webp' }
+  ];
+  var current = 0;
+  var $ = function (id) { return document.getElementById(id); };
+
+  // The SDK is absent when the page is opened outside Salla (or the CDN is
+  // down); everything below still works, it just draws its own toast.
+  var sdk = window.SallaEmbeddedSDK || window.Salla;
+  var embedded = sdk && sdk.embedded;
+  var inSalla = window.parent !== window;
+
+  function setTheme(t) { document.body.classList.toggle('dark', t === 'dark'); }
+  var params = new URLSearchParams(location.search);
+  setTheme(params.get('theme') || (location.hash === '#dark' ? 'dark' : 'light'));
+
+  var toastTimer;
+  function toast(msg) {
+    if (embedded && inSalla) { try { embedded.ui.toast.success(msg, 3000); return; } catch (e) {} }
+    var el = $('toast');
+    el.querySelector('span').textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove('show'); }, 2600);
+  }
+
+  function sar(n) { return n.toLocaleString('en-US') + ' ر.س'; }
+  function renderProducts() {
+    var q = $('q').value.trim();
+    $('prods').innerHTML = '';
+    PRODUCTS.forEach(function (p, i) {
+      if (q && p.name.indexOf(q) < 0) return;
+      var b = document.createElement('button');
+      b.className = 'prod' + (i === current ? ' on' : '');
+      var off = p.was ? '<s>' + p.was + '</s><span class="off">−' + Math.round(100 - p.price * 100 / p.was) + '%</span>' : '';
+      b.innerHTML = '<div class="im" style="background-image:url(' + p.img + ')"></div><div><b></b><small>' + sar(p.price) + ' ' + off + '</small></div><i class="hgi hgi-stroke hgi-tick-02 ok"></i>';
+      b.querySelector('b').textContent = p.name;
+      b.onclick = function () { current = i; renderProducts(); fill(); };
+      $('prods').appendChild(b);
+    });
+  }
+  function fill() {
+    var p = PRODUCTS[current];
+    $('f-name').textContent = p.short;
+    $('f-price').textContent = sar(p.price);
+    $('f-was').textContent = p.was ? sar(p.was) : '—';
+  }
+  $('q').oninput = renderProducts;
+  renderProducts();
+
+  function single(container, cls) {
+    container.addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (!b || !container.contains(b)) return;
+      container.querySelectorAll('button').forEach(function (x) { x.classList.toggle(cls, x === b); });
+      if (container.id === 'vars') $('big').src = b.querySelector('img').src;
+      if (container.id === 'seg') $('story').classList.toggle('square', b.dataset.f === 'square');
+    });
+  }
+  single($('chips'), 'on'); single($('vars'), 'on'); single($('seg'), 'on');
+
+  $('dl').onclick = function () { toast('تم حفظ التصميم في جهازك'); };
+  $('wa').onclick = function () { toast('أرسلنا التصميم لجوالك على واتساب'); };
+
+  if (!embedded || !inSalla) return;
+  embedded.init().then(function (r) {
+    if (r && r.layout && r.layout.theme) setTheme(r.layout.theme);
+    embedded.page.setTitle('تصاميم المتجر');
+    embedded.onThemeChange(setTheme);
+    // TODO(salla): call ready() only after the merchant's products load.
+    embedded.ready();
+  }).catch(function (e) { console.warn('[salla] embedded init failed', e); });
+})();
+</script>
+</body></html>
