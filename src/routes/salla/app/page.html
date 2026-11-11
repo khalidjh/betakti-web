@@ -162,6 +162,13 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 <div class="toast" id="toast"><i class="hgi hgi-stroke hgi-tick-02"></i><span></span></div>
 
+<script>
+  // The SDK's UMD build (0.2.6 and 0.2.7) reads `process.env.NODE_ENV` in its
+  // message handler. Browsers have no `process`, so every message from the
+  // dashboard throws, init() never gets its context and Salla shows its
+  // skeleton forever. "production" also turns on the SDK's origin check.
+  window.process = window.process || { env: { NODE_ENV: 'production' } };
+</script>
 <script src="https://unpkg.com/@salla.sa/embedded-sdk@0.2.6/dist/umd/index.js"></script>
 <script>
 (function () {
