@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
+<meta name="referrer" content="origin">
 <title>تصاميم المتجر — بطاقتي</title>
 <!-- The «بطاقتي - تصاميم متجرك» Salla app, as it renders in the merchant
      dashboard's iframe. Built to docs.salla.dev/embedded-sdk/design-guidelines:
@@ -37,9 +38,6 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .intro{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-bottom:16px}
 .intro p{color:var(--mute);font-size:14px;display:flex;align-items:center;gap:8px}
 .intro p i{color:var(--success)}
-.usage{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mute)}
-.meter{width:140px;height:6px;border-radius:3px;background:var(--soft);overflow:hidden}
-.meter b{display:block;height:100%;width:40%;background:var(--primary)}
 
 .grid{display:grid;grid-template-columns:320px 1fr 360px;gap:16px}
 @media (max-width:1100px){.grid{grid-template-columns:1fr 1fr}.grid .publish{grid-column:1/-1}}
@@ -73,10 +71,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .seg button.on{background:var(--card);color:var(--ink);font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,.08)}
 .story{width:min(100%,340px);aspect-ratio:9/16;border-radius:16px;overflow:hidden;box-shadow:0 12px 32px rgba(0,0,0,.18);background:var(--soft)}
 .story.square{aspect-ratio:1}
-.story img{width:100%;height:100%;object-fit:cover;display:block}
+.story canvas{width:100%;height:100%;display:block}
+.story.busy{opacity:.55;transition:opacity .15s}
 .vars{display:flex;gap:10px;align-items:center}
-.vars button img{width:56px;aspect-ratio:9/16;object-fit:cover;border-radius:6px;border:2px solid transparent;opacity:.7;display:block}
-.vars button.on img{border-color:var(--primary);opacity:1}
+.vars button canvas{width:56px;aspect-ratio:9/16;border-radius:6px;border:2px solid transparent;opacity:.7;display:block;background:var(--soft)}
+.vars.square button canvas{aspect-ratio:1}
+.vars button.on canvas{border-color:var(--primary);opacity:1}
 
 .field{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px;gap:8px}
 .field span{color:var(--mute)}
@@ -86,6 +86,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:8px;font-weight:700;font-size:14px;margin-top:10px;width:100%}
 .btn.p{background:var(--primary);color:var(--on-primary)}
 .btn.s{background:var(--soft);color:var(--ink)}
+.btn:disabled{opacity:.5;cursor:default}
+.caption{unicode-bidi:plaintext;overflow-wrap:anywhere;margin-top:12px;font-size:13px;line-height:1.8;color:var(--mute);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;white-space:pre-wrap;max-height:140px;overflow:auto}
 .season{margin-top:16px;border-radius:10px;padding:14px 16px;background:var(--active-bg);border:1px solid var(--line);display:flex;gap:12px;align-items:flex-start}
 .season i{font-size:22px;color:var(--primary)}
 .season small{color:var(--mute);font-size:12px}
@@ -103,13 +105,14 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 <!-- Inside Salla the picker shows the merchant's own catalogue: the session
      token from the iframe URL goes to /api/salla/data, which checks it with
      Salla and reads the store with the merchant's access token. Anywhere else
-     (no SDK, no install yet, an error) the samples below stay, with the note
-     saying so. The designs in the preview are still samples either way. -->
-<div class="note" id="note"><i class="hgi hgi-stroke hgi-information-circle"></i><span id="note-text">هذه منتجات تجريبية للعرض. بعد ربط متجرك تظهر هنا منتجاتك وأسعارك وكوبوناتك.</span></div>
+     (no SDK, no install yet, an error) sample products stay, with the note
+     saying so. Every design is drawn here, on a canvas, from whatever product
+     is selected — product photos come through /api/salla/image so the canvas
+     can still be exported. -->
+<div class="note" id="note"><i class="hgi hgi-stroke hgi-information-circle"></i><span id="note-text">هذه منتجات تجريبية للعرض. بعد تثبيت التطبيق في متجرك تظهر هنا منتجاتك وأسعارك وكوبوناتك.</span></div>
 
 <div class="intro">
   <p><i class="hgi hgi-stroke hgi-tick-02"></i>كل تصميم يتعبّى من بيانات متجرك: الاسم، صورة المنتج، السعر قبل وبعد الخصم، وكود الخصم من «كوبونات الخصم».</p>
-  <div class="usage">٤ من ١٠ تصاميم هذا الشهر <span class="meter"><b></b></span></div>
 </div>
 
 <div class="grid">
@@ -119,14 +122,14 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     <div id="prods"></div>
     <h2 style="margin-top:16px"><span class="n">٢</span>المناسبة</h2>
     <div class="chips" id="chips">
-      <button class="chip on"><i class="hgi hgi-stroke hgi-new-releases"></i>وصل حديثًا</button>
-      <button class="chip"><i class="hgi hgi-stroke hgi-discount-tag-02"></i>تخفيض</button>
-      <button class="chip"><i class="hgi hgi-stroke hgi-ticket-02"></i>كود خصم</button>
-      <button class="chip"><i class="hgi hgi-stroke hgi-shopping-bag-01"></i>الجمعة البيضاء</button>
-      <button class="chip"><i class="hgi hgi-stroke hgi-moon-02"></i>رمضان</button>
-      <button class="chip"><i class="hgi hgi-stroke hgi-gift"></i>عيد مبارك</button>
-      <button class="chip"><i class="hgi hgi-stroke hgi-sparkles"></i>جمعة مباركة</button>
-      <button class="chip"><i class="hgi hgi-stroke hgi-truck-delivery"></i>توصيل مجاني</button>
+      <button class="chip on" data-o="new"><i class="hgi hgi-stroke hgi-new-releases"></i>وصل حديثًا</button>
+      <button class="chip" data-o="sale"><i class="hgi hgi-stroke hgi-discount-tag-02"></i>تخفيض</button>
+      <button class="chip" data-o="coupon"><i class="hgi hgi-stroke hgi-ticket-02"></i>كود خصم</button>
+      <button class="chip" data-o="whitefriday"><i class="hgi hgi-stroke hgi-shopping-bag-01"></i>الجمعة البيضاء</button>
+      <button class="chip" data-o="ramadan"><i class="hgi hgi-stroke hgi-moon-02"></i>رمضان</button>
+      <button class="chip" data-o="eid"><i class="hgi hgi-stroke hgi-gift"></i>عيد مبارك</button>
+      <button class="chip" data-o="friday"><i class="hgi hgi-stroke hgi-sparkles"></i>جمعة مباركة</button>
+      <button class="chip" data-o="shipping"><i class="hgi hgi-stroke hgi-truck-delivery"></i>توصيل مجاني</button>
     </div>
   </section>
 
@@ -134,28 +137,29 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     <div class="seg" id="seg">
       <button class="on" data-f="story"><i class="hgi hgi-stroke hgi-smart-phone-01"></i>ستوري</button>
       <button data-f="square"><i class="hgi hgi-stroke hgi-square"></i>منشور مربع</button>
-      <button data-f="story"><i class="hgi hgi-stroke hgi-whatsapp"></i>حالة واتساب</button>
+      <button data-f="status"><i class="hgi hgi-stroke hgi-whatsapp"></i>حالة واتساب</button>
     </div>
-    <div class="story" id="story"><img id="big" src="/salla/s-oud.webp" alt="معاينة التصميم"></div>
+    <div class="story" id="story"><canvas id="big" role="img" aria-label="معاينة التصميم"></canvas></div>
     <div class="vars" id="vars">
-      <button class="on"><img src="/salla/s-oud.webp" alt=""></button>
-      <button><img src="/salla/s-oud-wf.webp" alt=""></button>
-      <button><img src="/salla/s-luban.webp" alt=""></button>
+      <button class="on" data-v="0" aria-label="التصميم الأول"><canvas></canvas></button>
+      <button data-v="1" aria-label="التصميم الثاني"><canvas></canvas></button>
+      <button data-v="2" aria-label="التصميم الثالث"><canvas></canvas></button>
     </div>
   </section>
 
   <section class="panel publish">
     <h2><span class="n">٣</span>جاهز للنشر</h2>
-    <div class="field"><span>اسم المتجر</span><b><span id="f-store">دار العود</span> <em class="tag">من المتجر</em></b></div>
-    <div class="field"><span>المنتج</span><b><span id="f-name">عود ملكي</span> <em class="tag">من المتجر</em></b></div>
-    <div class="field"><span>السعر</span><b><span id="f-price">289 ر.س</span> <em class="tag">من المتجر</em></b></div>
-    <div class="field"><span>قبل الخصم</span><b><span id="f-was">349 ر.س</span> <em class="tag">من المتجر</em></b></div>
-    <div class="field"><span>كود الخصم</span><b><span class="coupon" id="f-coupon">OUD20</span> <em class="tag">من الكوبونات</em></b></div>
+    <div class="field"><span>اسم المتجر</span><b><span id="f-store">—</span> <em class="tag">من المتجر</em></b></div>
+    <div class="field"><span>المنتج</span><b><span id="f-name">—</span> <em class="tag">من المتجر</em></b></div>
+    <div class="field"><span>السعر</span><b><span id="f-price">—</span> <em class="tag">من المتجر</em></b></div>
+    <div class="field"><span>قبل الخصم</span><b><span id="f-was">—</span> <em class="tag">من المتجر</em></b></div>
+    <div class="field"><span>كود الخصم</span><b><span class="coupon" id="f-coupon">—</span> <em class="tag">من الكوبونات</em></b></div>
     <button class="btn p" id="dl"><i class="hgi hgi-stroke hgi-download-04"></i>حمّل التصميم</button>
-    <button class="btn s" id="wa"><i class="hgi hgi-stroke hgi-whatsapp"></i>أرسله لجوالي على واتساب</button>
-    <div class="season">
+    <button class="btn s" id="cp"><i class="hgi hgi-stroke hgi-copy-01"></i>انسخ نص المنشور</button>
+    <div class="caption" id="caption"></div>
+    <div class="season" id="season" hidden>
       <i class="hgi hgi-stroke hgi-calendar-03"></i>
-      <div><small>الموسم الجاي</small><b>الجمعة البيضاء — ٢٧ نوفمبر</b><p>نجهّز لك تصاميم الموسم بمنتجاتك وكود الخصم، تراجعها وتنشرها.</p></div>
+      <div><small>الموسم الجاي</small><b id="season-name"></b><p id="season-text"></p></div>
     </div>
   </section>
 </div>
@@ -172,29 +176,395 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 <script src="https://unpkg.com/@salla.sa/embedded-sdk@0.2.6/dist/umd/index.js"></script>
 <script>
 (function () {
-  var PRODUCTS = [
-    { name: 'عود ملكي — ١٠٠ مل', short: 'عود ملكي', price: 289, was: 349, img: '/salla/p-oud-royal.webp' },
-    { name: 'لبان حوجري عماني فاخر', short: 'لبان حوجري', price: 120, was: 140, img: '/salla/p-luban.webp' },
-    { name: 'طقم مبخرة التراث', short: 'طقم مبخرة', price: 1710, img: '/salla/p-mabkhara.webp' },
-    { name: 'عود دقة ميني ماليزي', short: 'عود دقة', price: 650, img: '/salla/p-oud-mini.webp' }
-  ];
-  var current = 0;
-  var live = false;
-  var $ =function (id) { return document.getElementById(id); };
+  var $ = function (id) { return document.getElementById(id); };
 
-  // The SDK is absent when the page is opened outside Salla (or the CDN is
-  // down); everything below still works, it just draws its own toast.
+  // ---------------------------------------------------------------- data ---
+  var SAMPLE = {
+    store: { name: 'دار العود', domain: 'https://dar-aloud.com' },
+    coupons: [{ code: 'OUD20', type: 'percentage', amount: 20 }],
+    products: [
+      { name: 'عود ملكي — ١٠٠ مل', price: 289, was: 349, cur: 'SAR', img: '/salla/p-oud-royal.webp', url: null },
+      { name: 'لبان حوجري عماني فاخر', price: 120, was: 140, cur: 'SAR', img: '/salla/p-luban.webp', url: null },
+      { name: 'طقم مبخرة التراث', price: 1710, was: null, cur: 'SAR', img: '/salla/p-mabkhara.webp', url: null },
+      { name: 'عود دقة ميني ماليزي', price: 650, was: null, cur: 'SAR', img: '/salla/p-oud-mini.webp', url: null }
+    ]
+  };
+  var STORE = SAMPLE.store, PRODUCTS = SAMPLE.products, COUPON = SAMPLE.coupons[0];
+  var live = false;
+  var state = { product: 0, occasion: 'new', format: 'story', variant: 0 };
+
+  // ----------------------------------------------------------- occasions ---
+  // bg: the two gradient stops, accent: headline/price colour on that bg.
+  var OCC = {
+    new:         { label: 'وصل حديثًا',     bg: ['#0f3d3e', '#1b6b70'], accent: '#f5c26b' },
+    sale:        { label: 'تخفيض',          bg: ['#6e0d1a', '#b3122b'], accent: '#ffd166' },
+    coupon:      { label: 'كود خصم',        bg: ['#16233f', '#2d4a8a'], accent: '#73fcd7' },
+    whitefriday: { label: 'الجمعة البيضاء', bg: ['#0b0b0c', '#2a2a2e'], accent: '#ffffff' },
+    ramadan:     { label: 'رمضان كريم',     bg: ['#101b33', '#1f3a5f'], accent: '#e9c46a' },
+    eid:         { label: 'عيد مبارك',      bg: ['#341a52', '#5b2a86'], accent: '#f4d58d' },
+    friday:      { label: 'جمعة مباركة',    bg: ['#173226', '#2f5d46'], accent: '#e8d9a8' },
+    shipping:    { label: 'توصيل مجاني',    bg: ['#003b46', '#00727f'], accent: '#73fcd7' }
+  };
+
+  function discountPct(p) { return p.was && p.was > p.price ? Math.round(100 - p.price * 100 / p.was) : 0; }
+  function couponText(c) {
+    if (!c) return '';
+    return c.type === 'percentage' ? 'خصم ' + pct(c.amount) : 'خصم ' + fmt(c.amount) + ' ريال';
+  }
+  function headline(o, p) {
+    if (o === 'sale') { var d = discountPct(p); return d ? 'خصم ' + pct(d) : 'عرض خاص'; }
+    if (o === 'coupon') return COUPON ? couponText(COUPON) : 'تسوّق الآن';
+    return OCC[o].label;
+  }
+  function showCoupon(o) { return !!COUPON && o !== 'new' && o !== 'friday'; }
+
+  // "20%" kept left-to-right inside Arabic text (LRI … PDI), as Saudi ads write it.
+  function pct(n) { return '\u2066' + fmt(n) + '%\u2069'; }
+  function fmt(n) { return Number(n).toLocaleString('en-US', { maximumFractionDigits: 2 }); }
+  function money(n, cur) { return fmt(n) + ' ' + (!cur || cur === 'SAR' ? 'ر.س' : cur); }
+  function shortDomain(d) {
+    if (!d) return '';
+    try { var u = new URL(d); return decodeURI(u.host + (u.pathname === '/' ? '' : u.pathname)).replace(/\/$/, ''); }
+    catch (e) { return String(d); }
+  }
+
+  // --------------------------------------------------------------- fonts ---
+  var FONTS = [
+    ['BT Display', '/fonts/thmanyah/serif-display/thmanyahserifdisplay-Bold.woff2', '700'],
+    ['BT Sans', '/fonts/thmanyah/sans/thmanyahsans-Medium.woff2', '500'],
+    ['BT Sans', '/fonts/thmanyah/sans/thmanyahsans-Bold.woff2', '700'],
+    ['BT Sans', '/fonts/thmanyah/sans/thmanyahsans-Black.woff2', '900']
+  ];
+  var fontsReady = Promise.all(FONTS.map(function (f) {
+    var face = new FontFace(f[0], 'url(' + f[1] + ')', { weight: f[2] });
+    return face.load().then(function (l) { document.fonts.add(l); }).catch(function () {});
+  }));
+  function font(size, weight, display) {
+    return (weight || 700) + ' ' + Math.round(size) + 'px ' + (display ? '"BT Display", ' : '') + '"BT Sans", PingARLT, system-ui, sans-serif';
+  }
+
+  // -------------------------------------------------------------- images ---
+  var imgCache = {};
+  function loadImg(src) {
+    if (!src) return Promise.resolve(null);
+    if (!imgCache[src]) {
+      imgCache[src] = new Promise(function (resolve) {
+        var im = new Image();
+        im.decoding = 'async';
+        im.onload = function () { resolve(im); };
+        im.onerror = function () { resolve(null); };
+        im.src = /^https?:/.test(src) ? '/api/salla/image?u=' + encodeURIComponent(src) : src;
+      });
+    }
+    return imgCache[src];
+  }
+
+  // ------------------------------------------------------------- drawing ---
+  // The new riyal sign (SAMA), as a path: fonts don't have U+20C1 yet.
+  var RIYAL = [
+    new Path2D('M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z'),
+    new Path2D('M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z')
+  ];
+
+  function rr(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+  }
+
+  // Arabic text, right-aligned at x unless align says otherwise.
+  function text(ctx, s, x, y, size, color, opt) {
+    opt = opt || {};
+    ctx.save();
+    ctx.direction = 'rtl';
+    ctx.textAlign = opt.align || 'right';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = color;
+    var f = size;
+    ctx.font = font(f, opt.weight, opt.display);
+    if (opt.max) while (ctx.measureText(s).width > opt.max && f > size * 0.5) { f -= 2; ctx.font = font(f, opt.weight, opt.display); }
+    if (opt.alpha != null) ctx.globalAlpha = opt.alpha;
+    ctx.fillText(s, x, y);
+    ctx.restore();
+    return f;
+  }
+
+  function wrap(ctx, s, max, lines) {
+    var words = String(s).split(/\s+/), out = [], cur = '';
+    for (var i = 0; i < words.length; i++) {
+      var t = cur ? cur + ' ' + words[i] : words[i];
+      if (ctx.measureText(t).width <= max || !cur) cur = t;
+      else { out.push(cur); cur = words[i]; }
+    }
+    if (cur) out.push(cur);
+    if (out.length > lines) {
+      out = out.slice(0, lines);
+      var last = out[lines - 1];
+      while (last.length > 1 && ctx.measureText(last + '…').width > max) last = last.slice(0, -1);
+      out[lines - 1] = last + '…';
+    }
+    return out;
+  }
+
+  function para(ctx, s, x, y, size, color, max, lines, opt) {
+    opt = opt || {};
+    ctx.save();
+    ctx.direction = 'rtl'; ctx.textAlign = opt.align || 'right'; ctx.fillStyle = color;
+    ctx.font = font(size, opt.weight, opt.display);
+    var ls = wrap(ctx, s, max, lines);
+    for (var i = 0; i < ls.length; i++) ctx.fillText(ls[i], x, y + i * size * 1.35);
+    ctx.restore();
+    return y + (ls.length - 1) * size * 1.35;
+  }
+
+  // "﷼ 289" as one left-to-right group; align is where x sits on the group.
+  function price(ctx, amount, cur, x, y, size, color, opt) {
+    opt = opt || {};
+    ctx.save();
+    ctx.direction = 'ltr'; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.font = font(size, opt.weight || 900);
+    var num = fmt(amount);
+    var sar = !cur || cur === 'SAR';
+    var gh = size * 0.72, gw = sar ? gh * 1124.14 / 1256.39 : 0, gap = size * 0.18;
+    var label = sar ? '' : ' ' + cur;
+    var tw = ctx.measureText(num + label).width;
+    var w = gw + (sar ? gap : 0) + tw;
+    var x0 = opt.align === 'right' ? x - w : opt.align === 'center' ? x - w / 2 : x;
+    ctx.fillStyle = color;
+    if (opt.alpha != null) ctx.globalAlpha = opt.alpha;
+    if (sar) {
+      ctx.save();
+      ctx.translate(x0, y - gh);
+      ctx.scale(gh / 1256.39, gh / 1256.39);
+      RIYAL.forEach(function (p) { ctx.fill(p); });
+      ctx.restore();
+    }
+    ctx.fillText(num + label, x0 + gw + (sar ? gap : 0), y);
+    if (opt.strike) {
+      ctx.strokeStyle = color; ctx.lineWidth = Math.max(2, size * 0.07);
+      ctx.beginPath(); ctx.moveTo(x0 - size * 0.08, y - size * 0.32); ctx.lineTo(x0 + w + size * 0.08, y - size * 0.32); ctx.stroke();
+    }
+    ctx.restore();
+    return w;
+  }
+
+  // Price, and the old price beside it when there is one.
+  function prices(ctx, p, x, y, size, color, opt) {
+    opt = opt || {};
+    var align = opt.align || 'right';
+    ctx.save(); ctx.font = font(size, 900);
+    var w1 = price(ctx, p.price, p.cur, -9999, -9999, size, color);
+    var w2 = p.was ? price(ctx, p.was, p.cur, -9999, -9999, size * 0.5, color) : 0;
+    ctx.restore();
+    var gap = size * 0.35, total = w1 + (w2 ? gap + w2 : 0);
+    var right = align === 'center' ? x + total / 2 : align === 'left' ? x + total : x;
+    price(ctx, p.price, p.cur, right, y, size, color, { align: 'right' });
+    if (w2) price(ctx, p.was, p.cur, right - w1 - gap, y, size * 0.5, opt.oldColor || color, { align: 'right', strike: true, alpha: 0.7, weight: 700 });
+  }
+
+  function pill(ctx, label, code, x, y, size, fg, line, opt) {
+    opt = opt || {};
+    ctx.save();
+    ctx.font = font(size, 700);
+    ctx.direction = 'rtl';
+    var lw = ctx.measureText(label).width;
+    ctx.font = font(size * 1.15, 900);
+    ctx.direction = 'ltr';
+    var cw = ctx.measureText(code).width;
+    var padX = size * 0.9, h = size * 2.3, w = lw + cw + size * 0.7 + padX * 2;
+    var x0 = opt.align === 'center' ? x - w / 2 : opt.align === 'left' ? x : x - w;
+    if (opt.fill) { ctx.fillStyle = opt.fill; rr(ctx, x0, y, w, h, h / 2); ctx.fill(); }
+    ctx.setLineDash([size * 0.45, size * 0.3]); ctx.lineWidth = Math.max(2, size * 0.09); ctx.strokeStyle = line;
+    rr(ctx, x0, y, w, h, h / 2); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = fg; ctx.textBaseline = 'middle';
+    ctx.direction = 'rtl'; ctx.textAlign = 'right'; ctx.font = font(size, 700);
+    ctx.fillText(label, x0 + w - padX, y + h / 2 + size * 0.05);
+    ctx.direction = 'ltr'; ctx.textAlign = 'left'; ctx.font = font(size * 1.15, 900);
+    ctx.fillText(code, x0 + padX, y + h / 2 + size * 0.05);
+    ctx.restore();
+    return h;
+  }
+
+  // The photo fitted inside a box, never cropped: products must stay whole.
+  function photo(ctx, im, x, y, w, h, initial, ink) {
+    if (!im) {
+      ctx.save(); ctx.fillStyle = ink; ctx.globalAlpha = 0.12;
+      rr(ctx, x + w * 0.2, y + h * 0.2, w * 0.6, h * 0.6, w * 0.08); ctx.fill(); ctx.restore();
+      text(ctx, initial || '؟', x + w / 2, y + h / 2 + w * 0.08, w * 0.22, ink, { align: 'center', display: true, alpha: 0.5 });
+      return;
+    }
+    var s = Math.min(w / im.naturalWidth, h / im.naturalHeight);
+    var dw = im.naturalWidth * s, dh = im.naturalHeight * s;
+    ctx.drawImage(im, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
+  }
+
+  function bgGradient(ctx, W, H, c) {
+    var g = ctx.createLinearGradient(0, 0, W * 0.3, H);
+    g.addColorStop(0, c[1]); g.addColorStop(1, c[0]);
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  }
+
+  function rings(ctx, cx, cy, r, color, n) {
+    ctx.save(); ctx.strokeStyle = color; ctx.globalAlpha = 0.09; ctx.lineWidth = r * 0.02;
+    for (var i = 1; i <= n; i++) { ctx.beginPath(); ctx.arc(cx, cy, r * i / n, 0, Math.PI * 2); ctx.stroke(); }
+    ctx.restore();
+  }
+
+  // Three layouts. d: { o, p, im, store, domain, sq }
+  var LAYOUTS = [
+    // 0 — framed card on the occasion gradient
+    function (ctx, W, H, d) {
+      var c = OCC[d.o], pad = W * 0.075, ink = '#ffffff', sq = d.sq;
+      bgGradient(ctx, W, H, c.bg);
+      rings(ctx, W * 0.92, H * 0.06, W * 0.75, c.accent, 6);
+      var R = W - pad;
+      if (!sq) {
+        text(ctx, d.store, W / 2, pad + W * 0.04, W * 0.038, ink, { align: 'center', alpha: 0.85, max: W - pad * 2 });
+        text(ctx, headline(d.o, d.p), W / 2, pad + W * 0.19, W * 0.12, c.accent, { align: 'center', display: true, max: W - pad * 2 });
+        var cy = pad + W * 0.27, ch = H * 0.455;
+        ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.25)'; ctx.shadowBlur = W * 0.04; ctx.shadowOffsetY = W * 0.015;
+        ctx.fillStyle = '#ffffff'; rr(ctx, pad, cy, W - pad * 2, ch, W * 0.05); ctx.fill(); ctx.restore();
+        photo(ctx, d.im, pad + W * 0.05, cy + W * 0.05, W - pad * 2 - W * 0.1, ch - W * 0.1, d.store[0], c.bg[0]);
+        // Name, price and coupon as one block, centred between card and footer.
+        ctx.save(); ctx.font = font(W * 0.058, 700);
+        var nl = Math.min(2, wrap(ctx, d.p.name, W - pad * 2, 2).length); ctx.restore();
+        var nameH = W * 0.058 * (1 + (nl - 1) * 1.35), cp = showCoupon(d.o);
+        var blockH = nameH + W * 0.135 + (cp ? W * 0.065 + W * 0.036 * 2.3 : 0);
+        var top = cy + ch + Math.max(W * 0.06, (H - pad - W * 0.06 - (cy + ch) - blockH) / 2);
+        var y = para(ctx, d.p.name, W / 2, top + W * 0.05, W * 0.058, ink, W - pad * 2, 2, { align: 'center' });
+        prices(ctx, d.p, W / 2, y + W * 0.135, W * 0.1, c.accent, { align: 'center', oldColor: ink });
+        if (cp) pill(ctx, 'كود الخصم', COUPON.code, W / 2, y + W * 0.2, W * 0.036, ink, c.accent, { align: 'center' });
+        if (d.domain) text(ctx, d.domain, W / 2, H - pad, W * 0.03, ink, { align: 'center', alpha: 0.7, weight: 500, max: W - pad * 2 });
+      } else {
+        var cw = W * 0.46, cx = R - cw;
+        ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.25)'; ctx.shadowBlur = W * 0.04; ctx.shadowOffsetY = W * 0.015;
+        ctx.fillStyle = '#ffffff'; rr(ctx, cx, pad, cw, H - pad * 2, W * 0.045); ctx.fill(); ctx.restore();
+        photo(ctx, d.im, cx + W * 0.035, pad + W * 0.035, cw - W * 0.07, H - pad * 2 - W * 0.07, d.store[0], c.bg[0]);
+        var tr = cx - W * 0.05, tw = tr - pad;
+        text(ctx, d.store, tr, pad + W * 0.035, W * 0.034, ink, { alpha: 0.85, max: tw });
+        text(ctx, headline(d.o, d.p), tr, pad + W * 0.17, W * 0.085, c.accent, { display: true, max: tw });
+        var y2 = para(ctx, d.p.name, tr, pad + W * 0.28, W * 0.045, ink, tw, 3);
+        prices(ctx, d.p, tr, y2 + W * 0.12, W * 0.075, c.accent, { oldColor: ink });
+        if (showCoupon(d.o)) pill(ctx, 'كود الخصم', COUPON.code, tr, y2 + W * 0.17, W * 0.03, ink, c.accent);
+        if (d.domain) text(ctx, d.domain, tr, H - pad, W * 0.026, ink, { alpha: 0.7, weight: 500, max: tw });
+      }
+    },
+    // 1 — photo on a light stage, a curved colour panel below with the text
+    function (ctx, W, H, d) {
+      var c = OCC[d.o], pad = W * 0.075, ink = '#ffffff', sq = d.sq;
+      ctx.fillStyle = '#f5f2ec'; ctx.fillRect(0, 0, W, H);
+      if (!sq) {
+        var cut = H * 0.56;
+        photo(ctx, d.im, pad, pad * 1.6, W - pad * 2, cut - pad * 2.2, d.store[0], c.bg[0]);
+        ctx.save(); ctx.beginPath(); ctx.moveTo(0, cut + W * 0.06);
+        ctx.quadraticCurveTo(W / 2, cut - W * 0.06, W, cut + W * 0.06); ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath(); ctx.clip();
+        bgGradient(ctx, W, H, c.bg); ctx.restore();
+        // store badge on the photo
+        ctx.save(); ctx.font = font(W * 0.032, 700); var bw = Math.min(ctx.measureText(d.store).width + W * 0.08, W - pad * 2);
+        ctx.fillStyle = c.bg[0]; rr(ctx, W - pad - bw, pad * 0.7, bw, W * 0.075, W * 0.0375); ctx.fill(); ctx.restore();
+        text(ctx, d.store, W - pad - W * 0.04, pad * 0.7 + W * 0.05, W * 0.032, ink, { max: bw - W * 0.08 });
+        text(ctx, headline(d.o, d.p), W - pad, cut + W * 0.2, W * 0.11, c.accent, { display: true, max: W - pad * 2 });
+        var y = para(ctx, d.p.name, W - pad, cut + W * 0.31, W * 0.055, ink, W - pad * 2, 2);
+        prices(ctx, d.p, W - pad, y + W * 0.14, W * 0.1, ink, {});
+        if (showCoupon(d.o)) pill(ctx, 'كود الخصم', COUPON.code, W - pad, y + W * 0.21, W * 0.036, ink, c.accent);
+        if (d.domain) text(ctx, d.domain, W - pad, H - pad * 0.9, W * 0.03, ink, { alpha: 0.7, weight: 500, max: W - pad * 2 });
+      } else {
+        var half = W * 0.5;
+        photo(ctx, d.im, half + pad * 0.5, pad, half - pad * 1.5, H - pad * 2, d.store[0], c.bg[0]);
+        ctx.save(); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(half, 0);
+        ctx.quadraticCurveTo(half - W * 0.07, H / 2, half, H); ctx.lineTo(0, H); ctx.closePath(); ctx.clip();
+        bgGradient(ctx, W, H, c.bg); ctx.restore();
+        var tr = half - W * 0.1, tw = tr - pad;
+        text(ctx, d.store, tr, pad + W * 0.035, W * 0.032, ink, { alpha: 0.85, max: tw });
+        text(ctx, headline(d.o, d.p), tr, pad + W * 0.17, W * 0.08, c.accent, { display: true, max: tw });
+        var y2 = para(ctx, d.p.name, tr, pad + W * 0.28, W * 0.044, ink, tw, 3);
+        prices(ctx, d.p, tr, y2 + W * 0.12, W * 0.072, ink, {});
+        if (showCoupon(d.o)) pill(ctx, 'كود الخصم', COUPON.code, tr, y2 + W * 0.17, W * 0.028, ink, c.accent);
+        if (d.domain) text(ctx, d.domain, tr, H - pad, W * 0.025, ink, { alpha: 0.7, weight: 500, max: tw });
+      }
+    },
+    // 2 — light poster: big soft disc behind the product, price in a badge
+    function (ctx, W, H, d) {
+      var c = OCC[d.o], pad = W * 0.075, dark = c.bg[0], tint = c.bg[1], sq = d.sq;
+      ctx.fillStyle = '#fbf8f2'; ctx.fillRect(0, 0, W, H);
+      ctx.save(); ctx.fillStyle = tint; ctx.globalAlpha = 0.07;
+      for (var i = 0; i < 14; i++) { ctx.beginPath(); ctx.arc(W * (i % 2 ? 0.08 : 0.92), H * (i / 13), W * 0.012, 0, Math.PI * 2); ctx.fill(); }
+      ctx.restore();
+      var discY = sq ? H * 0.5 : H * 0.42, discR = sq ? W * 0.27 : W * 0.36;
+      text(ctx, d.store, W / 2, pad + W * 0.035, W * 0.034, dark, { align: 'center', alpha: 0.8, max: W - pad * 2 });
+      text(ctx, headline(d.o, d.p), W / 2, pad + (sq ? W * 0.13 : W * 0.18), sq ? W * 0.085 : W * 0.115, dark, { align: 'center', display: true, max: W - pad * 2 });
+      ctx.save(); ctx.fillStyle = tint; ctx.globalAlpha = 0.14; ctx.beginPath(); ctx.arc(W / 2, discY, discR, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+      photo(ctx, d.im, W / 2 - discR * 1.05, discY - discR * 1.05, discR * 2.1, discR * 2.1, d.store[0], dark);
+      // price badge
+      var br = sq ? W * 0.1 : W * 0.13, bx = W / 2 - discR * 0.85, by = discY + discR * 0.7;
+      ctx.save(); ctx.fillStyle = dark; ctx.shadowColor = 'rgba(0,0,0,.2)'; ctx.shadowBlur = W * 0.03;
+      ctx.beginPath(); ctx.arc(bx, by, br, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.font = font(br * 0.5, 900); var pw = price(ctx, d.p.price, d.p.cur, -9999, -9999, br * 0.5, '#fff'); ctx.restore();
+      var ps = br * 0.5 * Math.min(1, br * 1.6 / pw);
+      if (d.p.was) price(ctx, d.p.was, d.p.cur, bx, by - br * 0.3, ps * 0.5, '#fff', { align: 'center', strike: true, alpha: 0.75, weight: 700 });
+      price(ctx, d.p.price, d.p.cur, bx, by + (d.p.was ? br * 0.32 : ps * 0.35), ps, c.accent === '#ffffff' ? '#fff' : c.accent, { align: 'center' });
+      if (!sq) {
+        var y = para(ctx, d.p.name, W / 2, discY + discR + W * 0.17, W * 0.058, dark, W - pad * 2, 2, { align: 'center' });
+        if (showCoupon(d.o)) pill(ctx, 'كود الخصم', COUPON.code, W / 2, y + W * 0.07, W * 0.036, dark, tint, { align: 'center' });
+        if (d.domain) text(ctx, d.domain, W / 2, H - pad, W * 0.03, dark, { align: 'center', alpha: 0.65, weight: 500, max: W - pad * 2 });
+      } else {
+        text(ctx, d.p.name, W / 2, H - pad * 1.9, W * 0.042, dark, { align: 'center', max: W - pad * 2 });
+        var foot = [showCoupon(d.o) ? 'كود الخصم ' + COUPON.code : '', d.domain].filter(Boolean).join('  ·  ');
+        if (foot) text(ctx, foot, W / 2, H - pad * 0.8, W * 0.026, dark, { align: 'center', alpha: 0.7, weight: 700, max: W - pad * 2 });
+      }
+    }
+  ];
+
+  var SIZE = { story: [1080, 1920], status: [1080, 1920], square: [1080, 1080] };
+  var token = 0;
+
+  function design() {
+    var p = PRODUCTS[state.product];
+    return {
+      o: state.occasion, p: p,
+      store: (STORE && STORE.name) || 'متجرك',
+      domain: shortDomain(STORE && STORE.domain),
+      sq: state.format === 'square'
+    };
+  }
+
+  function paint(canvas, variant, d, im, scale) {
+    var sz = SIZE[state.format];
+    canvas.width = Math.round(sz[0] * scale); canvas.height = Math.round(sz[1] * scale);
+    var ctx = canvas.getContext('2d');
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
+    d.im = im;
+    LAYOUTS[variant](ctx, sz[0], sz[1], d);
+  }
+
+  function render() {
+    var mine = ++token;
+    var p = PRODUCTS[state.product];
+    $('story').classList.toggle('square', state.format === 'square');
+    $('vars').classList.toggle('square', state.format === 'square');
+    if (!p) { $('dl').disabled = true; $('cp').disabled = true; return; }
+    $('dl').disabled = false; $('cp').disabled = false;
+    $('story').classList.add('busy');
+    Promise.all([fontsReady, loadImg(p.img)]).then(function (r) {
+      if (mine !== token) return;
+      var im = r[1], d = design();
+      paint($('big'), state.variant, d, im, 1);
+      document.querySelectorAll('#vars canvas').forEach(function (cv, i) { paint(cv, i, design(), im, 0.12); });
+      $('story').classList.remove('busy');
+    });
+    fillFields();
+  }
+
+  // ------------------------------------------------------------------ UI ---
+  var toastTimer;
   var sdk = window.SallaEmbeddedSDK || window.Salla;
   var embedded = sdk && sdk.embedded;
   var inSalla = window.parent !== window;
 
-  function setTheme(t) { document.body.classList.toggle('dark', t === 'dark'); }
-  var params = new URLSearchParams(location.search);
-  setTheme(params.get('theme') || (location.hash === '#dark' ? 'dark' : 'light'));
-
-  var toastTimer;
-  function toast(msg) {
-    if (embedded && inSalla) { try { embedded.ui.toast.success(msg, 3000); return; } catch (e) {} }
+  function toast(msg, bad) {
+    if (embedded && inSalla) {
+      try { bad ? embedded.ui.toast.error(msg, 5000) : embedded.ui.toast.success(msg, 3000); return; } catch (e) {}
+    }
     var el = $('toast');
     el.querySelector('span').textContent = msg;
     el.classList.add('show');
@@ -202,85 +572,184 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     toastTimer = setTimeout(function () { el.classList.remove('show'); }, 2600);
   }
 
-  function sar(n, cur) {
-    var unit = !cur || cur === 'SAR' ? 'ر.س' : cur;
-    return Number(n).toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' ' + unit;
+  function setTheme(t) { document.body.classList.toggle('dark', t === 'dark'); }
+  var params = new URLSearchParams(location.search);
+  setTheme(params.get('dark') === 'true' || params.get('theme') === 'dark' || location.hash === '#dark' ? 'dark' : 'light');
+
+  function caption() {
+    var p = PRODUCTS[state.product];
+    if (!p) return '';
+    var lines = [headline(state.occasion, p) + ' ✨', p.name, 'السعر: ' + money(p.price, p.cur) + (p.was ? ' بدل ' + money(p.was, p.cur) : '')];
+    if (COUPON && showCoupon(state.occasion)) lines.push('استخدم كود ' + COUPON.code + ' (' + couponText(COUPON) + ')');
+    // Salla routes products by the trailing p<id> and ignores the slug before
+    // it, so an Arabic slug (which RTL display scrambles, and which pastes as
+    // a wall of %D9…) is swapped for a plain one.
+    var link = p.url || (STORE && STORE.domain);
+    if (link) {
+      link = String(link).replace(/\/[^/]*[^\x00-\x7F][^/]*\/(p\d+)\/?$/, '/product/$1');
+      try { link = new URL(link).href; } catch (e) {}
+      lines.push(link);
+    }
+    return lines.join('\n');
   }
+
+  function fillFields() {
+    var p = PRODUCTS[state.product];
+    $('f-store').textContent = (STORE && STORE.name) || '—';
+    $('f-name').textContent = p ? p.name : '—';
+    $('f-price').textContent = p ? money(p.price, p.cur) : '—';
+    $('f-was').textContent = p && p.was ? money(p.was, p.cur) : '—';
+    $('f-coupon').textContent = COUPON ? COUPON.code : 'لا يوجد';
+    $('caption').textContent = caption();
+  }
+
   function renderProducts() {
     var q = $('q').value.trim();
-    $('prods').innerHTML = '';
+    var box = $('prods');
+    box.innerHTML = '';
     if (!PRODUCTS.length) {
-      $('prods').innerHTML = '<p class="empty">ما في منتجات معروضة في متجرك للحين. أضف منتج من «المنتجات» في لوحة سلة ويظهر هنا.</p>';
+      var e = document.createElement('p');
+      e.className = 'empty';
+      e.textContent = 'ما في منتجات معروضة في متجرك للحين. أضف منتج من «المنتجات» في لوحة سلة ويظهر هنا.';
+      box.appendChild(e);
       return;
     }
     PRODUCTS.forEach(function (p, i) {
       if (q && p.name.indexOf(q) < 0) return;
       var b = document.createElement('button');
-      b.className = 'prod' + (i === current ? ' on' : '');
-      var off = p.was ? '<s>' + Number(p.was).toLocaleString('en-US') + '</s><span class="off">−' + Math.round(100 - p.price * 100 / p.was) + '%</span>' : '';
-      b.innerHTML = '<div class="im"></div><div><b></b><small>' + sar(p.price, p.cur) + ' ' + off + '</small></div><i class="hgi hgi-stroke hgi-tick-02 ok"></i>';
+      b.className = 'prod' + (i === state.product ? ' on' : '');
+      b.innerHTML = '<div class="im"></div><div><b></b><small></small></div><i class="hgi hgi-stroke hgi-tick-02 ok"></i>';
       b.querySelector('b').textContent = p.name;
-      if (p.img) b.querySelector('.im').style.backgroundImage = 'url("' + encodeURI(p.img).replace(/[()'"]/g, escape) + '")';
-      b.onclick = function () { current = i; renderProducts(); fill(); };
-      $('prods').appendChild(b);
+      var sm = b.querySelector('small');
+      sm.textContent = money(p.price, p.cur);
+      var d = discountPct(p);
+      if (d) {
+        var s = document.createElement('s'); s.textContent = fmt(p.was); sm.appendChild(s);
+        var o = document.createElement('span'); o.className = 'off'; o.textContent = '−' + d + '%'; sm.appendChild(o);
+      }
+      if (p.img) {
+        var src = /^https?:/.test(p.img) ? '/api/salla/image?u=' + encodeURIComponent(p.img) : p.img;
+        b.querySelector('.im').style.backgroundImage = 'url("' + src.replace(/["\\]/g, '') + '")';
+      }
+      b.onclick = function () { state.product = i; renderProducts(); render(); };
+      box.appendChild(b);
     });
   }
-  function fill() {
-    var p = PRODUCTS[current];
-    if (!p) { $('f-name').textContent = '—'; $('f-price').textContent = '—'; $('f-was').textContent = '—'; return; }
-    $('f-name').textContent = p.short;
-    $('f-price').textContent = sar(p.price, p.cur);
-    $('f-was').textContent = p.was ? sar(p.was, p.cur) : '—';
-  }
+
   $('q').oninput = renderProducts;
-  renderProducts();
 
-  function single(container, cls) {
-    container.addEventListener('click', function (e) {
-      var b = e.target.closest('button');
-      if (!b || !container.contains(b)) return;
-      container.querySelectorAll('button').forEach(function (x) { x.classList.toggle(cls, x === b); });
-      if (container.id === 'vars') $('big').src = b.querySelector('img').src;
-      if (container.id === 'seg') $('story').classList.toggle('square', b.dataset.f === 'square');
+  $('chips').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    state.occasion = b.dataset.o;
+    this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+    render();
+  });
+  $('seg').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    state.format = b.dataset.f;
+    this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+    render();
+  });
+  $('vars').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    state.variant = Number(b.dataset.v);
+    this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+    render();
+  });
+
+  $('dl').onclick = function () {
+    var btn = this;
+    btn.disabled = true;
+    // Draw once more at full size so a half-finished preview is never saved.
+    var p = PRODUCTS[state.product];
+    Promise.all([fontsReady, loadImg(p.img)]).then(function (r) {
+      var cv = document.createElement('canvas');
+      paint(cv, state.variant, design(), r[1], 1);
+      cv.toBlob(function (blob) {
+        btn.disabled = false;
+        if (!blob) return toast('ما قدرنا نحفظ التصميم. جرّب مرة ثانية.', true);
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'betakti-' + state.occasion + '-' + state.format + '-' + (state.variant + 1) + '.png';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 10000);
+        toast('حمّلنا التصميم في جهازك');
+      }, 'image/png');
     });
-  }
-  single($('chips'), 'on'); single($('vars'), 'on'); single($('seg'), 'on');
+  };
 
-  $('dl').onclick = function () { toast('تم حفظ التصميم في جهازك'); };
-  $('wa').onclick = function () { toast('أرسلنا التصميم لجوالك على واتساب'); };
+  $('cp').onclick = function () {
+    var t = caption();
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      var ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+      ta.remove();
+      toast(ok ? 'نسخنا نص المنشور' : 'ما قدرنا ننسخ. حدّد النص من تحت وانسخه.', !ok);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(t).then(function () { toast('نسخنا نص المنشور'); }, fallback);
+    } else fallback();
+  };
 
-  function showError(msg) {
-    if (embedded && inSalla) { try { embedded.ui.toast.error(msg, 5000); return; } catch (e) {} }
-    console.warn('[salla]', msg);
-  }
+  // ------------------------------------------------------------- seasons ---
+  // Hijri dates are the expected Gregorian start; a day either way is normal.
+  var SEASONS = [
+    ['2026-11-27', 'الجمعة البيضاء', 'whitefriday'],
+    ['2027-02-08', 'رمضان', 'ramadan'],
+    ['2027-03-10', 'عيد الفطر', 'eid'],
+    ['2027-05-16', 'عيد الأضحى', 'eid'],
+    ['2027-11-26', 'الجمعة البيضاء', 'whitefriday'],
+    ['2028-01-28', 'رمضان', 'ramadan'],
+    ['2028-02-27', 'عيد الفطر', 'eid'],
+    ['2028-05-05', 'عيد الأضحى', 'eid']
+  ];
+  var MONTHS = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+  (function () {
+    var today = new Date(); today.setHours(0, 0, 0, 0);
+    var next = SEASONS.find(function (s) { return new Date(s[0] + 'T00:00:00') >= today; });
+    if (!next) return;
+    var dt = new Date(next[0] + 'T00:00:00');
+    var days = Math.round((dt - today) / 86400000);
+    $('season-name').textContent = next[1] + ' — ' + dt.getDate() + ' ' + MONTHS[dt.getMonth()];
+    $('season-text').textContent = (days === 0 ? 'اليوم. ' : 'باقي ' + days + ' يوم. ') + 'اختر «' + OCC[next[2]].label.replace(' كريم', '') + '» من المناسبات وجهّز تصاميمك من الحين.';
+    $('season').hidden = false;
+  })();
 
-  // The catalogue from /api/salla/data, in the shape the picker draws.
+  // --------------------------------------------------------------- live ---
   function useLive(d) {
     live = true;
+    STORE = d.store || {};
+    COUPON = (d.coupons || [])[0] || null;
     PRODUCTS = (d.products || []).map(function (p) {
       var sale = p.sale_price && p.sale_price.amount < p.price.amount ? p.sale_price.amount : null;
       return {
         name: p.name,
-        short: p.name.length > 22 ? p.name.slice(0, 21) + '…' : p.name,
         price: sale != null ? sale : p.price.amount,
         was: sale != null ? p.price.amount : null,
         cur: p.price.currency,
-        img: p.image
+        img: p.image,
+        url: p.url
       };
     });
-    current = 0;
-    $('f-store').textContent = (d.store && d.store.name) || '—';
-    var c = (d.coupons || [])[0];
-    $('f-coupon').textContent = c ? c.code : 'لا يوجد';
-    $('note-text').textContent = 'هذه منتجاتك وكوبوناتك من متجرك. التصاميم في المعاينة نماذج حتى نفعّل التوليد من منتجاتك.';
+    state.product = 0;
+    shown = true;
+    $('note-text').textContent = 'هذه منتجاتك وكوبوناتك من متجرك. اختر منتج ومناسبة، وحمّل التصميم.';
     renderProducts();
-    fill();
+    render();
   }
 
+  // Inside Salla the samples are only a fallback: they'd otherwise flash up
+  // in the merchant's dashboard before their own products arrive.
+  var shown = false;
+  function showSamples() { if (shown) return; shown = true; renderProducts(); render(); }
+  function showError(msg) { toast(msg, true); showSamples(); }
+
   function loadStore() {
-    var token = embedded.auth.getToken();
-    if (!token) return Promise.resolve();
-    return fetch('/api/salla/data', { headers: { authorization: 'Bearer ' + token } })
+    var tok = embedded.auth.getToken();
+    if (!tok) return Promise.resolve();
+    return fetch('/api/salla/data', { headers: { authorization: 'Bearer ' + tok } })
       .then(function (res) {
         return res.json().catch(function () { return {}; }).then(function (body) {
           if (res.ok) return useLive(body);
@@ -301,7 +770,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
       .catch(function () { showError('تعذّر الاتصال. نعرض لك نماذج مؤقتًا.'); });
   }
 
-  if (!embedded || !inSalla) return;
+  if (!embedded || !inSalla) return showSamples();
+  $('story').classList.add('busy');
   embedded.init().then(function (r) {
     if (r && r.layout && r.layout.theme) setTheme(r.layout.theme);
     embedded.page.setTitle('تصاميم المتجر');
@@ -310,6 +780,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   }).catch(function (e) {
     console.warn('[salla] embedded init failed', e);
   }).then(function () {
+    showSamples();
     try { if (live) sessionStorage.removeItem('betakti-salla-refreshed'); } catch (e) {}
     try { embedded.ready(); } catch (e) {}
   });

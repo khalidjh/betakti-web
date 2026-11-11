@@ -49,7 +49,7 @@ interface Listing<T> {
 }
 
 export interface SallaData {
-  store: { name: string | null; currency: string | null };
+  store: { name: string | null; currency: string | null; domain: string | null; logo: string | null };
   products: {
     id: number;
     name: string;
@@ -92,11 +92,16 @@ async function load(merchant: number): Promise<SallaData> {
     adminGet<Listing<Product>>(merchant, '/products?per_page=50&status=sale'),
     optional<Coupon>(merchant, '/coupons?per_page=50'),
     optional<Offer>(merchant, '/specialoffers?per_page=20'),
-    adminGet<{ data?: { name?: string; currency?: string } }>(merchant, '/store/info').catch(() => null)
+    adminGet<{ data?: { name?: string; currency?: string; domain?: string; avatar?: string } }>(merchant, '/store/info').catch(() => null)
   ]);
 
   return {
-    store: { name: info?.data?.name ?? null, currency: info?.data?.currency ?? null },
+    store: {
+      name: info?.data?.name ?? null,
+      currency: info?.data?.currency ?? null,
+      domain: info?.data?.domain ?? null,
+      logo: info?.data?.avatar ?? null
+    },
     products: (products.data ?? [])
       .filter((p) => !p.status || p.status === 'sale')
       .map((p) => ({
